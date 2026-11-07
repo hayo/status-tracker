@@ -9,6 +9,13 @@
 
 export const VERSIES = [
   {
+    versie: '2.8.3',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'De tijd die een rang vraagt, heet nu "dagen bewust aan je aanzien werken" in plaats van "dagen in het dorp". Je woont er misschien al jaren; de app telt vanaf je eerste log.',
+    ],
+  },
+  {
     versie: '2.8.2',
     datum: '2026-11-07',
     wijzigingen: [

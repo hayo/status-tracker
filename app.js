@@ -256,7 +256,7 @@ function toonStatus() {
   el.nodig.textContent = volgende ? (p < volgende.min ? `${getal(volgende.min - p)} PR nodig` : 'PR gehaald') : '';
   el.eisen.replaceChildren(...(volgende ? [
     [volgende.eisen.punten, `${getal(volgende.min)} PR`, `je hebt er ${getal(p)}`],
-    [volgende.eisen.dagen, `${volgende.dagen} dagen in het dorp`, `je bent er ${nu.dagen} ${nu.dagen === 1 ? 'dag' : 'dagen'}`],
+    [volgende.eisen.dagen, `${volgende.dagen} dagen bewust aan je aanzien werken`, `je bent ${nu.dagen} ${nu.dagen === 1 ? 'dag' : 'dagen'} bezig`],
     ...(volgende.ritueel ? [[volgende.eisen.ritueel, volgende.ritueel.tekst, volgende.eisen.ritueel ? 'gedaan' : 'nog niet']] : []),
     ...(volgende.erkenning ? [[volgende.eisen.erkenning, `${getal(volgende.erkenning)} erkenning: wat anderen naar jou toe deden`, `je hebt er ${getal(st.erkenning.totaal)}`]] : []),
     ...(volgende.kring ? [[volgende.eisen.kringen, `${kringStand(volgende.kring.vanaf)} in ${volgende.kring.aantal === KRINGEN.length ? 'alle' : volgende.kring.aantal} kringen`,

@@ -36,7 +36,7 @@ export function toonKarakter(el, spel, st, vandaag) {
     ['Bekendheid', `${getal(st.erkenning.score)} · ${st.erkenning.niveau}`],
     ['Pad', gekozenPad?.naam ?? 'nog niet gekozen'],
     ['Type', type?.naam ?? 'nog niet gekozen'],
-    ['In het dorp', `${getal(dagenInSpel(spel))} dagen`],
+    ['Bezig met je aanzien', `${getal(dagenInSpel(spel))} dagen`],
     ['New Game+', spel.ronde ? `${spel.ronde} keer` : 'nog niet'],
   ].map(([dt, dd]) => maak('div', {}, maak('dt', { tekst: dt }), maak('dd', { tekst: dd }))));
 

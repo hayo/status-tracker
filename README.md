@@ -188,7 +188,8 @@ eigen sprite boven in `index.html`.
 De regels staan in `spel.js`, de getallen en teksten in `gegevens.js`.
 
 - **Rang en niveau.** Een rang vraagt drie dingen: genoeg PR (`min`), genoeg
-  dagen sinds het begin van deze ronde (`dagen`), en een `ritueel`, zoals lid
+  dagen dat je bewust aan je aanzien werkt, sinds het begin van deze ronde
+  (`dagen`), en een `ritueel`, zoals lid
   worden van een club. Zo werkt het ook in een dorp: je koopt je niet in
   (Elias en Scotson), en je stapt over via een overgangsmoment (Van Gennep).
   De statuspagina toont wat er nog moet. Voorbijganger is niveau 1, Ereburger
