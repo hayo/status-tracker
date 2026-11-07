@@ -88,6 +88,7 @@
       <ul>
         <li><a href="#status"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-chart-pie"/></svg>Status</a></li>
         <li><a href="#loggen" class="menu-goud"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-plus"/></svg>Log activiteit</a></li>
+        <li><a href="#erelijst"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-trophy"/></svg>Erelijst</a></li>
         <li><a href="#strategie"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-book-open"/></svg>Strategie</a></li>
         <li><a href="#gegevens"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-floppy-disk"/></svg>Gegevens</a></li>
       </ul>
@@ -113,21 +114,30 @@
 
       <div class="paneel glas karakter">
         <div class="karakter-wie">
-          <div class="avatar">
-            <svg class="icoon" aria-hidden="true" focusable="false"><use id="az-rang-icoon" href="#az-i-person-walking"/></svg>
-            <span class="niveau" id="az-niveau">Niv. 1</span>
+          <div class="avatar-vak">
+            <div class="avatar">
+              <svg class="icoon" aria-hidden="true" focusable="false"><use id="az-rang-icoon" href="#az-i-person-walking"/></svg>
+              <span class="niveau" id="az-niveau">Niv. 1</span>
+              <span class="sterren" id="az-sterren" role="img" aria-label="New Game+" hidden></span>
+            </div>
+            <ul class="uitrusting" id="az-uitrusting" aria-label="Uitrusting" hidden></ul>
           </div>
           <div>
             <p class="label">Huidige status</p>
             <p class="rang-naam" id="az-rang-naam">Voorbijganger</p>
+            <p class="titel-naam" id="az-titel" hidden></p>
             <p class="rang-uitleg" id="az-rang-uitleg"></p>
+            <p class="pad-label" id="az-pad-label" hidden></p>
           </div>
         </div>
         <div class="karakter-pr">
           <p class="label">Prestigepunten (PR)</p>
           <p class="pr" id="az-punten">0</p>
+          <p class="verval" id="az-verval" hidden></p>
         </div>
       </div>
+
+      <p class="paneel oproep" id="az-pad-oproep" hidden><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-star"/></svg> Je bent ver genoeg om een pad te kiezen. <a href="#erelijst">Kies je pad op de Erelijst</a>.</p>
 
       <div class="paneel">
         <p class="xp-kop">
@@ -137,6 +147,13 @@
         <progress class="xp" id="az-voortgang" max="100" value="0"></progress>
         <ol class="ladder" id="az-ladder" aria-label="Alle rangen"></ol>
       </div>
+
+      <div class="event" id="az-event-status"></div>
+
+      <section class="paneel" aria-labelledby="az-missies-kop">
+        <h3 id="az-missies-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-bolt"/></svg> Weekmissies <span class="kop-extra" id="az-missies-einde"></span></h3>
+        <ul class="missies" id="az-missies"></ul>
+      </section>
 
       <dl class="cijfers" id="az-cijfers"></dl>
 
@@ -185,6 +202,7 @@
 
     <section class="weergave" id="az-loggen" aria-labelledby="az-loggen-kop" hidden>
       <h2 class="verborgen" id="az-loggen-kop" tabindex="-1">Log activiteit</h2>
+      <div class="event" id="az-event-loggen"></div>
       <div class="log-raster">
         <section class="paneel" aria-labelledby="az-acties-kop">
           <h3 class="paneel-kop" id="az-acties-kop">1. Sociale acties loggen</h3>
@@ -206,6 +224,43 @@
           <ul class="acties" id="az-symbolen-open"></ul>
         </section>
       </div>
+    </section>
+
+    <section class="weergave" id="az-erelijst" aria-labelledby="az-erelijst-kop" hidden>
+      <h2 class="verborgen" id="az-erelijst-kop" tabindex="-1">Erelijst</h2>
+
+      <section class="paneel" aria-labelledby="az-paden-kop">
+        <h3 id="az-paden-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-star"/></svg> Jouw pad</h3>
+        <p class="zacht" id="az-pad-uitleg"></p>
+        <ul class="paden" id="az-paden"></ul>
+      </section>
+
+      <section class="paneel" aria-labelledby="az-titels-kop">
+        <h3 id="az-titels-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-medal"/></svg> Titels</h3>
+        <fieldset class="titels" id="az-titels">
+          <legend class="verborgen">Kies de titel die je voert</legend>
+        </fieldset>
+      </section>
+
+      <section class="paneel" aria-labelledby="az-prestaties-kop">
+        <h3 id="az-prestaties-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-trophy"/></svg> Prestaties <span class="kop-extra" id="az-prestaties-teller"></span></h3>
+        <ul class="prestaties" id="az-prestaties"></ul>
+      </section>
+
+      <section class="paneel wrapped" aria-labelledby="az-jaar-titel">
+        <h3 id="az-jaar-titel">Jouw jaar in Wassenaar</h3>
+        <p class="jaar-kiezer" id="az-jaar-kiezer" hidden>
+          <label for="az-jaar">Jaar</label>
+          <select id="az-jaar"></select>
+        </p>
+        <dl class="jaaroverzicht" id="az-jaaroverzicht"></dl>
+      </section>
+
+      <section class="paneel" aria-labelledby="az-prestige-kop">
+        <h3 id="az-prestige-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-rotate-right"/></svg> New Game+</h3>
+        <p id="az-prestige-uitleg"></p>
+        <p class="knoppen"><button type="button" class="knop knop-navy" id="az-prestige-knop">Begin New Game+</button></p>
+      </section>
     </section>
 
     <section class="weergave" id="az-strategie" aria-labelledby="az-strategie-kop" hidden>
@@ -238,6 +293,14 @@
             <input class="verborgen" type="file" id="az-terugzet-bestand" accept="application/json,.json">
           </p>
         </section>
+        <section class="paneel" aria-labelledby="az-moeilijk-kop">
+          <h3 id="az-moeilijk-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-fire"/></svg> Moeilijkheid</h3>
+          <p class="schakelaar">
+            <input type="checkbox" id="az-vergeten">
+            <label for="az-vergeten">Vergeten worden</label>
+          </p>
+          <p class="zacht">Doe je vier weken niets, dan zakt je PR elke week een beetje, tot 20 procent. Log iets en je bent het verval meteen kwijt.</p>
+        </section>
         <section class="paneel" aria-labelledby="az-wissen-kop">
           <h3 id="az-wissen-kop"><svg class="icoon rood" aria-hidden="true" focusable="false"><use href="#az-i-rotate-right"/></svg> Nieuw spel</h3>
           <p>Wis alles en begin opnieuw met de eerste inschatting. Dit kun je niet ongedaan maken.</p>
@@ -266,6 +329,7 @@
     <form method="dialog">
       <h2 id="az-log-titel">Activiteit</h2>
       <p class="venster-info" id="az-log-info"></p>
+      <p class="venster-bonus" id="az-log-bonus" hidden></p>
       <p>
         <label for="az-log-datum">Datum</label>
         <input type="date" id="az-log-datum" required>
@@ -292,11 +356,11 @@
     </form>
   </dialog>
 
-  <dialog class="venster venster-rang" id="az-rang-venster" aria-labelledby="az-rang-titel">
+  <dialog class="venster venster-beloning" id="az-beloning-venster" aria-labelledby="az-beloning-titel">
     <form method="dialog">
       <div class="kroon-ring"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-crown"/></svg></div>
-      <h2 id="az-rang-titel">Nieuw niveau bereikt!</h2>
-      <p>Je wordt nu erkend als <strong class="goud-tekst" id="az-nieuwe-rang"></strong>.</p>
+      <h2 id="az-beloning-titel">Level up!</h2>
+      <ul class="beloningen" id="az-beloning-lijst"></ul>
       <p class="knoppen"><button type="submit" class="knop knop-navy" value="ok">Verder</button></p>
     </form>
   </dialog>

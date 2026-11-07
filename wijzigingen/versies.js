@@ -9,6 +9,21 @@
 
 export const VERSIES = [
   {
+    versie: '2.1',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'Prestaties: ze gaan vanzelf open als je iets bereikt. Sommige zijn geheim.',
+      'Titels: verdien ze met je skills en voer er één naast je rang.',
+      'Kies vanaf rang Lid een pad. Dat geeft extra XP op drie terreinen.',
+      'Elke week drie weekmissies, met extra PR als je ze haalt.',
+      'Extra XP voor een reeks weken op rij, en dubbele XP tijdens events zoals de Koningsweek.',
+      'Een venster bij elk nieuw niveau: rang, skill, prestatie, titel of missie.',
+      'Je statussymbolen hangen als uitrusting rond je avatar.',
+      'Nieuw: de Erelijst, met je pad, titels, prestaties, je jaaroverzicht en New Game+.',
+      'Wie wil, kan "vergeten worden" aanzetten: na vier weken stilte zakt je PR.',
+    ],
+  },
+  {
     versie: '2.0',
     datum: '2026-11-07',
     wijzigingen: [

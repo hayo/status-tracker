@@ -241,3 +241,84 @@ export const STARTVRAGEN = [
     ],
   },
 ];
+
+/*
+ * Voorwaarden, voor prestaties en titels. Elke voorwaarde heeft een soort en meestal een aantal:
+ * acties (aantal gelogd), activiteit (id, zo vaak), terrein (id, zo vaak), terreinen (zo veel verkend),
+ * verschillend (zo veel verschillende activiteiten), reeks (langste reeks in weken), week (PR in één week),
+ * dag (terreinen op één dag), symbool (id), symbolen (aantal), skill (id, punten), missies (voltooid),
+ * prestige (keer New Game+), event (gelogd tijdens een event), comeback (na 4 weken stilte weer actief),
+ * alle (een lijst voorwaarden die allemaal moeten).
+ */
+
+export const PRESTATIES = [
+  { id: 'p_eerste', naam: 'Eerste stap', uitleg: 'Log je eerste activiteit.', icoon: 'person-walking', voorwaarde: { soort: 'acties', aantal: 1 } },
+  { id: 'p_pops', naam: 'Vaste klant', uitleg: 'Tien keer koffie of borrel bij Pops.', icoon: 'mug-hot', voorwaarde: { soort: 'activiteit', id: 'a04', aantal: 10 } },
+  { id: 'p_tribune', naam: 'Tribunebeest', uitleg: 'Tien raadsvergaderingen op de publieke tribune.', icoon: 'landmark', voorwaarde: { soort: 'activiteit', id: 'b04', aantal: 10 } },
+  { id: 'p_ontdekker', naam: 'Ontdekker', uitleg: 'Verken vijf terreinen.', icoon: 'globe', voorwaarde: { soort: 'terreinen', aantal: 5 } },
+  { id: 'p_alleskunner', naam: 'Alleskunner', uitleg: 'Verken alle negen terreinen.', icoon: 'star', voorwaarde: { soort: 'terreinen', aantal: 9 } },
+  { id: 'p_verzamelaar', naam: 'Verzamelaar', uitleg: 'Doe 25 verschillende activiteiten.', icoon: 'list-check', voorwaarde: { soort: 'verschillend', aantal: 25 } },
+  { id: 'p_volhouder', naam: 'Volhouder', uitleg: 'Vier weken op rij actief.', icoon: 'fire', voorwaarde: { soort: 'reeks', aantal: 4 } },
+  { id: 'p_ijzer', naam: 'IJzeren discipline', uitleg: 'Twaalf weken op rij actief.', icoon: 'fire', voorwaarde: { soort: 'reeks', aantal: 12 } },
+  { id: 'p_honderd', naam: 'Honderd keer', uitleg: 'Log honderd activiteiten.', icoon: 'trophy', voorwaarde: { soort: 'acties', aantal: 100 } },
+  { id: 'p_topweek', naam: 'Topweek', uitleg: 'Verdien 1.000 PR in één week.', icoon: 'bolt', voorwaarde: { soort: 'week', aantal: 1000 } },
+  { id: 'p_diplomaat', naam: 'Salonfähig', uitleg: 'Vijf keer actief in diplomatieke en expat-kringen.', icoon: 'globe', voorwaarde: { soort: 'terrein', id: 'diplomatiek', aantal: 5 } },
+  { id: 'p_data', naam: 'Dataridder', uitleg: 'Tien keer actief met civic tech en data.', icoon: 'code', voorwaarde: { soort: 'terrein', id: 'civic', aantal: 10 } },
+  { id: 'p_symbolen', naam: 'Pronkkast', uitleg: 'Claim vijf statussymbolen.', icoon: 'medal', voorwaarde: { soort: 'symbolen', aantal: 5 } },
+  { id: 'p_missies', naam: 'Missie volbracht', uitleg: 'Voltooi tien weekmissies.', icoon: 'circle-check', voorwaarde: { soort: 'missies', aantal: 10 } },
+  { id: 'p_prestige', naam: 'Opnieuw geboren', uitleg: 'Begin een New Game+.', icoon: 'rotate-right', voorwaarde: { soort: 'prestige', aantal: 1 } },
+  { id: 'p_duizendpoot', naam: 'Duizendpoot', uitleg: 'Drie terreinen op één dag.', icoon: 'bolt', geheim: true, voorwaarde: { soort: 'dag', aantal: 3 } },
+  { id: 'p_feest', naam: 'Feestneus', uitleg: 'Log iets tijdens een event.', icoon: 'champagne-glasses', geheim: true, voorwaarde: { soort: 'event', aantal: 1 } },
+  { id: 'p_comeback', naam: 'De terugkeer', uitleg: 'Weer actief na vier weken stilte.', icoon: 'arrow-trend-up', geheim: true, voorwaarde: { soort: 'comeback', aantal: 1 } },
+  { id: 'p_schaduw', naam: 'Eminence grise', uitleg: 'Sociale discretie op 75 / 100.', icoon: 'user-secret', geheim: true, voorwaarde: { soort: 'skill', id: 'stealth', aantal: 3000 } },
+];
+
+// Titels voer je naast je rang. Je kiest er één op de Erelijst.
+export const TITELS = [
+  { id: 't_brug', naam: 'De Bruggenbouwer', uitleg: 'Sociale discretie op 50 / 100.', voorwaarde: { soort: 'skill', id: 'stealth', aantal: 2000 } },
+  { id: 't_erfgoed', naam: 'Erfgoedridder', uitleg: 'Cultureel besef op 50 / 100.', voorwaarde: { soort: 'skill', id: 'cultural', aantal: 2000 } },
+  { id: 't_tribuun', naam: 'Volkstribuun', uitleg: 'Maatschappelijke invloed op 50 / 100.', voorwaarde: { soort: 'skill', id: 'civic', aantal: 2000 } },
+  { id: 't_duin', naam: 'Duinloper', uitleg: 'Fysiek en natuur op 50 / 100.', voorwaarde: { soort: 'skill', id: 'physical', aantal: 2000 } },
+  { id: 't_mecenas', naam: 'Mecenas', uitleg: 'Financiële slagkracht op 50 / 100.', voorwaarde: { soort: 'skill', id: 'financial', aantal: 2000 } },
+  { id: 't_haring', naam: 'Haringbaron', uitleg: 'Een haringparty en vijf tuinborrels.', voorwaarde: { soort: 'alle', lijst: [{ soort: 'symbool', id: 'm_haring' }, { soort: 'activiteit', id: 'i05', aantal: 5 }] } },
+  { id: 't_data', naam: 'Datapionier', uitleg: 'De Gemeenteraad Tracker twintig keer bijgewerkt.', voorwaarde: { soort: 'activiteit', id: 'b03', aantal: 20 } },
+  { id: 't_oostdorp', naam: 'Oostdorper in hart en nieren', uitleg: 'Twintig keer actief in Oostdorp en het dorp.', voorwaarde: { soort: 'terrein', id: 'dorp', aantal: 20 } },
+  { id: 't_wereld', naam: 'Wereldburger', uitleg: 'Tien keer actief in diplomatieke en expat-kringen.', voorwaarde: { soort: 'terrein', id: 'diplomatiek', aantal: 10 } },
+];
+
+// Vanaf deze rang (index in RANGEN) kies je een pad. Het pad geeft extra XP op zijn terreinen.
+export const PAD_VANAF = 3;
+export const PAD_BONUS = 0.25;
+export const PADEN = [
+  { id: 'bestuurder', naam: 'De Bestuurder', uitleg: 'Invloed via raad, regels en ruimte.', icoon: 'landmark', terreinen: ['civic', 'overlast', 'rijk'] },
+  { id: 'diplomaat', naam: 'De Diplomaat', uitleg: 'Netwerken in salons en ambassades.', icoon: 'globe', terreinen: ['diplomatiek', 'rijk', 'oudgeld'] },
+  { id: 'mecenas', naam: 'De Mecenas', uitleg: 'Steun voor erfgoed, handel en goede doelen.', icoon: 'coins', terreinen: ['erfgoed', 'handel', 'oudgeld'] },
+  { id: 'dorpeling', naam: 'De Dorpeling', uitleg: 'Geworteld in de buurt en de duinen.', icoon: 'house-chimney', terreinen: ['dorp', 'buiten', 'handel'] },
+];
+
+// Elke week drie missies, steeds anders. {terrein} wordt de naam van een terrein.
+export const MISSIES = [
+  { soort: 'terrein', aantal: 2, tekst: 'Log 2 keer in {terrein}', beloning: 100 },
+  { soort: 'nieuw', aantal: 1, tekst: 'Doe een activiteit die je nog nooit deed', beloning: 120 },
+  { soort: 'acties', aantal: 5, tekst: 'Log 5 activiteiten', beloning: 150 },
+  { soort: 'pr', aantal: 300, tekst: 'Verdien 300 PR', beloning: 100 },
+  { soort: 'dagen', aantal: 3, tekst: 'Wees actief op 3 verschillende dagen', beloning: 120 },
+  { soort: 'onbekend', aantal: 1, tekst: 'Doe iets in een terrein waar je nog niets deed', beloning: 150 },
+];
+
+// Bij een reeks weken op rij krijg je extra XP: per week deze stap, tot dit maximum.
+export const REEKS_STAP = 0.1;
+export const REEKS_MAX = 1.5;
+
+// Events met extra XP. Data als MM-DD; pas ze gerust aan.
+export const EVENTS = [
+  { naam: 'Koningsweek', van: '04-21', tot: '04-27', factor: 2, icoon: 'crown' },
+  { naam: 'Hollandse Nieuwe', van: '06-01', tot: '06-21', factor: 2, icoon: 'fish-fins' },
+  { naam: 'Open Monumentendag', van: '09-08', tot: '09-14', factor: 2, icoon: 'landmark-dome' },
+  { naam: 'Kerst in het dorp', van: '12-15', tot: '12-31', factor: 2, icoon: 'star' },
+];
+
+// Vergeten worden (staat uit, tenzij je het aanzet): na zo veel weken stilte zakt je PR per week.
+export const VERGETEN_NA = 4;
+export const VERGETEN_PER_WEEK = 0.02;
+export const VERGETEN_MAX = 0.2;

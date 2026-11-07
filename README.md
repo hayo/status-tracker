@@ -13,6 +13,8 @@ https://hayo.github.io/status-tracker/
   de terreinen die je al verkend hebt.
 - **Log activiteit**: bijna tachtig activiteiten in negen terreinen. Je zoekt,
   kiest de datum en geeft extra context. Ernaast claim je statussymbolen.
+- **Erelijst**: je pad, je titels, alle prestaties, je jaaroverzicht en New
+  Game+.
 - **Strategie**: het strategieboek, waarom deze activiteiten helpen.
 - **Gegevens**: je savegame bewaren, laden, of een nieuw spel beginnen.
 
@@ -26,7 +28,8 @@ index.html                de app, en de losse pagina eromheen
 index.php                 binnen een site: geeft alleen het artikel uit index.html door
 app.css                   de opmaak, alles onder #aanzien
 standalone.css            de achtergrond en de groene balk van de losse pagina
-app.js                    de app: rekenen, tonen, loggen, bewaren
+app.js                    de app: tonen, loggen, bewaren
+spel.js                   de spelregels: rang, bonussen, prestaties, missies, verval, jaaroverzicht
 gegevens.js               rangen, eigenschappen, activiteiten, statussymbolen en startvragen
 wijzigingen/versies.js    de versies, de nieuwste bovenaan; de bovenste is de versie die draait
 sw.js                     laat de losse pagina ook zonder internet werken
@@ -121,15 +124,59 @@ Een `icoon` is de naam van een icoon uit Font Awesome Free (solid), zoals
 Een skill telt tot `EIGENSCHAP_MAX` punten: dat is 100 / 100. Elke 10 is een
 niveau. De rang van je karakter is ook zijn niveau: Voorbijganger is niveau 1.
 
+## Spelregels
+
+De regels staan in `spel.js`, de getallen en teksten in `gegevens.js`.
+
+- **Rang en niveau.** Je PR bepaalt je rang (`RANGEN`). Voorbijganger is niveau
+  1, Ereburger niveau 7.
+- **Skills.** Elke activiteit telt mee voor één skill. `EIGENSCHAP_MAX` punten is
+  100 / 100; elke tiende daarvan is een niveau.
+- **Bonussen.** Op een activiteit, niet op een statussymbool. Ze vermenigvuldigen:
+  - reeks: `REEKS_STAP` per week op rij actief vóór de week van de activiteit,
+    tot `REEKS_MAX`;
+  - event: de `factor` van een event in `EVENTS`, op de datum van de activiteit;
+  - pad: `1 + PAD_BONUS` op de terreinen van je pad.
+
+  De regel in het logboek bewaart de punten mét bonus, de `basis` en de
+  `bonussen` als tekst. Later van pad wisselen verandert dus niets aan wat je al
+  logde.
+- **Pad.** Vanaf rang `PAD_VANAF` kies je een pad uit `PADEN`. Wisselen mag.
+- **Prestaties en titels.** `PRESTATIES` en `TITELS` hebben een `voorwaarde`. Welke
+  soorten er zijn, staat boven `PRESTATIES` in `gegevens.js`. Ze worden steeds
+  uit het logboek berekend, dus niet bewaard. Haal je een activiteit weg, dan kan
+  een prestatie weer dichtgaan. Een prestatie met `geheim: true` toont zijn naam
+  pas als je hem hebt.
+- **Weekmissies.** Elke week drie uit `MISSIES`, gekozen uit het weeknummer. Zo
+  zijn ze de hele week gelijk. Een voltooide missie geeft één keer een regel
+  "Weekmissie" in het logboek, met de `beloning`. "Doe iets in een terrein waar je
+  nog niets deed" valt weg als je alle terreinen al verkend had.
+- **Beloningen.** Na elke actie vergelijkt de app wat je had met wat je nu hebt:
+  rang, skill-niveaus, prestaties, titels en missies. Is er iets bij, dan toont
+  hij het beloningsvenster.
+- **Uitrusting.** Je acht duurste statussymbolen hangen rond je avatar.
+- **Vergeten worden.** Staat uit, tenzij je het aanzet onder Gegevens. Na
+  `VERGETEN_NA` weken zonder iets te loggen zakt je PR met `VERGETEN_PER_WEEK` per
+  week, tot `VERGETEN_MAX`. Het wordt niet bewaard, maar steeds berekend: log je
+  weer iets, dan is het verval weg.
+- **New Game+.** Als Ereburger begin je opnieuw. `ronde` gaat omhoog; je PR telt
+  alleen de regels van de huidige ronde. Skills, prestaties, titels en het
+  logboek blijven. Elke ronde geeft een ster op je avatar.
+- **Jaaroverzicht.** Per jaar uit het logboek: PR, activiteiten, beste maand,
+  favorieten, langste reeks en hoe ver je rang steeg.
+
+De data van de events zijn bij benadering. Pas ze aan in `EVENTS`.
+
 ## Je gegevens
 
 Alles staat in `localStorage` van de browser, onder `wassenaar_renown`, als
-`{ versie: 2, logboek: [...] }`. Er gaat niets naar een server.
+`{ versie: 3, logboek: [...], ronde, titel, pad, vergeten }`. Er gaat niets naar
+een server. Gegevens van versie 1 en 2 zet de app vanzelf om.
 
 Punten, eigenschappen en behaalde symbolen rekent de app steeds uit het
 logboek. Haal je een regel weg, dan klopt alles meteen weer. Regels met
-`start: true`, zoals de startvragen, tellen niet mee in de kalender, de weken
-en de reeks.
+`start: true`, zoals de startvragen en het begin van een New Game+, tellen niet
+mee in de kalender, de weken, de reeks en het jaaroverzicht.
 
 "Bewaar als bestand" geeft het logboek als JSON. "Zet een bestand terug" leest
 dat weer in, en ook de gegevens van versie 1 (`points`, `history`,
