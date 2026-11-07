@@ -1,6 +1,7 @@
 /*
- * Het dorp: een schematische kaart van Wassenaar. Buurten kleuren naar hoe vaak je er actief was,
- * plekken lichten op als je ze ontdekte. Tik op een plek en log wat je daar deed.
+ * Het dorp: Wassenaar als fantasy-koninkrijk, getekend als oude kaart op perkament. Buurten zijn rijken
+ * die kleuren naar hoe vaak je er was; plekken zijn lakzegels die goud worden als je ze ontdekte.
+ * Tik op een zegel en log wat je daar deed.
  */
 
 import { KAART, PLEKKEN, BUURTEN } from '../gegevens.js';
@@ -25,74 +26,131 @@ function rond(punten, straal = 22) {
   }).join('') + 'Z';
 }
 
+// Een lakzegel: een cirkel met een golvende rand.
+function zegelPad(r = 17, bulten = 14) {
+  const punten = Array.from({ length: bulten * 2 }, (_, i) => {
+    const hoek = (i * Math.PI) / bulten, straal = i % 2 ? r - 2.5 : r;
+    return `${(straal * Math.cos(hoek)).toFixed(1)} ${(straal * Math.sin(hoek)).toFixed(1)}`;
+  });
+  return `M${punten.join('L')}Z`;
+}
+
 function versiering() {
   return maak('svg:defs', {},
-    maak('svg:linearGradient', { id: 'az-kaart-zee', x1: 0, y1: 0, x2: 1, y2: 1 },
-      maak('svg:stop', { offset: 0, class: 'zee-diep' }), maak('svg:stop', { offset: 1, class: 'zee-ondiep' })),
-    maak('svg:pattern', { id: 'az-kaart-golven', width: 44, height: 22, patternUnits: 'userSpaceOnUse' },
-      maak('svg:path', { class: 'golf', d: 'M2 12q9-7 18 0' })),
-    maak('svg:pattern', { id: 'az-kaart-rimpels', width: 28, height: 18, patternUnits: 'userSpaceOnUse' },
-      maak('svg:path', { class: 'rimpel', d: 'M4 13q6-7 12 0' })),
-    maak('svg:pattern', { id: 'az-kaart-bomen', width: 24, height: 24, patternUnits: 'userSpaceOnUse' },
-      maak('svg:circle', { class: 'boom', cx: 6, cy: 7, r: 4.5 }), maak('svg:circle', { class: 'boom', cx: 17, cy: 17, r: 5.5 })),
+    maak('svg:filter', { id: 'az-kaart-vezel', x: 0, y: 0, width: '100%', height: '100%' },
+      maak('svg:feTurbulence', { type: 'fractalNoise', baseFrequency: 0.85, numOctaves: 3, stitchTiles: 'stitch' }),
+      maak('svg:feColorMatrix', { type: 'matrix', values: '0 0 0 0 0.35 0 0 0 0 0.24 0 0 0 0 0.1 0 0 0 0.16 0' })),
+    maak('svg:radialGradient', { id: 'az-kaart-vignet', cx: '50%', cy: '50%', r: '75%' },
+      maak('svg:stop', { offset: '55%', class: 'vignet-midden' }), maak('svg:stop', { offset: '100%', class: 'vignet-rand' })),
+    maak('svg:pattern', { id: 'az-kaart-golven', width: 46, height: 26, patternUnits: 'userSpaceOnUse' },
+      maak('svg:path', { class: 'golf', d: 'M4 14q5-5 10 0t10 0' })),
+    maak('svg:pattern', { id: 'az-kaart-heuvels', width: 40, height: 30, patternUnits: 'userSpaceOnUse' },
+      maak('svg:path', { class: 'heuvel', d: 'M4 22q9-15 18 0' }), maak('svg:path', { class: 'heuvel-schaduw', d: 'M13 10q4 5 4 11' }),
+      maak('svg:path', { class: 'heuvel', d: 'M24 9q6-9 12 0' })),
+    maak('svg:pattern', { id: 'az-kaart-dennen', width: 26, height: 26, patternUnits: 'userSpaceOnUse' },
+      maak('svg:path', { class: 'den', d: 'M7 3L12 13H2ZM7 13V16' }), maak('svg:path', { class: 'den', d: 'M19 12L24 22H14ZM19 22V25' })),
     ...KAART.wegen.map((w, i) => maak('svg:path', { id: `az-kaart-weg-${i}`, d: w.pad })));
 }
 
 function windroos() {
-  return maak('svg:g', { class: 'windroos', transform: 'translate(70 78)', 'aria-hidden': 'true' },
-    maak('svg:circle', { r: 30 }),
-    maak('svg:path', { class: 'windroos-noord', d: 'M0 -26L7 0L0 -5L-7 0Z' }),
-    maak('svg:path', { class: 'windroos-zuid', d: 'M0 26L7 0L0 5L-7 0Z' }),
-    maak('svg:path', { class: 'windroos-zuid', d: 'M-26 0L0 -5L-4 0L0 5ZM26 0L0 -5L4 0L0 5Z' }),
-    maak('svg:text', { x: 0, y: -36, 'text-anchor': 'middle', tekst: 'N' }));
+  const ster = (r1, r2, n, draai = 0) => `M${Array.from({ length: n * 2 }, (_, i) => {
+    const h = draai + (i * Math.PI) / n - Math.PI / 2, r = i % 2 ? r2 : r1;
+    return `${(r * Math.cos(h)).toFixed(1)} ${(r * Math.sin(h)).toFixed(1)}`;
+  }).join('L')}Z`;
+  return maak('svg:g', { class: 'windroos', transform: 'translate(95 100)', 'aria-hidden': 'true' },
+    maak('svg:circle', { class: 'windroos-ring', r: 46 }), maak('svg:circle', { class: 'windroos-ring', r: 40 }),
+    maak('svg:path', { class: 'windroos-klein', d: ster(30, 8, 4, Math.PI / 4) }),
+    maak('svg:path', { class: 'windroos-groot', d: ster(44, 9, 4) }),
+    maak('svg:circle', { class: 'windroos-hart', r: 4 }),
+    ...[['N', 0, -54], ['O', 56, 5], ['Z', 0, 64], ['W', -56, 5]].map(([t, x, y]) => maak('svg:text', { x, y, 'text-anchor': 'middle', tekst: t })));
+}
+
+function zeegezicht() {
+  return maak('svg:g', { class: 'zeegezicht', 'aria-hidden': 'true' },
+    // Een schip met bolle zeilen
+    maak('svg:g', { transform: 'translate(300 120) rotate(-6)' },
+      maak('svg:path', { class: 'schip-romp', d: 'M-30 8Q0 24 30 8L24 0H-24Z' }),
+      maak('svg:path', { class: 'schip-mast', d: 'M0 0V-38M-14 -2V-26' }),
+      maak('svg:path', { class: 'schip-zeil', d: 'M2 -36Q20 -24 2 -6ZM-12 -24Q2 -16 -12 -6Z' }),
+      maak('svg:path', { class: 'schip-vlag', d: 'M0 -38L10 -35L0 -32Z' })),
+    // Een zeeslang die door de golven kronkelt
+    maak('svg:g', { transform: 'translate(120 360)' },
+      maak('svg:path', { class: 'slang', d: 'M-40 10Q-30 -14 -20 10M-10 10Q2 -18 14 10M24 10Q32 -8 40 4Q46 -4 52 -2' }),
+      maak('svg:circle', { class: 'slang-oog', cx: 50, cy: -2, r: 1.6 }),
+      maak('svg:text', { class: 'kaart-zeeslang', x: 6, y: 34, 'text-anchor': 'middle', tekst: 'Hier zwemmen zeeslangen' })));
+}
+
+function banier() {
+  return maak('svg:g', { class: 'banier', 'aria-hidden': 'true' },
+    maak('svg:path', { class: 'banier-staart', d: 'M650 34L628 50L650 66L662 50ZM968 34L990 50L968 66L956 50Z' }),
+    maak('svg:path', { class: 'banier-doek', d: 'M656 26Q812 14 962 26V74Q812 62 656 74Z' }),
+    maak('svg:use', { class: 'banier-kroon', href: '#az-i-crown', x: 668, y: 37, width: 24, height: 24 }),
+    maak('svg:text', { x: 822, y: 57, 'text-anchor': 'middle', tekst: KAART.titel }));
+}
+
+function kader(breedte, hoogte) {
+  const hoeken = [[16, 16], [breedte - 16, 16], [16, hoogte - 16], [breedte - 16, hoogte - 16]];
+  return maak('svg:g', { class: 'kaart-kader', 'aria-hidden': 'true' },
+    maak('svg:rect', { class: 'kader-buiten', x: 5, y: 5, width: breedte - 10, height: hoogte - 10 }),
+    maak('svg:rect', { class: 'kader-binnen', x: 13, y: 13, width: breedte - 26, height: hoogte - 26 }),
+    ...hoeken.map(([x, y]) => maak('svg:path', { class: 'kader-hoek', d: `M${x} ${y - 9}L${x + 9} ${y}L${x} ${y + 9}L${x - 9} ${y}Z` })));
+}
+
+function schaal() {
+  return maak('svg:g', { class: 'schaal', transform: 'translate(60 640)', 'aria-hidden': 'true' },
+    ...[0, 1, 2, 3].map((i) => maak('svg:rect', { class: i % 2 ? 'schaal-licht' : 'schaal-donker', x: i * 30, y: 0, width: 30, height: 7 })),
+    maak('svg:text', { x: 60, y: -8, 'text-anchor': 'middle', tekst: 'Eén dagmars' }));
 }
 
 export function bouwKaart(el, bijActiviteit) {
   opActiviteit = bijActiviteit;
   const { breedte, hoogte } = KAART;
-  const svg = maak('svg:svg', { class: 'kaart-svg', viewBox: `0 0 ${breedte} ${hoogte}`, width: breedte, height: hoogte, role: 'group', 'aria-label': 'Kaart van Wassenaar, schematisch' },
+  const svg = maak('svg:svg', { class: 'kaart-svg', viewBox: `0 0 ${breedte} ${hoogte}`, width: breedte, height: hoogte, role: 'group', 'aria-label': 'Kaart van Wassenaar als koninkrijk, schematisch' },
     versiering(),
-    maak('svg:rect', { class: 'kaart-land', width: breedte, height: hoogte }),
+    maak('svg:rect', { class: 'kaart-perkament', width: breedte, height: hoogte }),
     maak('svg:path', { class: 'kaart-zee', d: KAART.zee }),
     maak('svg:path', { class: 'kaart-golven', d: KAART.zee }),
+    maak('svg:path', { class: 'kaart-kustschaduw', d: KAART.kust }),
     maak('svg:path', { class: 'kaart-duin', d: KAART.duinen }),
-    maak('svg:path', { class: 'kaart-rimpels', d: KAART.duinen }),
-    maak('svg:path', { class: 'kaart-strand', d: KAART.kust }),
-    maak('svg:path', { class: 'kaart-vloedlijn', d: KAART.kust }),
-    ...KAART.bossen.flatMap((b) => [maak('svg:path', { class: 'kaart-bos', d: rond(b.punten, 30) }), maak('svg:path', { class: 'kaart-bomen', d: rond(b.punten, 30) })]),
-    ...KAART.wegen.flatMap((w) => [maak('svg:path', { class: `kaart-weg-rand ${w.soort}`, d: w.pad }), maak('svg:path', { class: `kaart-weg ${w.soort}`, d: w.pad })]),
+    maak('svg:path', { class: 'kaart-heuvels', d: KAART.duinen }),
+    maak('svg:path', { class: 'kaart-kust', d: KAART.kust }),
+    ...KAART.bossen.flatMap((b) => [maak('svg:path', { class: 'kaart-bos', d: rond(b.punten, 30) }), maak('svg:path', { class: 'kaart-dennen', d: rond(b.punten, 30) })]),
+    ...KAART.wegen.map((w) => maak('svg:path', { class: `kaart-weg ${w.soort}`, d: w.pad })),
     ...KAART.wegen.map((w, i) => maak('svg:text', { class: 'kaart-weg-naam' }, maak('svg:textPath', { href: `#az-kaart-weg-${i}`, startOffset: w.label, tekst: w.naam }))),
-    maak('svg:text', { class: 'kaart-zee-label', x: 200, y: 270, tekst: 'Noordzee' }),
+    zeegezicht(),
+    maak('svg:text', { class: 'kaart-zee-label', x: 250, y: 232, 'text-anchor': 'middle', tekst: KAART.zeeNaam }),
     ...KAART.duinNamen.map(([naam, x, y]) => maak('svg:text', { class: 'kaart-duin-label', x, y, 'text-anchor': 'middle', tekst: naam })),
     ...KAART.bossen.map((b) => {
-      const x = Math.min(KAART.breedte - 70, Math.round(b.punten.reduce((s, p) => s + p[0], 0) / b.punten.length));
+      const x = Math.min(KAART.breedte - 80, Math.round(b.punten.reduce((s, p) => s + p[0], 0) / b.punten.length));
       const y = b.naamOnder ? Math.max(...b.punten.map((p) => p[1])) + 18 : Math.min(...b.punten.map((p) => p[1])) - 8;
       return maak('svg:text', { class: 'kaart-bos-label', x, y, 'text-anchor': 'middle', tekst: b.naam });
     }),
-    ...Object.entries(KAART.buurten).map(([naam, b]) => svgKnop({ class: 'kaart-buurt', 'data-buurt': naam, 'aria-label': naam }, () => kies(el, 'buurt', naam),
+    ...Object.entries(KAART.buurten).map(([naam, b]) => svgKnop({ class: 'kaart-buurt', 'data-buurt': naam, 'aria-label': `${b.titel} ${naam}` }, () => kies(el, 'buurt', naam),
       maak('svg:path', { d: rond(b.punten) }),
-      maak('svg:text', { class: 'kaart-buurt-label', x: b.label[0], y: b.label[1], 'text-anchor': 'middle', tekst: naam.toLocaleUpperCase('nl') }))),
+      maak('svg:text', { 'text-anchor': 'middle' },
+        maak('svg:tspan', { class: 'kaart-buurt-titel', x: b.label[0], y: b.label[1] - 15, tekst: b.titel }), ' ',
+        maak('svg:tspan', { class: 'kaart-buurt-label', x: b.label[0], y: b.label[1] + 3, tekst: naam })))),
     ...PLEKKEN.map((p) => {
       const [x, y] = KAART.plekken[p.id];
-      return svgKnop({ class: 'kaart-pin', 'data-plek': p.id, transform: `translate(${x} ${y + 12})`, 'aria-label': p.naam }, () => kies(el, 'plek', p.id),
-        maak('svg:ellipse', { class: 'pin-schaduw', cx: 0, cy: 0, rx: 8, ry: 3 }),
+      return svgKnop({ class: 'kaart-pin', 'data-plek': p.id, transform: `translate(${x} ${y})`, 'aria-label': p.naam }, () => kies(el, 'plek', p.id),
+        maak('svg:ellipse', { class: 'pin-schaduw', cx: 2, cy: 15, rx: 13, ry: 4 }),
         maak('svg:g', { class: 'pin-lijf' },
-          maak('svg:path', { class: 'pin-rand', d: 'M0 0C-5 -9 -16 -14 -16 -26A16 16 0 1 1 16 -26C16 -14 5 -9 0 0Z' }),
-          maak('svg:use', { class: 'pin-icoon', href: `#az-i-${p.icoon}`, x: -9, y: -35, width: 18, height: 18 })),
+          maak('svg:path', { class: 'pin-rand', d: zegelPad() }),
+          maak('svg:circle', { class: 'pin-binnen', r: 11.5 }),
+          maak('svg:use', { class: 'pin-icoon', href: `#az-i-${p.icoon}`, x: -8, y: -8, width: 16, height: 16 })),
         maak('svg:title', { tekst: p.naam }));
     }),
     windroos(),
-    maak('svg:g', { class: 'cartouche', 'aria-hidden': 'true' },
-      maak('svg:rect', { x: 800, y: 18, width: 182, height: 54, rx: 8 }),
-      maak('svg:use', { class: 'cartouche-kroon', href: '#az-i-crown', x: 814, y: 30, width: 30, height: 30 }),
-      maak('svg:text', { x: 852, y: 54, tekst: 'Wassenaar' })),
-    maak('svg:rect', { class: 'kaart-kader', x: 6, y: 6, width: breedte - 12, height: hoogte - 12, rx: 10 }),
-    maak('svg:rect', { class: 'kaart-kader-binnen', x: 14, y: 14, width: breedte - 28, height: hoogte - 28, rx: 6 }));
+    banier(),
+    schaal(),
+    maak('svg:rect', { class: 'kaart-vezel', width: breedte, height: hoogte }),
+    maak('svg:rect', { class: 'kaart-vignet', width: breedte, height: hoogte }),
+    kader(breedte, hoogte));
   el.kaart.replaceChildren(svg);
   el.kaartLegenda.replaceChildren(
     maak('span', {}, maak('span', { class: 'legenda-pin ontdekt', 'aria-hidden': 'true' }), 'Ontdekt'),
     maak('span', {}, maak('span', { class: 'legenda-pin', 'aria-hidden': 'true' }), 'Nog te ontdekken'),
-    'Buurt:',
+    'Rijk:',
     ...['0', '1–2', '3–5', '6–10', '11+'].map((t, i) => maak('span', {}, maak('span', { class: `legenda-vak stap-${i}`, 'aria-hidden': 'true' }), `${t}×`)));
 }
 
@@ -121,7 +179,7 @@ export function toonKaart(el, spel) {
     const n = buurt.get(g.dataset.buurt) ?? 0;
     const stap = n ? STAPPEN.findLastIndex((s) => n >= s) + 1 : 0;
     g.setAttribute('class', `kaart-buurt stap-${stap}${gekozen?.soort === 'buurt' && gekozen.id === g.dataset.buurt ? ' gekozen' : ''}`);
-    g.setAttribute('aria-label', `${g.dataset.buurt}: ${n} keer actief`);
+    g.setAttribute('aria-label', `${KAART.buurten[g.dataset.buurt].titel} ${g.dataset.buurt}: ${n} keer actief`);
   }
   el.kaartTeller.textContent = `${PLEKKEN.filter((p) => plek.has(p.id)).length} / ${PLEKKEN.length} plekken · ${BUURTEN.filter((b) => buurt.has(b)).length} / ${BUURTEN.length} buurten`;
   toonInfo(el, plek, buurt);
@@ -143,7 +201,7 @@ function toonInfo(el, plek, buurt) {
   if (gekozen.soort === 'buurt') {
     const n = buurt.get(gekozen.id) ?? 0;
     el.kaartInfo.replaceChildren(
-      maak('h3', {}, icoon('house', 'icoon goud'), gekozen.id),
+      maak('h3', {}, icoon('house', 'icoon goud'), `${KAART.buurten[gekozen.id].titel} ${gekozen.id}`),
       maak('p', { tekst: n ? `${getal(n)} keer actief in ${gekozen.id}.` : `Nog niets gelogd in ${gekozen.id}.` }),
       maak('p', { class: 'zacht', tekst: 'Kies bij het loggen onder "Met wie en waar?" de buurt. In een dorp ben je gevestigd per buurt.' }));
     return;

@@ -9,6 +9,14 @@
 
 export const VERSIES = [
   {
+    versie: '2.7.2',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'De kaart is nu een fantasy-koninkrijk op perkament: elke buurt is een rijk, zoals Graafschap Oostdorp en Hertogdom De Kieviet.',
+      'Plekken zijn lakzegels die goud worden als je ze ontdekt. Met heuvels in de duinen, dennenwouden, een schip, een zeeslang, een windroos en een banier.',
+    ],
+  },
+  {
     versie: '2.7.1',
     datum: '2026-11-07',
     wijzigingen: [

@@ -13,8 +13,9 @@ tool" opent de tool zelf (`app.html`).
 - **Karakter**: je karakterblad. Avatar met uitrustingsvakken, een radar voor je
   skills en een voor je kringen, de gunfactor als boog, je energie als ring,
   kapitaal, terreinen en statussymbolen.
-- **Dorp**: een schematische kaart van Wassenaar. Buurten kleuren naar je
-  aanwezigheid, ontdekte plekken lichten op; tik op een plek om te loggen.
+- **Dorp**: Wassenaar als fantasy-koninkrijk op perkament. Elke buurt is een rijk
+  dat kleurt naar je aanwezigheid; plekken zijn lakzegels die goud worden als je
+  ze ontdekt. Tik op een zegel om te loggen.
   Daaronder de plekken als lijst, de buurten en de dossiers.
 - **Status**: je karakter met rang en niveau, de XP-balk naar de volgende rang,
   de rangladder, je skills met elk een eigen niveau, je statussymbolen als
@@ -127,7 +128,7 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 | `CATEGORIEEN` | `id`, `kringen` (gewicht per kring), `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |
 | `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `stijl?` (`opzichtig` of `ingetogen`), `kringen?`, `eigenschap` |
 | `KRINGEN` | de vier kringen; met `KRING_STANDEN` en `KRING_SYMBOOL` |
-| `KAART` | de kaart in een vlak van 1000 bij 700: zee, kust en duinen (paden), `duinNamen`, `bossen` en `buurten` (hoekpunten; de kaart rondt ze af), `wegen` (pad, soort en waar de naam staat) en de plek van elke plek |
+| `KAART` | de kaart in een vlak van 1000 bij 700: `titel`, `zeeNaam`, zee, kust en duinen (paden), `duinNamen`, `bossen` en `buurten` (hoekpunten; de kaart rondt ze af; een buurt heeft een `titel` als rijk), `wegen` (pad, soort en waar de naam staat) en de plek van elke plek |
 | `ERKENNING` | `dagen` voor de bekendheid, de `niveaus`, en `verhoudingVanaf` |
 | `GUNFACTOR`, `ENERGIE`, `TYPEN` | de getallen voor gunfactor en energie, en de typen introvert en extravert |
 | `ROLLEN` | de rollen voor het netwerk |
@@ -371,8 +372,8 @@ Animaties (de glans op de XP-balk, het niveauvenster) staan uit bij
 ### Licenties
 
 - Iconen: [Font Awesome Free](https://fontawesome.com) 7.3.1, CC BY 4.0.
-- Letters: Inter en Playfair Display, SIL Open Font License 1.1. De licenties
-  staan in `letters/`.
+- Letters: Inter, Playfair Display en IM Fell English (voor de kaart), SIL Open
+  Font License 1.1. De licenties staan in `letters/`.
 
 ## Toegankelijkheid
 
