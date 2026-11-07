@@ -1,22 +1,18 @@
 /*
- * Het karakterblad: wie je bent in Wassenaar. Avatar met uitrustingsvakken, een radar voor je skills
+ * Het karakterblad: wie je bent in je wereld. Avatar met uitrustingsvakken, een radar voor je skills
  * en een voor je kringen, de gunfactor als boog en je energie als ring.
  */
 
-import {
-  RANGEN, TITELS, EIGENSCHAPPEN, EIGENSCHAP_MAX, KRINGEN, SYMBOLEN, TYPEN, GUNFACTOR,
-} from '../gegevens.js';
-import { rang, kringen, kringStand, gunfactor, gunLabel, energie, kapitaal, ontgrendeld, pad, dagenInSpel, openTerreinen } from '../spel.js';
+import { W } from '../wereld.js';
+import { rang, kringen, kringStand, gunfactor, gunLabel, energie, kapitaal, ontgrendeld, pad, dagenInSpel, openTerreinen, loadout } from '../spel.js';
 import { maak, icoon, meter, getal } from '../ui.js';
 import { radar, boog, ring } from '../grafieken.js';
 
+const { RANGEN, TITELS, EIGENSCHAPPEN, EIGENSCHAP_MAX, KRINGEN, SYMBOLEN, TYPEN, GUNFACTOR, ENERGIE, KAPITAAL, WERELD } = W;
+
 const VAKKEN = 8;
-const KRING_MAX = 1000; // de rand van de kringradar: Ingewijd
-// Korte namen voor de assen van de radars; de volle namen staan in de lijst eronder.
-const KORT = {
-  civic: 'Invloed', cultural: 'Cultuur', stealth: 'Discretie', physical: 'Natuur', financial: 'Geld',
-  dorp: 'Dorp', oudgeld: 'Oud geld', diplomaten: 'Diplomaten', bestuur: 'Bestuur',
-};
+const KRING_MAX = 1000; // de rand van de kringradar: de hoogste stand
+// De assen van de radars hebben een korte naam (kort); de volle namen staan in de lijst eronder.
 
 export function toonKarakter(el, spel, st, vandaag) {
   const nu = rang(spel, st);
@@ -27,16 +23,17 @@ export function toonKarakter(el, spel, st, vandaag) {
   const type = TYPEN.find((t) => t.id === spel.type);
 
   el.bladRangIcoon.setAttribute('href', `#az-i-${r.icoon}`);
-  el.bladNiveau.textContent = `Niv. ${nu.index + 1}`;
+  el.bladNiveau.textContent = r.code ?? `Niv. ${nu.index + 1}`;
   el.bladRang.textContent = r.naam;
   el.bladTitel.textContent = titel ? `“${titel.naam}”` : 'Nog geen titel';
   el.bladUitleg.textContent = r.uitleg;
   el.bladFeiten.replaceChildren(...[
     ['Prestigepunten', `${getal(nu.punten)} PR`],
-    ['Bekendheid', `${getal(st.erkenning.score)} · ${st.erkenning.niveau}`],
+    [WERELD.bekendheid, `${getal(st.erkenning.score)} · ${st.erkenning.niveau}`],
     ['Pad', gekozenPad?.naam ?? 'nog niet gekozen'],
-    ['Type', type?.naam ?? 'nog niet gekozen'],
-    ['Bezig met je aanzien', `${getal(dagenInSpel(spel))} dagen`],
+    ...(TYPEN.length ? [['Type', type?.naam ?? 'nog niet gekozen']] : []),
+    ...(W.LOADOUT ? [['Loadout', loadout(spel)?.naam ?? 'nog niet gekozen']] : []),
+    [WERELD.bezig, `${getal(dagenInSpel(spel))} ${dagenInSpel(spel) === 1 ? 'dag' : 'dagen'}`],
     ['New Game+', spel.ronde ? `${spel.ronde} keer` : 'nog niet'],
   ].map(([dt, dd]) => maak('div', {}, maak('dt', { tekst: dt }), maak('dd', { tekst: dd }))));
 
@@ -52,7 +49,7 @@ export function toonKarakter(el, spel, st, vandaag) {
   // Skills
   const skills = Object.entries(EIGENSCHAPPEN).map(([k, e]) => ({ k, e, deel: Math.min(1, st.skills[k] / EIGENSCHAP_MAX) }));
   el.radarSkills.replaceChildren(radar('az-radar-skills-svg', 'Skills', skills.map(({ k, deel }) => ({
-    naam: KORT[k], deel, tekst: `${Math.floor(deel * 100)} van 100`,
+    naam: EIGENSCHAPPEN[k].kort, deel, tekst: `${Math.floor(deel * 100)} van 100`,
   }))));
   el.eigenschappen.replaceChildren(...skills.map(({ k, e, deel }) => maak('li', { class: `waarde skill-${k}` },
     icoon(e.icoon), maak('span', { class: 'waarde-naam', tekst: e.naam }),
@@ -62,7 +59,7 @@ export function toonKarakter(el, spel, st, vandaag) {
   // Kringen
   const stand = kringen(spel.logboek);
   el.radarKringen.replaceChildren(radar('az-radar-kringen-svg', 'Kringen', KRINGEN.map((k) => ({
-    naam: KORT[k.id], deel: stand[k.id] / KRING_MAX, tekst: `${kringStand(stand[k.id])}, ${getal(stand[k.id])}`,
+    naam: k.kort, deel: stand[k.id] / KRING_MAX, tekst: `${kringStand(stand[k.id])}, ${getal(stand[k.id])}`,
   }))));
   el.kringen.replaceChildren(...KRINGEN.map((k) => maak('li', { class: stand[k.id] < 0 ? 'waarde kring negatief' : 'waarde kring' },
     icoon(k.icoon, 'icoon kring-icoon'), maak('span', { class: 'waarde-naam', tekst: k.naam }),
@@ -70,24 +67,13 @@ export function toonKarakter(el, spel, st, vandaag) {
 
   // Gunfactor en energie
   const g = gunfactor(spel.logboek);
-  el.gun.replaceChildren(boog('az-gun-svg', 'Gunfactor', g, [GUNFACTOR.streber, GUNFACTOR.gegund]));
+  el.gun.replaceChildren(boog('az-gun-svg', GUNFACTOR.titel, g, [GUNFACTOR.streber, GUNFACTOR.gegund]));
   el.gunWaarde.textContent = gunLabel(g);
-  el.gunUitleg.textContent = g < GUNFACTOR.streber
-    ? 'Men vindt je een streber. Strategisch netwerken levert nu minder op. Doe eens iets belangeloos.'
-    : g >= GUNFACTOR.gegund ? 'Het dorp gunt het je. Alles levert iets meer op.' : 'Belangeloze dingen laten hem stijgen, zichtbaar netwerken laat hem dalen.';
-  const e = energie(spel, vandaag);
-  el.energie.replaceChildren(ring('az-energie-svg', 'Energie deze week', Math.max(0, e.over), e.budget, e.over < 25 ? 'ring-laag' : ''));
-  el.energieWaarde.textContent = e.over < 0 ? 'Sociale kater' : `${getal(e.over)} van ${getal(e.budget)}`;
-  el.energieUitleg.textContent = e.over < 0
-    ? 'Je zit over je budget. Activiteiten leveren minder op tot volgende week, behalve wat je oplaadt.'
-    : `${type ? type.uitleg : 'Kies je type op de Erelijst.'} Een gezinsdag laadt altijd op.`;
-  el.energieBlok.classList.toggle('kater', e.over < 0);
-
-  const kap = kapitaal(spel, st);
-  el.kapitaal.replaceChildren(...[
-    ['coins', 'Economisch', kap.economisch], ['palette', 'Cultureel', kap.cultureel],
-    ['users', 'Sociaal', kap.sociaal], ['medal', 'Symbolisch', kap.symbolisch],
-  ].map(([ic, dt, dd]) => maak('div', {}, maak('dt', {}, icoon(ic), dt), maak('dd', { tekst: getal(dd) }))));
+  el.gunUitleg.textContent = GUNFACTOR.uitleg[g < GUNFACTOR.streber ? 0 : g >= GUNFACTOR.gegund ? 2 : 1];
+  if (ENERGIE && el.energie) toonEnergie(el, spel, vandaag, type);
+  if (KAPITAAL.length && el.kapitaal) {
+    el.kapitaal.replaceChildren(...kapitaal(spel, st).map((k) => maak('div', {}, maak('dt', {}, icoon(k.icoon), k.naam), maak('dd', { tekst: getal(k.waarde) }))));
+  }
 
   el.pijlers.replaceChildren(...openTerreinen(spel).map((c) => {
     const n = c.activiteiten.filter((a) => st.perActiviteit.has(a.id)).length;
@@ -97,5 +83,16 @@ export function toonKarakter(el, spel, st, vandaag) {
 
   el.symbolenBehaald.replaceChildren(...(st.symbolen.size
     ? SYMBOLEN.filter((s) => st.symbolen.has(s.id)).map((s) => maak('li', { class: 'trofee' }, icoon(s.icoon), maak('span', { tekst: s.naam })))
-    : [maak('li', { class: 'leeg', tekst: 'Nog geen statussymbolen geclaimd.' })]));
+    : [maak('li', { class: 'leeg', tekst: WERELD.geenSymbolen })]));
+}
+
+// Energie: alleen in een wereld met ENERGIE.
+function toonEnergie(el, spel, vandaag, type) {
+  const e = energie(spel, vandaag);
+  el.energie.replaceChildren(ring('az-energie-svg', 'Energie deze week', Math.max(0, e.over), e.budget, e.over < 25 ? 'ring-laag' : ''));
+  el.energieWaarde.textContent = e.over < 0 ? 'Sociale kater' : `${getal(e.over)} van ${getal(e.budget)}`;
+  el.energieUitleg.textContent = e.over < 0
+    ? 'Je zit over je budget. Activiteiten leveren minder op tot volgende week, behalve wat je oplaadt.'
+    : `${type ? type.uitleg : 'Kies je type op de Erelijst.'} Een gezinsdag laadt altijd op.`;
+  el.energieBlok.classList.toggle('kater', e.over < 0);
 }

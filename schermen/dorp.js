@@ -1,13 +1,16 @@
 /*
- * Het dorp: Wassenaar als fantasy-koninkrijk, getekend als oude kaart op perkament. Buurten zijn rijken
- * met grillige grenzen: wat je nog niet bezocht, ligt in de mist, en hoe vaker je er was, hoe voller de
- * kleur van het rijk. Plekken zijn getekende gebouwtjes die kleur krijgen als je ze ontdekt.
- * Tik op een plek en log wat je daar deed.
+ * De kaart van de wereld, getekend als oude kaart. Bij Wassenaar een fantasy-koninkrijk op perkament,
+ * bij Veldrang een speelgebied. Gebieden (buurten of sectoren) hebben grillige grenzen: wat je nog niet
+ * bezocht, ligt in de mist, en hoe vaker je er was, hoe voller de kleur. Plekken zijn getekende
+ * gebouwtjes die kleur krijgen als je ze ontdekt. Tik op een plek en log wat je daar deed.
+ * Alle teksten en de vorm staan in KAART in de gegevens van de wereld.
  */
 
-import { KAART, PLEKKEN, BUURTEN } from '../gegevens.js';
+import { W } from '../wereld.js';
 import { ACTIVITEITEN } from '../spel.js';
 import { maak, icoon, getal, svgKnop } from '../ui.js';
+
+const { KAART, PLEKKEN, BUURTEN } = W;
 
 const STAPPEN = [1, 3, 6, 11]; // vanaf zo veel keer krijgt een buurt een donkerder kleur
 let gekozen = null; // { soort: 'plek' | 'buurt', id }
@@ -121,6 +124,18 @@ const TEKENINGEN = {
     pad('lm-muur', 'M-15 10V-2H15V10Z'), pad('lm-dak', 'M-17 -2L-9 -9H9L17 -2Z'),
     pad('lm-muur', 'M-4 -9V-17H4V-9Z'), pad('lm-dak', 'M-5.5 -17L0 -23L5.5 -17Z'),
     pad('lm-donker', 'M-2 10V4H2V10ZM-11 1H-7V5H-11ZM7 1H11V5H7ZM-1.5 -15H1.5V-12H-1.5Z')],
+  bunker: () => [
+    pad('lm-steen', 'M-17 10V0Q-17 -9 0 -9Q17 -9 17 0V10Z'), pad('lm-donker', 'M-9 -1H9V2H-9ZM-3 10V5H3V10Z'),
+    pad('lm-groen', 'M-17 -2Q-12 -12 -4 -9Q2 -14 9 -9Q15 -10 17 -3Q8 -6 0 -5Q-9 -6 -17 -2Z')],
+  hal: () => [
+    pad('lm-muur', 'M-17 10V-6H17V10Z'), pad('lm-dak', 'M-18 -6Q0 -18 18 -6Z'),
+    pad('lm-donker', 'M-5 10V2H5V10ZM-14 -2H-10V2H-14ZM10 -2H14V2H10Z')],
+  wrak: () => [
+    pad('lm-steen', 'M-17 6V-2L-11 -2L-7 -8H6L10 -2H17V6Z'), pad('lm-donker', 'M-5 -6H4L6 -2H-7Z'),
+    maak('svg:circle', { class: 'lm-donker', cx: -9, cy: 7, r: 3.5 }), maak('svg:circle', { class: 'lm-donker', cx: 9, cy: 7, r: 3.5 })],
+  kist: () => [
+    pad('lm-muur', 'M-14 10V-4H2V10Z'), pad('lm-lijn', 'M-14 -4L2 10M2 -4L-14 10'),
+    pad('lm-dak', 'M4 10V-10H16V10Z'), pad('lm-lijn', 'M4 -3H16M4 4H16')],
   vlag: () => [
     pad('lm-groen', 'M-16 10Q0 1 16 10Q0 15 -16 10Z'), pad('lm-lijn', 'M0 9V-18'), pad('lm-vlag', 'M0 -18L14 -14L0 -10Z')],
 };
@@ -190,16 +205,27 @@ function kader(breedte, hoogte) {
     ...hoeken.map(([x, y]) => maak('svg:path', { class: 'kader-hoek', d: `M${x} ${y - 9}L${x + 9} ${y}L${x} ${y + 9}L${x - 9} ${y}Z` })));
 }
 
+// Een raster zoals op een stafkaart, met letters boven en cijfers links.
+function raster(breedte, hoogte, stap) {
+  const lijnen = [];
+  for (let x = stap; x < breedte; x += stap) lijnen.push(`M${x} 0V${hoogte}`);
+  for (let y = stap; y < hoogte; y += stap) lijnen.push(`M0 ${y}H${breedte}`);
+  return maak('svg:g', { class: 'kaart-raster-lijnen', 'aria-hidden': 'true' },
+    maak('svg:path', { d: lijnen.join('') }),
+    ...Array.from({ length: Math.ceil(breedte / stap) }, (_, i) => maak('svg:text', { x: i * stap + stap / 2, y: 30, 'text-anchor': 'middle', tekst: String.fromCharCode(65 + i) })),
+    ...Array.from({ length: Math.ceil(hoogte / stap) }, (_, i) => maak('svg:text', { x: 26, y: i * stap + stap / 2 + 5, 'text-anchor': 'middle', tekst: String(i + 1) })));
+}
+
 function schaal() {
   return maak('svg:g', { class: 'schaal', transform: 'translate(60 640)', 'aria-hidden': 'true' },
     ...[0, 1, 2, 3].map((i) => maak('svg:rect', { class: i % 2 ? 'schaal-licht' : 'schaal-donker', x: i * 30, y: 0, width: 30, height: 7 })),
-    maak('svg:text', { x: 60, y: -8, 'text-anchor': 'middle', tekst: 'Eén dagmars' }));
+    maak('svg:text', { x: 60, y: -8, 'text-anchor': 'middle', tekst: KAART.schaal }));
 }
 
 export function bouwKaart(el, bijActiviteit) {
   opActiviteit = bijActiviteit;
   const { breedte, hoogte } = KAART;
-  const svg = maak('svg:svg', { class: 'kaart-svg', viewBox: `0 0 ${breedte} ${hoogte}`, width: breedte, height: hoogte, role: 'group', 'aria-label': 'Kaart van Wassenaar als koninkrijk, schematisch' },
+  const svg = maak('svg:svg', { class: 'kaart-svg', viewBox: `0 0 ${breedte} ${hoogte}`, width: breedte, height: hoogte, role: 'group', 'aria-label': KAART.label },
     versiering(),
     maak('svg:rect', { class: 'kaart-perkament', width: breedte, height: hoogte }),
     maak('svg:path', { class: 'kaart-zee', d: KAART.zee }),
@@ -211,8 +237,9 @@ export function bouwKaart(el, bijActiviteit) {
     ...KAART.bossen.flatMap((b) => [maak('svg:path', { class: 'kaart-bos', d: rond(b.punten, 30) }), maak('svg:path', { class: 'kaart-dennen', d: rond(b.punten, 30) })]),
     ...KAART.wegen.map((w) => maak('svg:path', { class: `kaart-weg ${w.soort}`, d: w.pad })),
     ...KAART.wegen.map((w, i) => maak('svg:text', { class: 'kaart-weg-naam' }, maak('svg:textPath', { href: `#az-kaart-weg-${i}`, startOffset: w.label, tekst: w.naam }))),
-    zeegezicht(),
-    maak('svg:text', { class: 'kaart-zee-label', x: 250, y: 232, 'text-anchor': 'middle', tekst: KAART.zeeNaam }),
+    ...(KAART.zeegezicht ? [zeegezicht()] : []),
+    ...(KAART.raster ? [raster(breedte, hoogte, KAART.raster)] : []),
+    maak('svg:text', { class: 'kaart-zee-label', x: KAART.zeeLabel[0], y: KAART.zeeLabel[1], 'text-anchor': 'middle', tekst: KAART.zeeNaam }),
     ...KAART.duinNamen.map(([naam, x, y]) => maak('svg:text', { class: 'kaart-duin-label', x, y, 'text-anchor': 'middle', tekst: naam })),
     ...KAART.bossen.map((b) => {
       const x = Math.min(KAART.breedte - 80, Math.round(b.punten.reduce((s, p) => s + p[0], 0) / b.punten.length));
@@ -260,8 +287,8 @@ export function bouwKaart(el, bijActiviteit) {
   el.kaartLegenda.replaceChildren(
     maak('span', {}, maak('span', { class: 'legenda-pin ontdekt', 'aria-hidden': 'true' }), 'Plek ontdekt'),
     maak('span', {}, maak('span', { class: 'legenda-pin', 'aria-hidden': 'true' }), 'Nog te ontdekken'),
-    'Rijk:',
-    ...['in de mist', '1–2×', '3–5×', '6–10×', '11×+'].map((t, i) => maak('span', {}, maak('span', { class: `legenda-vak stap-${i}`, 'aria-hidden': 'true' }), t)));
+    `${KAART.tekst.gebied}:`,
+    ...[KAART.tekst.mist, '1–2×', '3–5×', '6–10×', '11×+'].map((t, i) => maak('span', {}, maak('span', { class: `legenda-vak stap-${i}`, 'aria-hidden': 'true' }), t)));
 }
 
 function tellingen(spel) {
@@ -305,8 +332,8 @@ function kies(el, soort, id) {
 function toonInfo(el, plek, buurt) {
   if (!gekozen) {
     el.kaartInfo.replaceChildren(
-      maak('h3', {}, icoon('location-dot', 'icoon goud'), 'Tik op een plek of buurt'),
-      maak('p', { class: 'zacht', tekst: 'Een plek in kleur heb je ontdekt; een vage plek nog niet. Je eerste bezoek geeft ×2. Een rijk in de mist bezocht je nog niet; hoe voller de kleur, hoe vaker je er was.' }));
+      maak('h3', {}, icoon('location-dot', 'icoon goud'), KAART.tekst.kies),
+      maak('p', { class: 'zacht', tekst: KAART.tekst.hulp }));
     return;
   }
   if (gekozen.soort === 'buurt') {
@@ -314,7 +341,7 @@ function toonInfo(el, plek, buurt) {
     el.kaartInfo.replaceChildren(
       maak('h3', {}, icoon('house', 'icoon goud'), `${KAART.buurten[gekozen.id].titel} ${gekozen.id}`),
       maak('p', { tekst: n ? `${getal(n)} keer actief in ${gekozen.id}.` : `Nog niets gelogd in ${gekozen.id}.` }),
-      maak('p', { class: 'zacht', tekst: 'Kies bij het loggen onder "Met wie en waar?" de buurt. In een dorp ben je gevestigd per buurt.' }));
+      maak('p', { class: 'zacht', tekst: KAART.tekst.buurt }));
     return;
   }
   const p = PLEKKEN.find((x) => x.id === gekozen.id);

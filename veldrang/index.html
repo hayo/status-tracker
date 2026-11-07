@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Veldrang: een game waarin je je karakter oplevelt als airsofter, van Rekruut tot Generaal.">
+  <meta name="theme-color" content="#3f4a2a">
+  <title>Veldrang — level je karakter op als airsofter</title>
+  <link rel="icon" href="iconen/patch.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="iconen/icoon-180.png">
+  <link rel="stylesheet" href="../app.css">
+  <link rel="stylesheet" href="../standalone.css">
+  <link rel="stylesheet" href="../landing.css">
+  <link rel="stylesheet" href="thema.css">
+  <link rel="stylesheet" href="pagina.css">
+</head>
+<body>
+<main>
+<div id="aanzien" class="landing wereld-veldrang" lang="nl">
+  <!-- Iconen: Font Awesome Free (fontawesome.com), CC BY 4.0 -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="az-i-angles-up" viewBox="0 0 384 512"><path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 109.3 329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 329.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z"/></symbol>
+    <symbol id="az-i-arrow-right" viewBox="0 0 512 512"><path d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l370.7 0-105.4 105.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></symbol>
+    <symbol id="az-i-arrow-trend-up" viewBox="0 0 576 512"><path d="M384 160c-17.7 0-32-14.3-32-32s14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-82.7-169.4 169.4c-12.5 12.5-32.8 12.5-45.3 0L192 269.3 54.6 406.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160c12.5-12.5 32.8-12.5 45.3 0L320 306.7 466.7 160 384 160z"/></symbol>
+    <symbol id="az-i-award" viewBox="0 0 448 512"><path d="M245.9-25.9c-13.4-8.2-30.3-8.2-43.7 0-24.4 14.9-39.5 18.9-68.1 18.3-15.7-.4-30.3 8.1-37.9 21.9-13.7 25.1-24.8 36.2-49.9 49.9-13.8 7.5-22.2 22.2-21.9 37.9 .7 28.6-3.4 43.7-18.3 68.1-8.2 13.4-8.2 30.3 0 43.7 14.9 24.4 18.9 39.5 18.3 68.1-.4 15.7 8.1 30.3 21.9 37.9 22.1 12.1 33.3 22.1 45.1 41.5L42.7 458.5c-5.9 11.9-1.1 26.3 10.7 32.2l86 43c11.5 5.7 25.5 1.4 31.7-9.8l52.8-95.1 52.8 95.1c6.2 11.2 20.2 15.6 31.7 9.8l86-43c11.9-5.9 16.7-20.3 10.7-32.2l-48.6-97.2c11.7-19.4 23-29.4 45.1-41.5 13.8-7.5 22.2-22.2 21.9-37.9-.7-28.6 3.4-43.7 18.3-68.1 8.2-13.4 8.2-30.3 0-43.7-14.9-24.4-18.9-39.5-18.3-68.1 .4-15.7-8.1-30.3-21.9-37.9-25.1-13.7-36.2-24.8-49.9-49.9-7.5-13.8-22.2-22.2-37.9-21.9-28.6 .7-43.7-3.4-68.1-18.3zM224 96a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/></symbol>
+    <symbol id="az-i-camera" viewBox="0 0 512 512"><path d="M149.1 64.8L138.7 96 64 96C28.7 96 0 124.7 0 160L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64l-74.7 0-10.4-31.2C356.4 45.2 338.1 32 317.4 32L194.6 32c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/></symbol>
+    <symbol id="az-i-certificate" viewBox="0 0 576 512"><path d="M239.2-8c-6.1-6.2-15-8.7-23.4-6.4S200.9-5.6 198.8 2.8L183.5 63c-1.1 4.4-5.6 7-9.9 5.7L113.8 51.9c-8.4-2.4-17.4 0-23.5 6.1s-8.5 15.1-6.1 23.5l16.9 59.8c1.2 4.3-1.4 8.8-5.7 9.9L35.1 166.5c-8.4 2.1-15 8.7-17.3 17.1s.2 17.3 6.4 23.4l44.5 43.3c3.2 3.1 3.2 8.3 0 11.5L24.3 305.1c-6.2 6.1-8.7 15-6.4 23.4s8.9 14.9 17.3 17.1l60.2 15.3c4.4 1.1 7 5.6 5.7 9.9L84.2 430.5c-2.4 8.4 0 17.4 6.1 23.5s15.1 8.5 23.5 6.1l59.8-16.9c4.3-1.2 8.8 1.4 9.9 5.7l15.3 60.2c2.1 8.4 8.7 15 17.1 17.3s17.3-.2 23.4-6.4l43.3-44.5c3.1-3.2 8.3-3.2 11.5 0L337.3 520c6.1 6.2 15 8.7 23.4 6.4s14.9-8.9 17.1-17.3L393.1 449c1.1-4.4 5.6-7 9.9-5.7l59.8 16.9c8.4 2.4 17.4 0 23.5-6.1s8.5-15.1 6.1-23.5l-16.9-59.8c-1.2-4.3 1.4-8.8 5.7-9.9l60.2-15.3c8.4-2.1 15-8.7 17.3-17.1s-.2-17.4-6.4-23.4l-44.5-43.3c-3.2-3.1-3.2-8.3 0-11.5l44.5-43.3c6.2-6.1 8.7-15 6.4-23.4s-8.9-14.9-17.3-17.1l-60.2-15.3c-4.4-1.1-7-5.6-5.7-9.9l16.9-59.8c2.4-8.4 0-17.4-6.1-23.5s-15.1-8.5-23.5-6.1L403 68.8c-4.3 1.2-8.8-1.4-9.9-5.7L377.8 2.8c-2.1-8.4-8.7-15-17.1-17.3s-17.3 .2-23.4 6.4L294 36.5c-3.1 3.2-8.3 3.2-11.5 0L239.2-8z"/></symbol>
+    <symbol id="az-i-chart-pie" viewBox="0 0 576 512"><path d="M512.4 240l-176 0c-17.7 0-32-14.3-32-32l0-176c0-17.7 14.4-32.2 31.9-29.9 107 14.2 191.8 99 206 206 2.3 17.5-12.2 31.9-29.9 31.9zM222.6 37.2c18.1-3.8 33.8 11 33.8 29.5l0 197.3c0 5.6 2 11 5.5 15.3L394 438.7c11.7 14.1 9.2 35.4-6.9 44.1-34.1 18.6-73.2 29.2-114.7 29.2-132.5 0-240-107.5-240-240 0-115.5 81.5-211.9 190.2-234.8zM477.8 288l64 0c18.5 0 33.3 15.7 29.5 33.8-10.2 48.4-35 91.4-69.6 124.2-12.3 11.7-31.6 9.2-42.4-3.9L374.9 340.4c-17.3-20.9-2.4-52.4 24.6-52.4l78.2 0z"/></symbol>
+    <symbol id="az-i-chess-king" viewBox="0 0 448 512"><path d="M224-32c17.7 0 32 14.3 32 32l0 32 32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0 0 64 153.8 0c21.1 0 38.2 17.1 38.2 38.2 0 6.4-1.6 12.7-4.7 18.3L352 384 408.2 454.3c5 6.3 7.8 14.1 7.8 22.2 0 19.6-15.9 35.5-35.5 35.5L67.5 512c-19.6 0-35.5-15.9-35.5-35.5 0-8.1 2.7-15.9 7.8-22.2L96 384 4.7 216.6C1.6 210.9 0 204.6 0 198.2 0 177.1 17.1 160 38.2 160l153.8 0 0-64-32 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l32 0 0-32c0-17.7 14.3-32 32-32z"/></symbol>
+    <symbol id="az-i-chevron-up" viewBox="0 0 448 512"><path d="M201.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 173.3 54.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z"/></symbol>
+    <symbol id="az-i-circle-check" viewBox="0 0 512 512"><path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.8 7.5 18.8 7s13.4-4.1 17.5-9.8L379.3 179.2c7.8-10.7 5.4-25.7-5.3-33.5z"/></symbol>
+    <symbol id="az-i-clipboard-list" viewBox="0 0 384 512"><path d="M311.4 32l8.6 0c35.3 0 64 28.7 64 64l0 352c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l8.6 0C83.6 12.9 104.3 0 128 0L256 0c23.7 0 44.4 12.9 55.4 32zM248 112c13.3 0 24-10.7 24-24s-10.7-24-24-24L136 64c-13.3 0-24 10.7-24 24s10.7 24 24 24l112 0zM128 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm32 0c0 13.3 10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0c-13.3 0-24 10.7-24 24zm0 128c0 13.3 10.7 24 24 24l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-112 0c-13.3 0-24 10.7-24 24zM96 416a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></symbol>
+    <symbol id="az-i-crosshairs" viewBox="0 0 576 512"><path d="M288-16c17.7 0 32 14.3 32 32l0 18.3c98.1 14 175.7 91.6 189.7 189.7l18.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-18.3 0c-14 98.1-91.6 175.7-189.7 189.7l0 18.3c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-18.3C157.9 463.7 80.3 386.1 66.3 288L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l18.3 0C80.3 125.9 157.9 48.3 256 34.3L256 16c0-17.7 14.3-32 32-32zM131.2 288c12.7 62.7 62.1 112.1 124.8 124.8l0-12.8c0-17.7 14.3-32 32-32s32 14.3 32 32l0 12.8c62.7-12.7 112.1-62.1 124.8-124.8L432 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l12.8 0C432.1 161.3 382.7 111.9 320 99.2l0 12.8c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-12.8C193.3 111.9 143.9 161.3 131.2 224l12.8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-12.8 0zM288 208a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></symbol>
+    <symbol id="az-i-crown" viewBox="0 0 576 512"><path d="M313 87.2c9.2-7.3 15-18.6 15-31.2 0-22.1-17.9-40-40-40s-40 17.9-40 40c0 12.6 5.9 23.9 15 31.2L194.6 194.8c-10 15.7-31.3 19.6-46.2 8.4L88.9 158.7c4.5-6.4 7.1-14.3 7.1-22.7 0-22.1-17.9-40-40-40s-40 17.9-40 40c0 21.8 17.5 39.6 39.2 40L87.8 393.5c4.7 31.3 31.6 54.5 63.3 54.5l273.8 0c31.7 0 58.6-23.2 63.3-54.5L520.8 176c21.7-.4 39.2-18.2 39.2-40 0-22.1-17.9-40-40-40s-40 17.9-40 40c0 8.4 2.6 16.3 7.1 22.7l-59.4 44.6c-14.9 11.2-36.2 7.3-46.2-8.4L313 87.2z"/></symbol>
+    <symbol id="az-i-folder-open" viewBox="0 0 576 512"><path d="M56 225.6L32.4 296.2 32.4 96c0-35.3 28.7-64 64-64l138.7 0c13.8 0 27.3 4.5 38.4 12.8l38.4 28.8c5.5 4.2 12.3 6.4 19.2 6.4l117.3 0c35.3 0 64 28.7 64 64l0 16-365.4 0c-41.3 0-78 26.4-91.1 65.6zM477.8 448L99 448c-32.8 0-55.9-32.1-45.5-63.2l48-144C108 221.2 126.4 208 147 208l378.8 0c32.8 0 55.9 32.1 45.5 63.2l-48 144c-6.5 19.6-24.9 32.8-45.5 32.8z"/></symbol>
+    <symbol id="az-i-hand-holding-heart" viewBox="0 0 576 512"><path d="M279.6 31C265.5 11.5 242.9 0 218.9 0 177.5 0 144 33.5 144 74.9l0 2.4c0 64.4 82 133.4 122.2 163.3 13 9.7 30.5 9.7 43.5 0 40.2-30 122.2-98.9 122.2-163.3l0-2.4c0-41.4-33.5-74.9-74.9-74.9-24 0-46.6 11.5-60.7 31L288 42.7 279.6 31zM109.3 341.5L66.7 384 32 384c-17.7 0-32 14.3-32 32l0 64c0 17.7 14.3 32 32 32l320.5 0c29 0 57.3-9.3 80.7-26.5l126.6-93.3c17.8-13.1 21.6-38.1 8.5-55.9s-38.1-21.6-55.9-8.5L392.6 416 280 416c-13.3 0-24-10.7-24-24s10.7-24 24-24l72 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-152.2 0c-33.9 0-66.5 13.5-90.5 37.5z"/></symbol>
+    <symbol id="az-i-handshake" viewBox="0 0 576 512"><path d="M268.9 85.2L152.3 214.8c-4.6 5.1-4.4 13 .5 17.9 30.5 30.5 80 30.5 110.5 0l31.8-31.8c4.2-4.2 9.5-6.5 14.9-6.9 6.8-.6 13.8 1.7 19 6.9L505.6 376 576 320 576 32 464 96 440.2 80.1C424.4 69.6 405.9 64 386.9 64l-70.4 0c-1.1 0-2.3 0-3.4 .1-16.9 .9-32.8 8.5-44.2 21.1zM116.6 182.7L223.4 64 183.8 64c-25.5 0-49.9 10.1-67.9 28.1L112 96 0 32 0 320 156.4 450.3c23 19.2 52 29.7 81.9 29.7l15.7 0-7-7c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l41 41 9 0c19.1 0 37.8-4.3 54.8-12.3L359 441c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l32 32 17.5-17.5c8.9-8.9 11.5-21.8 7.6-33.1l-137.9-136.8-14.9 14.9c-49.3 49.3-129.1 49.3-178.4 0-23-23-23.9-59.9-2.2-84z"/></symbol>
+    <symbol id="az-i-inbox" viewBox="0 0 512 512"><path d="M91.8 32C59.9 32 32.9 55.4 28.4 86.9L.6 281.2c-.4 3-.6 6-.6 9.1L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-125.7c0-3-.2-6.1-.6-9.1L483.6 86.9C479.1 55.4 452.1 32 420.2 32L91.8 32zm0 64l328.5 0 27.4 192-59.9 0c-12.1 0-23.2 6.8-28.6 17.7l-14.3 28.6c-5.4 10.8-16.5 17.7-28.6 17.7l-120.4 0c-12.1 0-23.2-6.8-28.6-17.7l-14.3-28.6c-5.4-10.8-16.5-17.7-28.6-17.7L64.3 288 91.8 96z"/></symbol>
+    <symbol id="az-i-kit-medical" viewBox="0 0 512 512"><path d="M64 64C28.7 64 0 92.7 0 128L0 384c0 35.3 28.7 64 64 64l16 0 0-384-16 0zm64 0l0 384 256 0 0-384-256 0zM448 448c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64l-16 0 0 384 16 0zM224 184c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 40 40 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-40 0 0 40c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-40-40 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16l40 0 0-40z"/></symbol>
+    <symbol id="az-i-leaf" viewBox="0 0 512 512"><path d="M471.3 6.7C477.7 .6 487-1.6 495.6 1.2 505.4 4.5 512 13.7 512 24l0 186.9c0 131.2-108.1 237.1-238.8 237.1-77 0-143.4-49.5-167.5-118.7-35.4 30.8-57.7 76.1-57.7 126.7 0 13.3-10.7 24-24 24S0 469.3 0 456C0 381.1 38.2 315.1 96.1 276.3 131.4 252.7 173.5 240 216 240l80 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-80 0c-39.7 0-77.3 8.8-111 24.5 23.3-70 89.2-120.5 167-120.5 66.4 0 115.8-22.1 148.7-44 19.2-12.8 35.5-28.1 50.7-45.3z"/></symbol>
+    <symbol id="az-i-lock" viewBox="0 0 384 512"><path d="M128 96l0 64 128 0 0-64c0-35.3-28.7-64-64-64s-64 28.7-64 64zM64 160l0-64C64 25.3 121.3-32 192-32S320 25.3 320 96l0 64c35.3 0 64 28.7 64 64l0 224c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 224c0-35.3 28.7-64 64-64z"/></symbol>
+    <symbol id="az-i-map" viewBox="0 0 512 512"><path d="M512 48c0-11.1-5.7-21.4-15.2-27.2s-21.2-6.4-31.1-1.4L349.5 77.5 170.1 17.6c-8.1-2.7-16.8-2.1-24.4 1.7l-128 64C6.8 88.8 0 99.9 0 112L0 464c0 11.1 5.7 21.4 15.2 27.2s21.2 6.4 31.1 1.4l116.1-58.1 179.4 59.8c8.1 2.7 16.8 2.1 24.4-1.7l128-64c10.8-5.4 17.7-16.5 17.7-28.6l0-352zM192 376.9l0-284.5 128 42.7 0 284.5-128-42.7z"/></symbol>
+    <symbol id="az-i-medal" viewBox="0 0 448 512"><path d="M224.3 128L139.7-12.9c-6.5-10.8-20.1-14.7-31.3-9.1L21.8 21.3C9.9 27.2 5.1 41.6 11 53.5L80.6 192.6c-30.1 33.9-48.3 78.5-48.3 127.4 0 106 86 192 192 192s192-86 192-192c0-48.9-18.3-93.5-48.3-127.4L437.6 53.5c5.9-11.9 1.1-26.3-10.7-32.2L340.2-22.1c-11.2-5.6-24.9-1.6-31.3 9.1L224.3 128zm30.8 142.5c1.4 2.8 4 4.7 7 5.1l50.1 7.3c7.7 1.1 10.7 10.5 5.2 16l-36.3 35.4c-2.2 2.2-3.2 5.2-2.7 8.3l8.6 49.9c1.3 7.6-6.7 13.5-13.6 9.9l-44.8-23.6c-2.7-1.4-6-1.4-8.7 0l-44.8 23.6c-6.9 3.6-14.9-2.2-13.6-9.9l8.6-49.9c.5-3-.5-6.1-2.7-8.3l-36.3-35.4c-5.6-5.4-2.5-14.8 5.2-16l50.1-7.3c3-.4 5.7-2.4 7-5.1l22.4-45.4c3.4-7 13.3-7 16.8 0l22.4 45.4z"/></symbol>
+    <symbol id="az-i-people-group" viewBox="0 0 512 512"><path d="M256 0a64 64 0 1 1 0 128 64 64 0 1 1 0-128zm96 312c0 25-12.7 47-32 59.9l0 92.1c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48l0-92.1C172.7 359 160 337 160 312l0-40c0-53 43-96 96-96s96 43 96 96l0 40zM96 32a56 56 0 1 1 0 112 56 56 0 1 1 0-112zm16 240l0 32c0 32.5 12.1 62.1 32 84.7l0 75.3c0 1.2 0 2.5 .1 3.7-8.5 7.6-19.7 12.3-32.1 12.3l-32 0c-26.5 0-48-21.5-48-48l0-56.6C12.9 364.4 0 343.7 0 320l0-32c0-53 43-96 96-96 12.7 0 24.8 2.5 35.9 6.9-12.6 21.4-19.9 46.4-19.9 73.1zM368 464l0-75.3c19.9-22.5 32-52.2 32-84.7l0-32c0-26.7-7.3-51.6-19.9-73.1 11.1-4.5 23.2-6.9 35.9-6.9 53 0 96 43 96 96l0 32c0 23.7-12.9 44.4-32 55.4l0 56.6c0 26.5-21.5 48-48 48l-32 0c-12.3 0-23.6-4.6-32.1-12.3 0-1.2 .1-2.5 .1-3.7zM416 32a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></symbol>
+    <symbol id="az-i-person-rifle" viewBox="0 0 512 512"><path d="M416 0L384 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l0 100.3c-9.6 5.5-16 15.9-16 27.7l0 32c-17.7 0-32 14.3-32 32l0 144c0 17.7 14.3 32 32 32l16 0 0 96c0 8.8 7.2 16 16 16l59.5 0c10.4 0 18-9.8 15.5-19.9l-23-92.1 44 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-48 0 0-26.7 53.1-17.7c6.5-2.2 10.9-8.3 10.9-15.2l0-84.5c0-8.8-7.2-16-16-16l-16 0c-8.8 0-16 7.2-16 16l0 56-16 5.3 0-109.3c0-11.8-6.4-22.2-16-27.7L432 16c0-8.8-7.2-16-16-16zM224 208C118 208 32 294 32 400l0 48c0 17.7 14.3 32 32 32s32-14.3 32-32l0-48c0-32.5 12.1-62.1 32-84.7l0 196.7 160 0 0-293.1c-20-7.1-41.6-10.9-64-10.9zM280 88a72 72 0 1 0 -144 0 72 72 0 1 0 144 0z"/></symbol>
+    <symbol id="az-i-person-running" viewBox="0 0 448 512"><path d="M256.5-32a56 56 0 1 1 0 112 56 56 0 1 1 0-112zM123.6 176c-3.3 0-6.2 2-7.4 5L94.2 235.9c-6.6 16.4-25.2 24.4-41.6 17.8s-24.4-25.2-17.8-41.6l21.9-54.9C67.7 129.9 94.1 112 123.6 112l97.3 0c28.5 0 54.8 15.1 69.1 39.7l32.8 56.3 61.6 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-61.6 0c-22.8 0-43.8-12.1-55.3-31.8l-10-17.1-20.7 70.4 75.4 22.6c27.7 8.3 41.8 39 30.1 65.5L285.7 509c-7.2 16.2-26.1 23.4-42.2 16.2s-23.4-26.1-16.2-42.2l49.2-110.8-95.9-28.8c-32.7-9.8-52-43.7-43.7-76.8l22.7-90.6-35.9 0zm-8 181c13.3 14.9 30.7 26.3 51.2 32.4l4.7 1.4-6.9 19.3c-5.8 16.3-16 30.8-29.3 41.8L52.9 519.8c-13.6 11.2-33.8 9.3-45-4.3s-9.3-33.8 4.3-45l82.4-67.9c4.5-3.7 7.8-8.5 9.8-13.9L115.6 357z"/></symbol>
+    <symbol id="az-i-plus" viewBox="0 0 448 512"><path d="M256 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 160-160 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l160 0 0 160c0 17.7 14.3 32 32 32s32-14.3 32-32l0-160 160 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-160 0 0-160z"/></symbol>
+    <symbol id="az-i-scale-balanced" viewBox="0 0 640 512"><path d="M384 32l128 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L398.4 96c-5.2 25.8-22.9 47.1-46.4 57.3l0 294.7 160 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-384 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l160 0 0-294.7c-23.5-10.3-41.2-31.6-46.4-57.3L128 96c-17.7 0-32-14.3-32-32s14.3-32 32-32l128 0c14.6-19.4 37.8-32 64-32s49.4 12.6 64 32zm55.6 288L584.4 320 512 195.8 439.6 320zM512 416c-62.9 0-115.2-34-126-78.9-2.6-11 1-22.3 6.7-32.1l95.2-163.2c5-8.6 14.2-13.8 24.1-13.8s19.1 5.3 24.1 13.8l95.2 163.2c5.7 9.8 9.3 21.1 6.7 32.1-10.8 44.8-63.1 78.9-126 78.9zM126.8 195.8L54.4 320 199.3 320 126.8 195.8zM.9 337.1c-2.6-11 1-22.3 6.7-32.1l95.2-163.2c5-8.6 14.2-13.8 24.1-13.8s19.1 5.3 24.1 13.8l95.2 163.2c5.7 9.8 9.3 21.1 6.7 32.1-10.8 44.8-63.1 78.9-126 78.9S11.7 382 .9 337.1z"/></symbol>
+    <symbol id="az-i-screwdriver-wrench" viewBox="0 0 576 512"><path d="M70.8-6.7c5.4-5.4 13.8-6.2 20.2-2L209.9 70.5c8.9 5.9 14.2 15.9 14.2 26.6l0 49.6 90.8 90.8c33.3-15 73.9-8.9 101.2 18.5L542.2 382.1c18.7 18.7 18.7 49.1 0 67.9l-60.1 60.1c-18.7 18.7-49.1 18.7-67.9 0L288.1 384c-27.4-27.4-33.5-67.9-18.5-101.2l-90.8-90.8-49.6 0c-10.7 0-20.7-5.3-26.6-14.2L23.4 58.9c-4.2-6.3-3.4-14.8 2-20.2L70.8-6.7zm145 303.5c-6.3 36.9 2.3 75.9 26.2 107.2l-94.9 95c-28.1 28.1-73.7 28.1-101.8 0s-28.1-73.7 0-101.8l135.4-135.5 35.2 35.1zM384.1 0c20.1 0 39.4 3.7 57.1 10.5 10 3.8 11.8 16.5 4.3 24.1L388.8 91.3c-3 3-4.7 7.1-4.7 11.3l0 41.4c0 8.8 7.2 16 16 16l41.4 0c4.2 0 8.3-1.7 11.3-4.7l56.7-56.7c7.6-7.5 20.3-5.7 24.1 4.3 6.8 17.7 10.5 37 10.5 57.1 0 43.2-17.2 82.3-45 111.1l-49.1-49.1c-33.1-33-78.5-45.7-121.1-38.4l-56.8-56.8 0-29.7-.2-5c-.8-12.4-4.4-24.3-10.5-34.9 29.4-35 73.4-57.2 122.7-57.3z"/></symbol>
+    <symbol id="az-i-shield-halved" viewBox="0 0 512 512"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.8 82.8c22 9.3 38.4 31 38.3 57.2-.5 99.2-41.3 280.7-213.6 363.2-16.7 8-36.1 8-52.8 0-172.4-82.5-213.1-264-213.6-363.2-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.9 1 251.4 0 256 0zm0 66.8l0 378.1c138-66.8 175.1-214.8 176-303.4l-176-74.6 0 0z"/></symbol>
+    <symbol id="az-i-star" viewBox="0 0 576 512"><path d="M309.5-18.9c-4.1-8-12.4-13.1-21.4-13.1s-17.3 5.1-21.4 13.1L193.1 125.3 33.2 150.7c-8.9 1.4-16.3 7.7-19.1 16.3s-.5 18 5.8 24.4l114.4 114.5-25.2 159.9c-1.4 8.9 2.3 17.9 9.6 23.2s16.9 6.1 25 2L288.1 417.6 432.4 491c8 4.1 17.7 3.3 25-2s11-14.2 9.6-23.2L441.7 305.9 556.1 191.4c6.4-6.4 8.6-15.8 5.8-24.4s-10.1-14.9-19.1-16.3L383 125.3 309.5-18.9z"/></symbol>
+    <symbol id="az-i-trophy" viewBox="0 0 512 512"><path d="M144.3 0l224 0c26.5 0 48.1 21.8 47.1 48.2-.2 5.3-.4 10.6-.7 15.8l49.6 0c26.1 0 49.1 21.6 47.1 49.8-7.5 103.7-60.5 160.7-118 190.5-15.8 8.2-31.9 14.3-47.2 18.8-20.2 28.6-41.2 43.7-57.9 51.8l0 73.1 64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-192 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0 0-73.1c-16-7.7-35.9-22-55.3-48.3-18.4-4.8-38.4-12.1-57.9-23.1-54.1-30.3-102.9-87.4-109.9-189.9-1.9-28.1 21-49.7 47.1-49.7l49.6 0c-.3-5.2-.5-10.4-.7-15.8-1-26.5 20.6-48.2 47.1-48.2zM101.5 112l-52.4 0c6.2 84.7 45.1 127.1 85.2 149.6-14.4-37.3-26.3-86-32.8-149.6zM380 256.8c40.5-23.8 77.1-66.1 83.3-144.8L411 112c-6.2 60.9-17.4 108.2-31 144.8z"/></symbol>
+    <symbol id="az-i-user" viewBox="0 0 448 512"><path d="M224 248a120 120 0 1 0 0-240 120 120 0 1 0 0 240zm-29.7 56C95.8 304 16 383.8 16 482.3 16 498.7 29.3 512 45.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3l-59.4 0z"/></symbol>
+    <symbol id="az-i-user-secret" viewBox="0 0 448 512"><path d="M171-16c-36.4 0-57.8 58.3-68.3 112L72 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l24 0 0 32c0 17 3.3 33.2 9.3 48l-9.3 0 0 0-20.5 0c-15.2 0-27.5 12.3-27.5 27.5 0 3 .5 5.9 1.4 8.7l28.9 86.6C40.2 379.6 16 428.1 16 482.3 16 498.7 29.3 512 45.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-54.2-24.2-102.7-62.3-135.4l28.9-86.6c.9-2.8 1.4-5.7 1.4-8.7 0-15.2-12.3-27.5-27.5-27.5l-20.5 0 0 0-9.3 0c6-14.8 9.3-31 9.3-48l0-32 24 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-30.7 0c-10.4-53.7-31.9-112-68.3-112-9.6 0-19 3.9-27.5 8.2-8.2 4.1-18.4 7.8-25.5 7.8s-17.3-3.7-25.5-7.8C190-12.1 180.6-16 171-16zm93.7 484.4l-24.8-70.9 27.9-32.5c2.7-3.2 4.2-7.2 4.2-11.4 0-9.7-7.8-17.5-17.5-17.5l-61 0c-9.7 0-17.5 7.8-17.5 17.5 0 4.2 1.5 8.2 4.2 11.4l27.9 32.5-24.8 70.9-57-180.4 35.7 0c18.4 10.2 39.5 16 62 16s43.6-5.8 62-16l35.7 0-57 180.4zM224 256c-34.7 0-64.2-22.1-75.3-53 5.7 3.2 12.3 5 19.3 5l12.4 0c16.5 0 31.1-10.6 36.3-26.2 2.3-7 12.2-7 14.5 0 5.2 15.6 19.9 26.2 36.3 26.2l12.4 0c7 0 13.6-1.8 19.3-5-11.1 30.9-40.6 53-75.3 53z"/></symbol>
+  </svg>
+
+  <header class="kop">
+    <p class="merk"><svg class="icoon icoon-logo" aria-hidden="true" focusable="false"><use href="#az-i-crosshairs"/></svg> Veldrang</p>
+    <a class="knop knop-goud" href="app.html">Open de tool <svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-arrow-right"/></svg></a>
+  </header>
+
+  <div class="inhoud">
+    <div class="held">
+      <div class="held-tekst">
+        <p class="label">Een game voor airsofters</p>
+        <h1 id="titel">Level je karakter op, op het veld en daarbuiten</h1>
+        <p class="intro">Van Rekruut tot Generaal. Log wat je doet als airsofter, verdien punten en XP, en zie je rang groeien. Een knife kill, een dag marshallen, een nieuwe speler op weg helpen: alles telt.</p>
+        <p class="knoppen">
+          <a class="knop knop-goud knop-groot" href="app.html"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-crosshairs"/></svg> Open de tool</a>
+          <a class="knop knop-licht knop-groot" href="#hoe">Hoe werkt het?</a>
+        </p>
+        <ul class="feitjes">
+          <li><strong>135</strong> activiteiten</li>
+          <li><strong>10</strong> rangen</li>
+          <li><strong>37</strong> prestaties</li>
+          <li><strong>0</strong> accounts nodig</li>
+        </ul>
+      </div>
+
+      <figure class="voorbeeld">
+        <div class="paneel glas voorbeeld-kaart">
+          <div class="karakter-wie">
+            <div class="avatar-vak">
+              <div class="avatar">
+                <svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-angles-up"/></svg>
+                <span class="niveau">Niv. 4</span>
+              </div>
+              <ul class="uitrusting" aria-hidden="true">
+                <li class="uitrusting-0"><svg class="icoon" focusable="false"><use href="#az-i-shield-halved"/></svg></li>
+                <li class="uitrusting-1"><svg class="icoon" focusable="false"><use href="#az-i-leaf"/></svg></li>
+                <li class="uitrusting-2"><svg class="icoon" focusable="false"><use href="#az-i-kit-medical"/></svg></li>
+              </ul>
+            </div>
+            <div>
+              <p class="label">Huidige rang</p>
+              <p class="rang-naam">Sergeant</p>
+              <p class="titel-naam">“De Schim”</p>
+              <p class="pad-label"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-crosshairs"/></svg> Schutter en sniper</p>
+            </div>
+          </div>
+          <p class="voorbeeld-pr"><span class="pr">4.380</span> PR</p>
+          <p class="xp-kop"><span>Voortgang naar <span class="goud-tekst">Sergeant-majoor</span></span> <span>1.620 PR nodig</span></p>
+          <progress class="xp" max="100" value="46" aria-label="Voortgang naar Sergeant-majoor"></progress>
+          <ul class="voorbeeld-beloning" aria-label="Voorbeelden van beloningen">
+            <li><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-trophy"/></svg> Prestatie ontgrendeld: Countersniper</li>
+            <li><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-user-secret"/></svg> Stealth en verkenning → Niv. 5</li>
+          </ul>
+        </div>
+        <figcaption>Zo ziet je karakterblad eruit.</figcaption>
+      </figure>
+    </div>
+
+    <section class="paneel" id="hoe" aria-labelledby="hoe-kop">
+      <h2 id="hoe-kop">Hoe werkt het?</h2>
+      <ol class="stappen">
+        <li>
+          <span class="stap-icoon"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-crosshairs"/></svg></span>
+          <h3>De eerste inschatting</h3>
+          <p>Zes vragen over je ervaring, je team, de NABV en je gear. Daarmee bepaalt het spel je startrang.</p>
+        </li>
+        <li>
+          <span class="stap-icoon"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-plus"/></svg></span>
+          <h3>Log wat je doet</h3>
+          <p>Kies uit 135 activiteiten in twaalf terreinen. Elke activiteit geeft punten (PR) en XP voor een skill.</p>
+        </li>
+        <li>
+          <span class="stap-icoon"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-inbox"/></svg></span>
+          <h3>Noteer wat naar jou toe komt</h3>
+          <p>Iemand kent je callsign, vraagt je in een squad of om advies. Dat is je reputatie, en elke hogere rang vraagt erom.</p>
+        </li>
+        <li>
+          <span class="stap-icoon"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-arrow-trend-up"/></svg></span>
+          <h3>Stijg in rang</h3>
+          <p>Met genoeg punten, tijd, reputatie en het juiste ritueel word je Soldaat, Korporaal, Sergeant… tot Generaal.</p>
+        </li>
+        <li>
+          <span class="stap-icoon"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-certificate"/></svg></span>
+          <h3>Verdien patches</h3>
+          <p>Speel prestaties en titels vrij, verdien patches voor grote stappen en haal elke week je missies.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="eer-kop">
+      <h2 id="eer-kop">Wat je kunt verdienen</h2>
+      <ul class="kenmerken">
+        <li class="paneel cat-goud">
+          <svg class="icoon kenmerk-icoon" aria-hidden="true" focusable="false"><use href="#az-i-medal"/></svg>
+          <h3>Tien rangen</h3>
+          <p>Van Rekruut tot Generaal, zoals bij de landmacht. Je rang is ook het niveau van je karakter.</p>
+        </li>
+        <li class="paneel cat-rood">
+          <svg class="icoon kenmerk-icoon" aria-hidden="true" focusable="false"><use href="#az-i-chart-pie"/></svg>
+          <h3>Zes skills</h3>
+          <p>Sniping, CQB en knife kills, stealth, tactiek, conditie en techniek. Elk tot niveau 10, als radar op je karakterblad.</p>
+        </li>
+        <li class="paneel cat-bruin">
+          <svg class="icoon kenmerk-icoon" aria-hidden="true" focusable="false"><use href="#az-i-certificate"/></svg>
+          <h3>Patches</h3>
+          <p>Van je eerste eigen replica tot een legende in de scene. Ze hangen als uitrusting rond je avatar. Opzichtige gear levert minder op zolang je tactiek laag is.</p>
+        </li>
+        <li class="paneel cat-zeegroen">
+          <svg class="icoon kenmerk-icoon" aria-hidden="true" focusable="false"><use href="#az-i-handshake"/></svg>
+          <h3>Sportiviteit</h3>
+          <p>Eerlijk hits melden, helpen en bedanken laten hem stijgen. Met een hoge sportiviteit levert alles meer op.</p>
+        </li>
+        <li class="paneel cat-blauw">
+          <svg class="icoon kenmerk-icoon" aria-hidden="true" focusable="false"><use href="#az-i-scale-balanced"/></svg>
+          <h3>Zichtbaar in vijf kringen</h3>
+          <p>Je team, de organisatoren, de scene, online en de NABV. De hoogste rangen vragen dat je in meer kringen gewaardeerd bent.</p>
+        </li>
+        <li class="paneel cat-navy">
+          <svg class="icoon kenmerk-icoon" aria-hidden="true" focusable="false"><use href="#az-i-star"/></svg>
+          <h3>Rollen als pad</h3>
+          <p>Vanaf Sergeant kies je: schutter en sniper, assault en CQB, medic en support, of leider en organisator.</p>
+        </li>
+        <li class="paneel cat-groen">
+          <svg class="icoon kenmerk-icoon" aria-hidden="true" focusable="false"><use href="#az-i-map"/></svg>
+          <h3>Een speelgebied op de kaart</h3>
+          <p>Een verzonnen stafkaart met zes sectoren onder de mist en dertien plekken: de bunker, het spookdorp, de sniperheuvel. Je eerste bezoek geeft ×2.</p>
+        </li>
+        <li class="paneel cat-oranje">
+          <svg class="icoon kenmerk-icoon" aria-hidden="true" focusable="false"><use href="#az-i-folder-open"/></svg>
+          <h3>Operaties</h3>
+          <p>Organiseer zelf een event in vier stappen, van plan tot debrief. Een afgeronde operatie geeft 250 PR.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="paneel" aria-labelledby="ladder-kop">
+      <h2 id="ladder-kop">De rangladder</h2>
+      <ol class="ladder">
+        <li class="gehaald"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-user"/></svg><span class="ladder-naam">Rekruut</span><span class="ladder-min">0 PR</span></li>
+        <li class="gehaald"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-person-rifle"/></svg><span class="ladder-naam">Soldaat</span><span class="ladder-min">400 PR</span></li>
+        <li class="gehaald"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-chevron-up"/></svg><span class="ladder-naam">Korporaal</span><span class="ladder-min">1.200 PR</span></li>
+        <li class="gehaald"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-angles-up"/></svg><span class="ladder-naam">Sergeant</span><span class="ladder-min">3.000 PR</span></li>
+        <li class="gehaald"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-shield-halved"/></svg><span class="ladder-naam">Sergeant-majoor</span><span class="ladder-min">6.000 PR</span></li>
+        <li class="gehaald"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-star"/></svg><span class="ladder-naam">Luitenant</span><span class="ladder-min">10.000 PR</span></li>
+        <li class="gehaald"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-medal"/></svg><span class="ladder-naam">Kapitein</span><span class="ladder-min">16.000 PR</span></li>
+        <li class="gehaald"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-award"/></svg><span class="ladder-naam">Majoor</span><span class="ladder-min">24.000 PR</span></li>
+        <li class="gehaald"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-chess-king"/></svg><span class="ladder-naam">Kolonel</span><span class="ladder-min">35.000 PR</span></li>
+        <li class="nu"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-crown"/></svg><span class="ladder-naam">Generaal</span><span class="ladder-min">50.000 PR</span></li>
+      </ol>
+      <p class="zacht">Punten alleen zijn niet genoeg. Elke rang vraagt ook tijd en een ritueel, zoals je eerste game, lid worden van de NABV of een team, of een squad leiden. Generaal geworden? Begin een New Game+ en verdien een gouden ster.</p>
+    </section>
+
+    <section class="paneel" aria-labelledby="terreinen-kop">
+      <h2 id="terreinen-kop">Twaalf terreinen</h2>
+      <ul class="chips">
+        <li class="cat-goud"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-inbox"/></svg> Reputatie: wat naar jou toe kwam</li>
+        <li class="cat-groen"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-person-rifle"/></svg> Spelen: woodland, CQB en milsim</li>
+        <li class="cat-rood"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-crosshairs"/></svg> Spelelementen: kills en moves</li>
+        <li class="cat-teal"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-map"/></svg> Het speelgebied: plekken</li>
+        <li class="cat-oranje"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-person-running"/></svg> Training en conditie</li>
+        <li class="cat-zeegroen"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-handshake"/></svg> Sportiviteit en veiligheid</li>
+        <li class="cat-zilver"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-screwdriver-wrench"/></svg> Gear en techniek</li>
+        <li class="cat-blauw"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-people-group"/></svg> Je team</li>
+        <li class="cat-navy"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-clipboard-list"/></svg> Organiseren en marshallen</li>
+        <li class="cat-paars"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-hand-holding-heart"/></svg> Community en nieuwe spelers</li>
+        <li class="cat-amber"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-camera"/></svg> Media en online</li>
+        <li class="cat-bruin"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-shield-halved"/></svg> NABV en verenigingsleven</li>
+      </ul>
+    </section>
+
+    <section class="paneel" aria-labelledby="privacy-kop">
+      <h2 id="privacy-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-lock"/></svg> Jouw voortgang blijft van jou</h2>
+      <ul class="vinkjes">
+        <li><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-circle-check"/></svg> Je voortgang staat in je eigen browser.</li>
+        <li><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-circle-check"/></svg> Speel je op meer apparaten? Zet opslag op de server aan. Je voortgang gaat dan versleuteld naar de server; alleen jij hebt de sleutel.</li>
+        <li><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-circle-check"/></svg> Geen account, geen e-mail, geen tracking. Je noemt anderen alleen bij callsign of initialen.</li>
+        <li><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-circle-check"/></svg> Zet de tool op je beginscherm. Hij werkt ook zonder internet.</li>
+      </ul>
+    </section>
+
+    <section class="paneel wrapped slot" aria-labelledby="slot-kop">
+      <svg class="icoon slot-kroon" aria-hidden="true" focusable="false"><use href="#az-i-crosshairs"/></svg>
+      <h2 id="slot-kop">Klaar voor je eerste briefing?</h2>
+      <p>Begin met de eerste inschatting en zie welke rang je nu hebt.</p>
+      <p class="knoppen"><a class="knop knop-goud knop-groot" href="app.html">Open de tool <svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-arrow-right"/></svg></a></p>
+    </section>
+
+    <footer class="voet">
+      <p><a href="app.html#wijzigingen">Wat is er veranderd</a> · Gebouwd op de motor van <a href="../index.html">Wassenaar Aanzien</a> · Iconen: Font Awesome Free (CC BY 4.0) · Letters: Inter en Black Ops One (SIL OFL)</p>
+    </footer>
+  </div>
+</div>
+</main>
+</body>
+</html>

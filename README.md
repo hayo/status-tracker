@@ -7,6 +7,10 @@ Ereburger.
 Demo: https://hayobethlehem.nl/forge/status-tracker en
 https://hayo.github.io/status-tracker/
 
+Dezelfde motor drijft een tweede app aan: **Veldrang**, voor airsofters, in
+`veldrang/`. Daar level je van Rekruut tot Generaal. Zie
+[Motor en werelden](#motor-en-werelden).
+
 De startpagina (`index.html`) legt uit hoe het spel werkt. De knop "Open de
 tool" opent de tool zelf (`app.html`).
 
@@ -43,7 +47,11 @@ app.html                  de tool, en de losse pagina eromheen
 index.php                 binnen een site: geeft alleen het artikel uit app.html door
 app.css                   de opmaak, alles onder #aanzien
 standalone.css            de achtergrond en de groene balk van de losse pagina
-app.js                    de app: tonen, loggen, bewaren, navigatie
+app.js                    de ingang van Wassenaar: laadt eerst wassenaar.js, dan de motor
+wassenaar.js              vult de wereld met de inhoud van Wassenaar (gegevens.js en de versies)
+wereld.js                 de wereld waarin de motor draait; wat een wereld niet heeft, staat leeg
+motor.js                  de motor: tonen, loggen, bewaren, navigatie
+embleem.js                rangonderscheidingen in NAVO-stijl, voor rangen met een embleem
 ui.js                     hulpjes voor de pagina: maak, icoon, meter, getal, svgKnop
 grafieken.js              radar, boog en ring, als SVG
 schermen/karakter.js      het karakterblad
@@ -52,8 +60,10 @@ spel.js                   de spelregels: rang, bonussen, prestaties, missies, ve
 opslag.js                 de opslag op de server: synccode, versleutelen, lezen en schrijven
 opslag.php                de server: bewaart versleutelde voortgang per speler
 bewaard/                  de standaardmap voor opslag.php, buiten git
-gegevens.js               rangen, eigenschappen, activiteiten, statussymbolen en startvragen
-wijzigingen/versies.js    de versies, de nieuwste bovenaan; de bovenste is de versie die draait
+gegevens.js               de inhoud van Wassenaar: rangen, eigenschappen, activiteiten, symbolen en meer
+wijzigingen/versies.js    de versies van Wassenaar, de nieuwste bovenaan; de bovenste is de versie die draait
+veldrang/                 Veldrang: gegevens.js, versies.js, veldrang.js, app.js, app.html, index.html,
+                          index.php, thema.css, pagina.css, manifest, iconen en letters
 sw.js                     laat de losse pagina ook zonder internet werken
 .htaccess                 laat de browser bij elk bezoek navragen of een bestand nog klopt (Apache)
 manifest.webmanifest      voor op het beginscherm
@@ -62,7 +72,58 @@ letters/                  Inter en Playfair Display, met hun licentie
 .github/                  de Action en het script die de app naar Codeberg zetten
 ```
 
+## Motor en werelden
+
+De motor (`motor.js`, `spel.js`, `schermen/`, `ui.js`, `grafieken.js`,
+`opslag.js`, `embleem.js`) kent geen inhoud. Hij leest alles uit `W` in
+`wereld.js`. Een wereld is een map met:
+
+- `gegevens.js`: de inhoud, in dezelfde vorm als die van Wassenaar (zie de tabel
+  hieronder), met `WERELD` voor de teksten en namen die per wereld verschillen;
+- een module die de wereld vult, zoals `veldrang/veldrang.js`:
+  `vul({ ...gegevens, VERSIES })`;
+- `app.js`, de ingang: eerst die module, dan `../motor.js`. Modules worden in de
+  volgorde van hun imports uitgevoerd, dus de motor vindt de wereld al gevuld;
+- `app.html`, met dezelfde id's als de app van Wassenaar, en een eigen sprite en
+  teksten. Laat een paneel weg als de wereld dat systeem niet heeft;
+- een eigen thema (`thema.css`) bovenop `../app.css`.
+
+Systemen die een wereld mag weglaten: energie en typen (`ENERGIE`, `TYPEN`), de
+quiz (`QUIZ`), nationale dagen (`NATIONALE_DAGEN`), kapitaal (`KAPITAAL`) en de
+loadout (`LOADOUT`). De motor slaat ze dan over.
+
+Elke wereld bewaart onder een eigen sleutel in localStorage (`WERELD.sleutel`)
+en gebruikt eigen namen voor het id en de sleutel op de server
+(`WERELD.sync`). Een synccode van de ene app opent dus nooit de voortgang van
+de andere. Verander `WERELD.sleutel` en `WERELD.sync` nooit: dan vindt niemand
+zijn voortgang meer terug.
+
+### Veldrang
+
+Veldrang draait op `veldrang/app.html`, met een eigen landingspagina
+(`veldrang/index.html`) en een eigen `index.php` voor binnen een site. Het
+verschil met Wassenaar zit alleen in de gegevens en het thema:
+
+- tien rangen zoals bij de landmacht, van Rekruut (OR-1) tot Generaal (OF-9).
+  Elke rang heeft een `code` en een `embleem`: strepen en een boog, of sterren,
+  een balk en een krans. `embleem.js` tekent die als icoon;
+- zes skills voor de spelelementen, twaalf terreinen, patches als symbolen,
+  reputatie, sportiviteit (de gunfactor) en vijf kringen: team, organisatoren,
+  scene, online en de NABV;
+- een loadout (`LOADOUT`): camouflage en hoofdwapen, elk in een trede van
+  huurkit tot exotisch. Het gemiddelde geeft een factor op spelen,
+  spelelementen en plekken;
+- militaire status: een startvraag en patches naar rang en functie;
+- een verzonnen speelgebied als stafkaart, met een raster, zes sectoren en
+  dertien plekken.
+
+Geen energie, quiz, nationale dagen of kapitaal.
+
 ## Versies
+
+Elke wereld heeft een eigen versienummer: Wassenaar in
+`wijzigingen/versies.js`, Veldrang in `veldrang/versies.js`. Een wijziging aan
+de motor komt in beide lijsten.
 
 De app heeft één versienummer, zoals 2.0.1. De voettekst noemt het, met een link
 naar de pagina met wijzigingen.
@@ -94,6 +155,9 @@ site sluit dan `index.php` in. Dat geeft de tool door: alleen het artikel
 `#aanzien` uit `app.html`, met `app.css` en `app.js` erbij. De site zet er kop en
 menu omheen. Wordt `index.php` zelf opgevraagd, dan levert het de
 landingspagina, `index.html`. Zo is `app.html` de enige bron van de tool.
+
+Veldrang heeft een eigen `veldrang/index.php`. Dat geeft ook `../app.css` en
+`thema.css` mee. Op de site staat Veldrang dan onder `status-tracker/veldrang/`.
 
 Binnen een site registreert de app geen service worker. Dat doet hij alleen als
 losse pagina, met het manifest in de kop.
@@ -136,14 +200,18 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 
 | Wat | Velden |
 | --- | --- |
-| `RANGEN` | `min` (punten vanaf), `dagen` (tijd in het spel), `ritueel` (`tekst` en `voorwaarde`), `kring?` (`aantal` kringen vanaf stand `vanaf`), `erkenning?` (punten aan erkenning), `naam`, `uitleg`, `icoon` |
-| `EIGENSCHAPPEN` | sleutel => `naam` en `icoon`. `EIGENSCHAP_MAX` is het aantal punten waarbij de balk vol is |
+| `WERELD` | de teksten en namen per wereld: `naam`, `sleutel` en `sync` (nooit veranderen), `bestand`, `welkom`, `jaar`, `eisDagen`, `bezig`, `symbool`, `symbolen`, `symboolGeclaimd`, `geenSymbolen`, `bekendheid`, `bekendTop`, `bekendLeeg`, `teLaat`, `bedankje` (id), `discretie` (skill), `dossier`, `dossierSkill`, `quiz`, `quizSkill` |
+| `RANGEN` | `code?` (zoals OR-2, in plaats van het niveau) en `embleem?` (`strepen`, `boog`, `sterren`, `balk`, `krans`; in plaats van `icoon`), `min` (punten vanaf), `dagen` (tijd in het spel), `ritueel` (`tekst` en `voorwaarde`), `kring?` (`aantal` kringen vanaf stand `vanaf`), `erkenning?` (punten aan erkenning), `naam`, `uitleg`, `icoon` |
+| `EIGENSCHAPPEN` | sleutel => `naam`, `kort` (op de radar) en `icoon`. `EIGENSCHAP_MAX` is het aantal punten waarbij de balk vol is |
 | `CATEGORIEEN` | `id`, `kringen` (gewicht per kring), `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |
 | `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `stijl?` (`opzichtig` of `ingetogen`), `kringen?`, `eigenschap` |
-| `KRINGEN` | de vier kringen; met `KRING_STANDEN` en `KRING_SYMBOOL` |
-| `KAART` | de kaart in een vlak van 1000 bij 700: `titel`, `zeeNaam`, zee, kust en duinen (paden), `duinNamen`, `bossen` en `buurten` (hoekpunten die rijken delen; de kaart tekent de grenzen grillig; een buurt heeft een `titel` als rijk en een `kleur` voor zijn wapen), `wegen` (pad, soort en waar de naam staat) en per plek een punt en een tekening (`kasteel`, `molen`, `tempel`, `koepel`, `huis`, `herberg`, `markt`, `school`, `tent`, `vuurtoren`, `boom`, `berg`, `uitkijk`, `vlag` of `baan`) |
+| `KRINGEN` | `id`, `naam`, `kort` (op de radar), `icoon`; met `KRING_STANDEN` en `KRING_SYMBOOL` |
+| `RODDEL` | per soort `punten`, `tekst` en `kring` (wie er bij kritiek over praat) |
+| `KAPITAAL` | per soort `naam`, `icoon` en `skills` (de som) of `symbolen: true` |
+| `LOADOUT` | `treden` (`naam`, `factor`), `terreinen` waar de factor geldt, en `delen` met `opties` als `[id, naam, trede]` |
+| `KAART` | de kaart in een vlak van 1000 bij 700: `titel`, `label` (voor schermlezers), `zeeNaam` en `zeeLabel` (plek), `zeegezicht` (schip en zeeslang), `raster?` (vakgrootte van een stafkaart), `schaal`, `tekst` (`gebied`, `mist`, `kies`, `hulp`, `buurt`), zee, kust en duinen (paden), `duinNamen`, `bossen` en `buurten` (hoekpunten die rijken delen; de kaart tekent de grenzen grillig; een buurt heeft een `titel` als rijk en een `kleur` voor zijn wapen), `wegen` (pad, soort en waar de naam staat) en per plek een punt en een tekening (`kasteel`, `molen`, `tempel`, `koepel`, `huis`, `herberg`, `markt`, `school`, `tent`, `vuurtoren`, `boom`, `berg`, `uitkijk`, `vlag`, `bunker`, `hal`, `wrak` of `kist`) |
 | `ERKENNING` | `dagen` voor de bekendheid, de `niveaus`, en `verhoudingVanaf` |
-| `GUNFACTOR`, `ENERGIE`, `TYPEN` | de getallen voor gunfactor en energie, en de typen introvert en extravert |
+| `GUNFACTOR`, `ENERGIE`, `TYPEN` | de getallen voor gunfactor en energie, met `titel`, `namen` en `uitleg` van de gunfactor (laag, midden, hoog), en de typen introvert en extravert |
 | `ROLLEN` | de rollen voor het netwerk |
 | `NATIONALE_DAGEN` | `[land, MM-DD]` |
 | `QUIZ` | `id`, `vraag`, `antwoorden`, `goed` (index), `uitleg` |
@@ -393,6 +461,7 @@ Animaties (de glans op de XP-balk, het niveauvenster) staan uit bij
 - Iconen: [Font Awesome Free](https://fontawesome.com) 7.3.1, CC BY 4.0.
 - Letters: Inter, Playfair Display en IM Fell English (voor de kaart), SIL Open
   Font License 1.1. De licenties staan in `letters/`.
+- Veldrang: Black Ops One, SIL Open Font License 1.1, in `veldrang/letters/`.
 
 ## Toegankelijkheid
 

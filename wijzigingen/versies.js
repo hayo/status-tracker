@@ -9,6 +9,14 @@
 
 export const VERSIES = [
   {
+    versie: '3.0',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'Achter de schermen draait de app nu op een motor die ook een tweede app aandrijft: Veldrang, voor airsofters. Voor jou verandert er niets.',
+      'Je voortgang en je synccode blijven gewoon werken.',
+    ],
+  },
+  {
     versie: '2.9',
     datum: '2026-11-07',
     wijzigingen: [

@@ -1,0 +1,267 @@
+/*
+ * Veldrang: de camo-patch-stijl. Komt na ../app.css en verandert alleen kleuren, letters en een paar
+ * vormen. Panelen en beloningen zijn patches: stof met een gestikte rand.
+ * Letter: Black Ops One (SIL OFL 1.1), zie letters/black-ops-one-licentie.txt.
+ */
+
+@font-face {
+  font-family: "Az Stencil";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("letters/black-ops-one.woff2") format("woff2");
+}
+
+#aanzien {
+  --groen: #3f4a2a;
+  --groen-donker: #2b331c;
+  --goud: #c9a44c;
+  --goud-donker: #8f7426;
+  --goud-tekst: #6b5414;
+  --goud-licht: #f3eedc;
+  --goud-rand: #d9cba0;
+  --creme: #e9e4d2;
+  --navy: #262a1c;
+  --tekst: #23261c;
+  --zacht: #535845;
+  --lijn: #d6cfb8;
+  --vlak: #f1ede0;
+  --rood: #9b2a1c;
+  --stap-0: #e4dfcd;
+  --stap-1: #c9cfa8;
+  --stap-2: #9eaa6c;
+  --stap-3: #6d7c3e;
+  --stap-4: #3f4a2a;
+  --serif: "Az Stencil", "Az Inter", ui-sans-serif, sans-serif;
+  --oud: "Az Inter", ui-sans-serif, sans-serif;
+  --oud-kapitalen: "Az Stencil", "Az Inter", sans-serif;
+  --inkt: #2f3322;
+  --sepia: #5d5b40;
+  --stof: #f6f2e4;
+  --steek: #b3a77a;
+}
+
+/* Koppen in stencil, zonder vet: de letter is al zwaar. */
+#aanzien :is(h1, h2, h3, .rang-naam, .paneel-kop) {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* De stencilletter heeft geen cursief. */
+#aanzien :is(.titel-naam, #az-bekendheid-niveau) {
+  font-style: normal;
+}
+
+/* Panelen zijn patches: stof met een gestikte rand. */
+#aanzien .paneel {
+  border: 1px solid #cfc59f;
+  border-radius: 0.9em;
+  background: var(--stof);
+  outline: 2px dashed var(--steek);
+  outline-offset: -9px;
+}
+
+#aanzien .glas {
+  background: var(--stof);
+  backdrop-filter: none;
+}
+
+/* De kop: camo in drie tinten. */
+#aanzien .kop {
+  background:
+    radial-gradient(ellipse 26% 70% at 12% 30%, #556238 60%, transparent 62%),
+    radial-gradient(ellipse 18% 60% at 45% 75%, #2b331c 60%, transparent 62%),
+    radial-gradient(ellipse 22% 80% at 78% 20%, #6b6a40 60%, transparent 62%),
+    radial-gradient(ellipse 14% 50% at 92% 80%, #2b331c 60%, transparent 62%),
+    var(--groen);
+}
+
+#aanzien .kop h1 {
+  font-family: var(--serif);
+  font-size: 1.45em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Knoppen: olijf, met een donkere rand. */
+#aanzien .knop {
+  border-radius: 0.4em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.95em;
+}
+
+/* Kleuren per terrein: aardetinten. */
+#aanzien .cat-teal { --cat: #2f5d50; --cat-licht: #dbe8de; }
+#aanzien .cat-blauw { --cat: #33475e; --cat-licht: #dde3ea; }
+#aanzien .cat-rood { --cat: #8a2b1d; --cat-licht: #f2dcd5; }
+#aanzien .cat-navy { --cat: #262a1c; --cat-licht: #e2e2d4; }
+#aanzien .cat-paars { --cat: #57445f; --cat-licht: #e9e1ec; }
+#aanzien .cat-groen { --cat: #45552a; --cat-licht: #e2e8cf; }
+#aanzien .cat-oranje { --cat: #8c4a16; --cat-licht: #f3e2cf; }
+#aanzien .cat-amber { --cat: #7c5a14; --cat-licht: #f1e6c7; }
+#aanzien .cat-goud { --cat: #6b5414; --cat-licht: #f1e8c8; }
+#aanzien .cat-zilver { --cat: #44483c; --cat-licht: #e3e3dc; }
+#aanzien .cat-zeegroen { --cat: #2c5b55; --cat-licht: #d9e8e4; }
+#aanzien .cat-bruin { --cat: #6a4423; --cat-licht: #eee0d0; }
+
+#aanzien .skill-precisie { --cat: #8a2b1d; }
+#aanzien .skill-cqb { --cat: #8c4a16; }
+#aanzien .skill-stealth { --cat: #262a1c; }
+#aanzien .skill-tactiek { --cat: #33475e; }
+#aanzien .skill-conditie { --cat: #45552a; }
+#aanzien .skill-techniek { --cat: #57445f; }
+
+/* Patches: verdiende symbolen, prestaties en de vakken rond je avatar. */
+#aanzien :is(.trofee, .vak.vol, .prestatie.open .prestatie-icoon) {
+  border: 2px solid #6b6a40;
+  border-radius: 0.6em;
+  background: #e1dbc0;
+  outline: 1.5px dashed #8f8a5c;
+  outline-offset: -5px;
+}
+
+/* De kaart: een stafkaart op legerpapier. */
+#aanzien.wereld-veldrang .kaart-perkament {
+  fill: #e6e1c8;
+}
+
+#aanzien.wereld-veldrang .vignet-rand {
+  stop-color: #4b4a2a;
+  stop-opacity: 0.3;
+}
+
+#aanzien.wereld-veldrang .kaart-zee {
+  fill: #9fb4aa;
+}
+
+#aanzien.wereld-veldrang .kaart-duin {
+  fill: #d4c7a3;
+}
+
+#aanzien.wereld-veldrang .kaart-bos {
+  fill: #a7b47c;
+}
+
+#aanzien.wereld-veldrang .kaart-raster-lijnen path {
+  fill: none;
+  stroke: #5d5b40;
+  stroke-width: 1;
+  opacity: 0.35;
+}
+
+#aanzien.wereld-veldrang .kaart-raster-lijnen text {
+  font: 700 14px var(--sans);
+  fill: #5d5b40;
+}
+
+#aanzien.wereld-veldrang .kaart-buurt-label {
+  font-size: 17px;
+  letter-spacing: 0.12em;
+}
+
+#aanzien.wereld-veldrang .kaart-buurt-titel {
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 11px;
+}
+
+#aanzien.wereld-veldrang :is(.kaart-zee-label, .kaart-duin-label, .kaart-bos-label, .kaart-weg-naam) {
+  font-family: var(--sans);
+  font-style: italic;
+}
+
+#aanzien.wereld-veldrang .kaart-zee-label {
+  font-size: 20px;
+  letter-spacing: 0.08em;
+}
+
+#aanzien.wereld-veldrang .kaart-pin.ontdekt {
+  --lm-muur: #e9e2c6;
+  --lm-dak: #6b5a2e;
+  --lm-groen: #56692c;
+  --lm-steen: #9b9a80;
+  --lm-vlag: #b8331f;
+  --lm-inkt: #23261c;
+}
+
+#aanzien.wereld-veldrang :is(.banier-doek, .schaal-licht) {
+  fill: #ece6cc;
+}
+
+#aanzien.wereld-veldrang :is(.banier-staart, .windroos-groot) {
+  fill: #556238;
+}
+
+#aanzien.wereld-veldrang :is(.banier-kroon, .kader-hoek) {
+  fill: #8f7426;
+}
+
+#aanzien.wereld-veldrang .banier text {
+  font-family: var(--serif);
+  font-size: 18px;
+  letter-spacing: 0.05em;
+}
+
+#aanzien.wereld-veldrang .kaart-info {
+  border-color: #b3a77a;
+  background: var(--stof);
+}
+
+#aanzien.wereld-veldrang .kaart-info h3 {
+  font-family: var(--serif);
+}
+
+#aanzien.wereld-veldrang .kaart-legenda .stap-1 { background: rgb(69 85 42 / 14%); }
+#aanzien.wereld-veldrang .kaart-legenda .stap-2 { background: rgb(69 85 42 / 22%); }
+#aanzien.wereld-veldrang .kaart-legenda .stap-3 { background: rgb(69 85 42 / 32%); }
+#aanzien.wereld-veldrang .kaart-legenda .stap-4 { background: rgb(69 85 42 / 42%); }
+
+/* Het jaaroverzicht en het slot van de landingspagina blijven donker, met lichte tekst. */
+#aanzien .wrapped {
+  border-color: #2b331c;
+  background: linear-gradient(135deg, var(--groen) 0%, var(--navy) 100%);
+  outline-color: rgb(243 238 220 / 45%);
+}
+
+#aanzien .log-tekst time {
+  color: var(--zacht);
+}
+
+/* De loadout: een keuzelijst per deel. */
+#aanzien .loadout-keuze {
+  display: grid;
+  gap: 0.75em 1em;
+}
+
+@media (width >= 40em) {
+  #aanzien .loadout-keuze {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+#aanzien .loadout-deel {
+  display: grid;
+  gap: 0.3em;
+  margin: 0;
+}
+
+#aanzien .loadout-deel select {
+  min-height: 2.6em;
+  padding: 0.4em 0.6em;
+  border: 1px solid var(--steek);
+  border-radius: 0.4em;
+  background: #fff;
+  color: var(--tekst);
+  font: inherit;
+}
+
+/* Het rangembleem: goud op olijf, zoals een NAVO-rangonderscheiding. */
+#aanzien .avatar .icoon {
+  color: var(--goud);
+}
+
+#aanzien .blad .loadout {
+  grid-column: 1 / -1;
+}

@@ -1,16 +1,19 @@
 /*
- * De spelregels van Wassenaar Aanzien: punten, rang, bonussen, prestaties, missies, verval en
+ * De spelregels van de motor: punten, rang, bonussen, prestaties, missies, verval en
  * het jaaroverzicht. Alleen rekenen, geen pagina. Alles komt uit het spel:
  * { versie: 3, logboek, ronde, titel, pad, vergeten }.
  */
 
-import {
+import { W } from './wereld.js';
+
+const {
   RANGEN, EIGENSCHAPPEN, CATEGORIEEN, SYMBOLEN, PRESTATIES, TITELS, PADEN, PAD_BONUS, MISSIES,
   REEKS_STAP, REEKS_MAX, EVENTS, VERGETEN_NA, VERGETEN_PER_WEEK, VERGETEN_MAX,
   WEDERKERIG_WEKEN, WEDERKERIG_BONUS, BEDANK_DAGEN, BEDANK_BONUS, VERZADIGD_NA, VERZADIGD_FACTOR,
   NIEUWE_BRUG, HECHT_VANAF, OPZICHTIG, INGETOGEN, RODDEL, NATIONALE_DAGEN, NATIONAAL_MARGE, NATIONAAL_BONUS,
   PLEKKEN, ONTDEKKING_BONUS, DOSSIERS, KRINGEN, KRING_STANDEN, KRING_SYMBOOL, GUNFACTOR, ENERGIE, TYPEN, ERKENNING,
-} from './gegevens.js';
+  KAPITAAL, WERELD, LOADOUT,
+} = W;
 
 /* ---------- Datums ---------- */
 
@@ -205,12 +208,12 @@ export function gunfactor(logboek, vandaag = new Date()) {
   return Math.max(0, Math.min(100, g));
 }
 
-export const gunLabel = (g) => (g < GUNFACTOR.streber ? 'Streber' : g >= GUNFACTOR.gegund ? 'Gegund' : 'Neutraal');
+export const gunLabel = (g) => GUNFACTOR.namen[g < GUNFACTOR.streber ? 0 : g >= GUNFACTOR.gegund ? 2 : 1];
 
 // Wat een activiteit aan energie kost. Negatief is opladen: door de activiteit zelf, of door je type.
 export function kosten(spel, item) {
   const a = ACTIVITEITEN.get(item.id);
-  if (!a || a.inkomend) return 0;
+  if (!a || a.inkomend || !ENERGIE) return 0;
   const basis = a.energie ?? Math.min(ENERGIE.max, Math.max(ENERGIE.min, Math.round(a.punten / ENERGIE.deler)));
   const type = TYPEN.find((t) => t.id === spel.type);
   return basis > 0 && type?.terreinen.includes(a.terrein) ? -Math.round(basis / 2) : basis;
@@ -265,7 +268,7 @@ export function bonussen(spel, item, datum, extra = {}) {
   const lijst = [];
   const ervoor = spel.logboek.filter((x) => x.datum <= datum);
   if (extra.symbool) {
-    const discretie = eigenschappen(spel.logboek).stealth;
+    const discretie = eigenschappen(spel.logboek)[WERELD.discretie];
     if (item.stijl === 'opzichtig' && discretie < OPZICHTIG.onder) lijst.push(['Te opzichtig', OPZICHTIG.factor]);
     if (item.stijl === 'ingetogen' && discretie >= INGETOGEN.vanaf) lijst.push(['Stijlvol ingetogen', INGETOGEN.factor]);
     return { lijst, factor: lijst.reduce((f, [, x]) => f * x, 1) };
@@ -284,8 +287,10 @@ export function bonussen(spel, item, datum, extra = {}) {
   if (extra.voor && dagenTussen(alsDatum(extra.voor.datum), alsDatum(datum)) <= BEDANK_DAGEN) lijst.push(['Op tijd bedankt', BEDANK_BONUS]);
   if (extra.rol && !netwerk(ervoor).rollen.has(extra.rol)) lijst.push([`Nieuwe brug: ${extra.rol.toLocaleLowerCase('nl')}`, NIEUWE_BRUG]);
   const gun = gunfactor(ervoor, alsDatum(datum));
-  if (gun < GUNFACTOR.streber && a?.gunst < 0) lijst.push(['Streber', GUNFACTOR.streberFactor]);
-  if (gun >= GUNFACTOR.gegund) lijst.push(['Gegund', GUNFACTOR.gegundFactor]);
+  const l = loadout(spel);
+  if (l && l.factor !== 1 && LOADOUT.terreinen.includes(a?.terrein)) lijst.push([`Loadout: ${l.naam}`, l.factor]);
+  if (gun < GUNFACTOR.streber && a?.gunst < 0) lijst.push([GUNFACTOR.namen[0], GUNFACTOR.streberFactor]);
+  if (gun >= GUNFACTOR.gegund) lijst.push([GUNFACTOR.namen[2], GUNFACTOR.gegundFactor]);
   if (a && kosten(spel, item) > 0 && energie(spel, datum).over < 0) lijst.push(['Sociale kater', ENERGIE.kater]);
   if (a?.plek && !ervoor.some((x) => ACTIVITEITEN.get(x.activiteit)?.plek === a.plek)) {
     lijst.push([`Nieuwe plek: ${PLEKKEN.find((x) => x.id === a.plek)?.naam ?? a.plek}`, ONTDEKKING_BONUS]);
@@ -428,14 +433,20 @@ export function rang(spel, st = statistiek(spel)) {
   return { index, punten, dagen, volgende: volgende ? { ...volgende, eisen: eisen(volgende) } : null };
 }
 
-// Bourdieu: je kapitaal in vier soorten.
+// De loadout: de trede van elk gekozen deel, en samen een naam en een factor (het gemiddelde).
+export function loadout(spel) {
+  if (!LOADOUT) return null;
+  const treden = LOADOUT.delen.map((d) => d.opties.find(([id]) => id === spel.loadout?.[d.id])?.[2]).filter((t) => t !== undefined);
+  if (!treden.length) return null;
+  const trede = Math.round(treden.reduce((s, t) => s + t, 0) / treden.length);
+  const f = treden.reduce((s, t) => s + LOADOUT.treden[t].factor, 0) / treden.length;
+  return { trede, naam: LOADOUT.treden[trede].naam, factor: Math.round(f * 100) / 100 };
+}
+
+// Je kapitaal per soort, zoals in KAPITAAL: de som van een paar skills, of de punten van je symbolen.
 export function kapitaal(spel, st = statistiek(spel)) {
-  return {
-    economisch: st.skills.financial,
-    cultureel: st.skills.cultural,
-    sociaal: st.skills.civic + st.skills.stealth,
-    symbolisch: spel.logboek.filter((r) => r.symbolen?.length).reduce((s, r) => s + r.punten, 0),
-  };
+  const symbolen = spel.logboek.filter((r) => r.symbolen?.length).reduce((s, r) => s + r.punten, 0);
+  return KAPITAAL.map((k) => ({ ...k, waarde: k.symbolen ? symbolen : k.skills.reduce((s, id) => s + st.skills[id], 0) }));
 }
 
 /* ---------- Roddel ---------- */
@@ -449,7 +460,7 @@ export function roddel(spel, vandaag = new Date()) {
   if (!toen.length) return null;
   const acties = toen.filter((r) => ACTIVITEITEN.has(r.activiteit));
   const verlopen = gastvrijheid(spel.logboek, vandaag).open.some((u) => u.resterend < 0 && u.resterend >= -14);
-  const discretie = eigenschappen(spel.logboek).stealth;
+  const discretie = eigenschappen(spel.logboek)[WERELD.discretie];
   const pronk = toen.some((r) => r.symbolen?.some((id) => SYMBOLEN.find((x) => x.id === id)?.stijl === 'opzichtig')) && discretie < OPZICHTIG.onder;
   const bedankt = new Set(spel.logboek.map((r) => r.voor).filter(Boolean));
   const gemist = acties.filter((r) => ACTIVITEITEN.get(r.activiteit).bedank && !bedankt.has(r.id)).length;
@@ -458,7 +469,7 @@ export function roddel(spel, vandaag = new Date()) {
   if (!soort) return null;
   // De kring die erover praat: bij lof waar je vorige week het meest deed, anders wie zich eraan stoort.
   const gewicht = kringen(acties);
-  const kring = soort === 'lof' ? Object.entries(gewicht).sort((a, b) => b[1] - a[1])[0][0] : soort === 'ondankbaar' ? 'diplomaten' : 'oudgeld';
+  const kring = soort === 'lof' ? Object.entries(gewicht).sort((a, b) => b[1] - a[1])[0][0] : RODDEL[soort].kring;
   return { id: sleutel, soort, ...RODDEL[soort], kring, kringen: { [kring]: soort === 'lof' ? 30 : -30 } };
 }
 

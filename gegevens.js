@@ -1,7 +1,34 @@
 /*
- * Alle inhoud van de app: rangen, eigenschappen, activiteiten en statussymbolen.
+ * Alle inhoud van Wassenaar Aanzien: rangen, eigenschappen, activiteiten en statussymbolen.
  * Alleen gegevens, geen code. Een id mag je nooit veranderen: het logboek verwijst ernaar.
+ * De motor (motor.js) leest dit via wereld.js. Wat hier ontbreekt, slaat de motor over.
  */
+
+// De teksten en namen die per wereld verschillen.
+export const WERELD = {
+  naam: 'Wassenaar Aanzien',
+  sleutel: 'wassenaar_renown', // in localStorage; de synccode staat onder deze sleutel plus _sync
+  sync: { id: 'aanzien-id', zout: 'wassenaar-aanzien' }, // nooit veranderen: anders vindt de server niets meer
+  bestand: 'wassenaar-aanzien', // het begin van de naam van een savegame
+  welkom: 'Welkom in Wassenaar',
+  jaar: 'Jouw {jaar} in Wassenaar',
+  eisDagen: 'dagen bewust aan je aanzien werken',
+  bezig: 'Bezig met je aanzien',
+  symbool: 'Statussymbool',
+  symbolen: 'Statussymbolen',
+  symboolGeclaimd: 'Status verhoogd',
+  geenSymbolen: 'Nog geen statussymbolen geclaimd.',
+  bekendheid: 'Bekendheid',
+  bekendTop: 'Hoger kan niet: je bent een begrip in Wassenaar',
+  bekendLeeg: 'Noteer wat er naar jou toe komt: een groet bij naam, een uitnodiging, een vraag om advies. Dat is de echte maat voor bekend zijn.',
+  teLaat: 'te laat, het dorp praat erover',
+  bedankje: 'p03', // de activiteit voor een bedankje
+  discretie: 'stealth', // de skill die bepaalt of je ingetogen bent
+  dossier: 'Dossier',
+  dossierSkill: 'civic',
+  quiz: 'Etiquettequiz',
+  quizSkill: 'cultural',
+};
 
 // Een rang vraagt PR (min), tijd in het spel (dagen) en een ritueel: een overgangsmoment, zoals in het echt.
 // De hoogste rangen vragen ook een goede stand in meerdere kringen (kring: aantal kringen, vanaf welke stand).
@@ -36,11 +63,11 @@ export const RANGEN = [
 
 // De vaardigheden van je karakter. Kleur is een klasse in app.css.
 export const EIGENSCHAPPEN = {
-  civic: { naam: 'Maatschappelijke invloed', icoon: 'bullhorn' },
-  cultural: { naam: 'Cultureel besef', icoon: 'palette' },
-  stealth: { naam: 'Sociale discretie', icoon: 'user-secret' },
-  physical: { naam: 'Fysiek en natuur', icoon: 'person-swimming' },
-  financial: { naam: 'Financiële slagkracht', icoon: 'coins' },
+  civic: { naam: 'Maatschappelijke invloed', kort: 'Invloed', icoon: 'bullhorn' },
+  cultural: { naam: 'Cultureel besef', kort: 'Cultuur', icoon: 'palette' },
+  stealth: { naam: 'Sociale discretie', kort: 'Discretie', icoon: 'user-secret' },
+  physical: { naam: 'Fysiek en natuur', kort: 'Natuur', icoon: 'person-swimming' },
+  financial: { naam: 'Financiële slagkracht', kort: 'Geld', icoon: 'coins' },
 };
 
 // Punten per eigenschap waarbij de balk vol is (100 / 100).
@@ -729,9 +756,9 @@ export const INGETOGEN = { vanaf: 2000, factor: 1.25 };
 // Roddel (Elias en Scotson): één keer per week oordeelt het dorp over je vorige week.
 export const RODDEL = {
   lof: { punten: 75, tekst: 'Men spreekt met lof over je inzet in het dorp.' },
-  gierig: { punten: -50, tekst: 'Men zegt dat je wel komt eten, maar nooit terug uitnodigt.' },
-  opzichtig: { punten: -50, tekst: 'Men vindt je wat opzichtig. Oud geld pronkt niet.' },
-  ondankbaar: { punten: -30, tekst: 'Men mist je bedankjes.' },
+  gierig: { punten: -50, kring: 'oudgeld', tekst: 'Men zegt dat je wel komt eten, maar nooit terug uitnodigt.' },
+  opzichtig: { punten: -50, kring: 'oudgeld', tekst: 'Men vindt je wat opzichtig. Oud geld pronkt niet.' },
+  ondankbaar: { punten: -30, kring: 'diplomaten', tekst: 'Men mist je bedankjes.' },
 };
 
 // De rollen in je netwerk. Je logt nooit een naam, alleen initialen of een bijnaam en een rol.
@@ -819,10 +846,10 @@ export const DOSSIER_STAPPEN = ['Informatieavond', 'Zienswijze', 'Inspreken', 'U
 // Je aanzien per kring. Elke activiteit telt mee voor de kringen van haar terrein (kringen), of voor
 // haar eigen kringen. Per punt basis-PR telt een tiende mee, keer het gewicht. Negatief kan ook.
 export const KRINGEN = [
-  { id: 'dorp', naam: 'Dorpelingen', icoon: 'house-chimney' },
-  { id: 'oudgeld', naam: 'Oud geld', icoon: 'chess-rook' },
-  { id: 'diplomaten', naam: 'Diplomaten en expats', icoon: 'globe' },
-  { id: 'bestuur', naam: 'Bestuur en politiek', icoon: 'landmark' },
+  { id: 'dorp', naam: 'Dorpelingen', kort: 'Dorp', icoon: 'house-chimney' },
+  { id: 'oudgeld', naam: 'Oud geld', kort: 'Oud geld', icoon: 'chess-rook' },
+  { id: 'diplomaten', naam: 'Diplomaten en expats', kort: 'Diplomaten', icoon: 'globe' },
+  { id: 'bestuur', naam: 'Bestuur en politiek', kort: 'Bestuur', icoon: 'landmark' },
 ];
 export const KRING_STANDEN = [
   [-Infinity, 'Gewantrouwd'], [0, 'Onbekend'], [50, 'Bekend'], [200, 'Gewaardeerd'], [500, 'Vertrouwd'], [1000, 'Ingewijd'],
@@ -834,7 +861,22 @@ export const KRING_SYMBOOL = { dorp: 0.5, oudgeld: 0.5 }; // voor een statussymb
 export const GUNFACTOR = {
   start: 50, dagen: 84, belangeloos: 3, strategisch: -2, opzichtig: -5, blaam: -5,
   streber: 30, streberFactor: 0.8, gegund: 70, gegundFactor: 1.1,
+  titel: 'Gunfactor',
+  namen: ['Streber', 'Neutraal', 'Gegund'], // laag, midden, hoog
+  uitleg: [
+    'Men vindt je een streber. Strategisch netwerken levert nu minder op. Doe eens iets belangeloos.',
+    'Belangeloze dingen laten hem stijgen, zichtbaar netwerken laat hem dalen.',
+    'Het dorp gunt het je. Alles levert iets meer op.',
+  ],
 };
+
+// Bourdieu: je kapitaal in vier soorten. De som van skills, of de punten van je statussymbolen.
+export const KAPITAAL = [
+  { naam: 'Economisch', icoon: 'coins', skills: ['financial'] },
+  { naam: 'Cultureel', icoon: 'palette', skills: ['cultural'] },
+  { naam: 'Sociaal', icoon: 'users', skills: ['civic', 'stealth'] },
+  { naam: 'Symbolisch', icoon: 'medal', symbolen: true },
+];
 
 // Tijd en energie: elke week een sociaal budget. Een activiteit kost energie (de punten gedeeld door
 // ENERGIE.deler, tussen min en max), tenzij ze een eigen energie heeft. Wie over zijn budget gaat,
@@ -867,7 +909,18 @@ export const KAART = {
   kust: 'M640 0C520 120 300 330 0 560',
   duinen: 'M640 0H820C720 180 520 380 330 700H0V560C300 330 520 120 640 0Z',
   titel: 'Het Koninkrijk Wassenaar',
+  label: 'Kaart van Wassenaar als koninkrijk, schematisch',
   zeeNaam: 'De Noordzee',
+  zeeLabel: [250, 232],
+  zeegezicht: true, // een schip en een zeeslang
+  schaal: 'Eén dagmars',
+  tekst: {
+    gebied: 'Rijk',
+    mist: 'in de mist',
+    kies: 'Tik op een plek of buurt',
+    hulp: 'Een plek in kleur heb je ontdekt; een vage plek nog niet. Je eerste bezoek geeft ×2. Een rijk in de mist bezocht je nog niet; hoe voller de kleur, hoe vaker je er was.',
+    buurt: 'Kies bij het loggen onder "Met wie en waar?" de buurt. In een dorp ben je gevestigd per buurt.',
+  },
   duinNamen: [['De Heuvels van Berkheide', 610, 112], ['Het Duinland van Meijendel', 320, 512]],
   bossen: [
     { naam: 'Woud van De Horsten', punten: [[905, 152], [990, 148], [992, 238], [915, 246]] },

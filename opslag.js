@@ -2,7 +2,11 @@
  * Opslag op de server, versleuteld. De synccode is het enige geheim: daaruit komen het id waaronder
  * de server bewaart (een SHA-256-hash) en de sleutel waarmee de app versleutelt (HKDF, AES-GCM).
  * De server ziet de code en de voortgang dus nooit. Zie opslag.php.
+ * Elke wereld heeft eigen namen voor het id en de sleutel (WERELD.sync): een code van de ene app
+ * opent zo nooit de voortgang van de andere.
  */
+
+import { W } from './wereld.js';
 
 // Op een andere site dan hayobethlehem.nl (zoals GitHub Pages) gaat de opslag naar deze URL.
 const SERVER = 'https://hayobethlehem.nl/forge/status-tracker/opslag.php';
@@ -33,10 +37,10 @@ const naarBase64 = (bytes) => btoa(String.fromCharCode(...bytes));
 const uitBase64 = (s) => Uint8Array.from(atob(s), (t) => t.charCodeAt(0));
 
 async function sleutels(code) {
-  const id = hex(await crypto.subtle.digest('SHA-256', tekst.encode(`aanzien-id:${code}`)));
+  const id = hex(await crypto.subtle.digest('SHA-256', tekst.encode(`${W.WERELD.sync.id}:${code}`)));
   const basis = await crypto.subtle.importKey('raw', tekst.encode(code), 'HKDF', false, ['deriveKey']);
   const sleutel = await crypto.subtle.deriveKey(
-    { name: 'HKDF', hash: 'SHA-256', salt: tekst.encode('wassenaar-aanzien'), info: tekst.encode('sleutel') },
+    { name: 'HKDF', hash: 'SHA-256', salt: tekst.encode(W.WERELD.sync.zout), info: tekst.encode('sleutel') },
     basis, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt'],
   );
   return { id, sleutel };

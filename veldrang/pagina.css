@@ -1,0 +1,14 @@
+/*
+ * De losse pagina van Veldrang: een achtergrond in woodland-camo. Komt na ../standalone.css.
+ * Binnen een site zet de site er kop, menu en achtergrond omheen; daar laadt dit niet.
+ */
+
+body {
+  background:
+    radial-gradient(ellipse 9em 5em at 10% 20%, #c9c3a4 60%, transparent 62%),
+    radial-gradient(ellipse 7em 4em at 70% 12%, #b8b28d 60%, transparent 62%),
+    radial-gradient(ellipse 11em 6em at 85% 60%, #c9c3a4 60%, transparent 62%),
+    radial-gradient(ellipse 8em 5em at 30% 75%, #b8b28d 60%, transparent 62%),
+    #d9d4bc;
+  background-attachment: fixed;
+}
