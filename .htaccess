@@ -1,0 +1,8 @@
+# Laat de browser bij elk bezoek navragen of een bestand nog klopt. De app bestaat uit losse
+# modules; zonder dit kan een browser een nieuwe app.js combineren met een oude gegevens.js,
+# en dan start de tool niet. Een ongewijzigd bestand komt als korte 304 terug.
+<IfModule mod_headers.c>
+    <FilesMatch "\.(js|css|html|php|webmanifest)$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+</IfModule>

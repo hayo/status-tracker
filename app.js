@@ -995,8 +995,16 @@ el.logBuurt.append(...BUURTEN.map((b) => maak('option', { value: b }, b)));
 el.logDossier.append(...dossiers([]).map((d) => maak('option', { value: d.id }, d.naam)));
 toonVersies();
 toonSync();
-if (spel) verwerk();
+// Gaat het verwerken van je gegevens mis, dan opent de app toch, met de fout erbij. Je gegevens blijven staan.
+let startFout = null;
+if (spel) {
+  try { verwerk(); } catch (fout) { startFout = fout; }
+}
 toon();
+el.laden.hidden = !startFout;
+if (startFout) {
+  el.laden.textContent = `Er ging iets mis bij het openen van je voortgang (${startFout.message}). Je gegevens zijn niet weg. Bewaar je savegame onder Gegevens en stuur deze melding door.`;
+}
 haalOp();
 
 // Alleen als losse pagina. Binnen een site gaat de site over het offline werken.

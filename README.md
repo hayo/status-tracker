@@ -14,8 +14,10 @@ tool" opent de tool zelf (`app.html`).
   skills en een voor je kringen, de gunfactor als boog, je energie als ring,
   kapitaal, terreinen en statussymbolen.
 - **Dorp**: Wassenaar als fantasy-koninkrijk op perkament. Elke buurt is een rijk
-  dat kleurt naar je aanwezigheid; plekken zijn lakzegels die goud worden als je
-  ze ontdekt. Tik op een zegel om te loggen.
+  met grillige grenzen. Een rijk waar je nog niet was, ligt in de mist; hoe vaker
+  je er was, hoe voller de kleur van zijn wapen. Plekken zijn getekende
+  gebouwtjes, zoals een kasteel, een molen of een herberg. Ze zijn vaag tot je
+  ze ontdekt. Tik op een plek om te loggen.
   Daaronder de plekken als lijst, de buurten en de dossiers.
 - **Status**: je karakter met rang en niveau, de XP-balk naar de volgende rang,
   de rangladder, je skills met elk een eigen niveau, je statussymbolen als
@@ -53,6 +55,7 @@ bewaard/                  de standaardmap voor opslag.php, buiten git
 gegevens.js               rangen, eigenschappen, activiteiten, statussymbolen en startvragen
 wijzigingen/versies.js    de versies, de nieuwste bovenaan; de bovenste is de versie die draait
 sw.js                     laat de losse pagina ook zonder internet werken
+.htaccess                 laat de browser bij elk bezoek navragen of een bestand nog klopt (Apache)
 manifest.webmanifest      voor op het beginscherm
 iconen/                   de kroon, als svg en als png
 letters/                  Inter en Playfair Display, met hun licentie
@@ -95,6 +98,16 @@ landingspagina, `index.html`. Zo is `app.html` de enige bron van de tool.
 Binnen een site registreert de app geen service worker. Dat doet hij alleen als
 losse pagina, met het manifest in de kop.
 
+Alleen `app.js` en `app.css` krijgen van `index.php` een versie in de URL. De
+modules die `app.js` laadt, zoals `gegevens.js`, niet. Een browser die die
+modules lang bewaart, kan een nieuwe `app.js` combineren met een oude
+`gegevens.js`, en dan start de tool niet. Daarom zegt `.htaccess` dat de
+browser bij elk bezoek moet navragen of een bestand nog klopt (`no-cache`). Een
+ongewijzigd bestand komt dan als korte 304 terug. De service worker vraagt om
+dezelfde reden altijd na. Lukt het starten toch niet, dan blijft bovenaan een
+melding staan dat je de pagina moet herladen. Gaat het verwerken van je
+voortgang mis, dan opent de app toch, met de foutmelding erbij.
+
 De code is in deze repo en in de site gelijk. Deze repo is de bron. Na elke
 push naar `main` zet de GitHub Action `naar-codeberg.yml` de map ook in de repo
 van de site op Codeberg, met `git subtree`. Het werk zelf doet
@@ -128,7 +141,7 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 | `CATEGORIEEN` | `id`, `kringen` (gewicht per kring), `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |
 | `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `stijl?` (`opzichtig` of `ingetogen`), `kringen?`, `eigenschap` |
 | `KRINGEN` | de vier kringen; met `KRING_STANDEN` en `KRING_SYMBOOL` |
-| `KAART` | de kaart in een vlak van 1000 bij 700: `titel`, `zeeNaam`, zee, kust en duinen (paden), `duinNamen`, `bossen` en `buurten` (hoekpunten; de kaart rondt ze af; een buurt heeft een `titel` als rijk), `wegen` (pad, soort en waar de naam staat) en de plek van elke plek |
+| `KAART` | de kaart in een vlak van 1000 bij 700: `titel`, `zeeNaam`, zee, kust en duinen (paden), `duinNamen`, `bossen` en `buurten` (hoekpunten die rijken delen; de kaart tekent de grenzen grillig; een buurt heeft een `titel` als rijk en een `kleur` voor zijn wapen), `wegen` (pad, soort en waar de naam staat) en per plek een punt en een tekening (`kasteel`, `molen`, `tempel`, `koepel`, `huis`, `herberg`, `markt`, `tent`, `vuurtoren`, `boom`, `berg`, `uitkijk` of `vlag`) |
 | `ERKENNING` | `dagen` voor de bekendheid, de `niveaus`, en `verhoudingVanaf` |
 | `GUNFACTOR`, `ENERGIE`, `TYPEN` | de getallen voor gunfactor en energie, en de typen introvert en extravert |
 | `ROLLEN` | de rollen voor het netwerk |
@@ -234,7 +247,8 @@ De regels staan in `spel.js`, de getallen en teksten in `gegevens.js`.
   sociaal (maatschappelijke invloed plus discretie) en symbolisch (de PR van je
   statussymbolen).
 - **De kaart.** `KAART` in `gegevens.js` is schematisch en niet op schaal. Een
-  nieuwe plek in `PLEKKEN` heeft ook een punt in `KAART.plekken` nodig. Elke plek
+  nieuwe plek in `PLEKKEN` heeft ook een punt en een tekening in `KAART.plekken`
+  nodig. Twee rijken die aan elkaar grenzen, delen hun hoekpunten. Elke plek
   en buurt is een SVG-knop (`svgKnop` in `ui.js`), te bedienen met Enter en
   spatie. Dezelfde plekken staan ook als lijst onder de kaart.
 - **Dorpskaart.** Een activiteit met een `plek` die je nog nooit logde, geeft

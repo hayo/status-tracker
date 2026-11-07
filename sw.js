@@ -14,7 +14,8 @@ self.addEventListener('fetch', (event) => {
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     try {
-      const antwoord = await fetch(request);
+      // no-cache: altijd even bij de server navragen, zodat er geen oude en nieuwe bestanden door elkaar komen.
+      const antwoord = await fetch(request, { cache: 'no-cache' });
       if (antwoord.ok) await cache.put(request, antwoord.clone());
       return antwoord;
     } catch (fout) {

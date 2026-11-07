@@ -9,6 +9,17 @@
 
 export const VERSIES = [
   {
+    versie: '2.7.3',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'De tool start weer: je browser haalt nu altijd de nieuwste bestanden op, in plaats van oude en nieuwe door elkaar.',
+      'Lukt het openen toch niet, dan zie je een melding met wat je kunt doen. Je gegevens blijven staan.',
+      'De kaart lijkt meer op die van een game. Rijken sluiten op elkaar aan, met grillige grenzen en elk hun eigen kleur.',
+      'Een rijk waar je nog niet was, ligt in de mist. Hoe vaker je er bent, hoe voller de kleur.',
+      'Plekken zijn getekende gebouwtjes: een kasteel, een molen, een herberg, een vuurtoren. Vaag tot je ze ontdekt, daarna in kleur.',
+    ],
+  },
+  {
     versie: '2.7.2',
     datum: '2026-11-07',
     wijzigingen: [

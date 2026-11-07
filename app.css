@@ -2417,107 +2417,204 @@
   outline: none;
 }
 
-#aanzien .kaart-buurt path {
-  fill: #f6ead0;
-  fill-opacity: 0.55;
-  stroke: var(--inkt);
-  stroke-width: 1.8;
-  stroke-dasharray: 8 4 2 4;
+/* Elk rijk heeft de kleur van zijn wapen. */
+#aanzien .rijk-paars { --rijk: #6b3fa0; }
+#aanzien .rijk-rood { --rijk: #b23a2e; }
+#aanzien .rijk-groen { --rijk: #3d7a3a; }
+#aanzien .rijk-blauw { --rijk: #2f5f9a; }
+#aanzien .rijk-goud { --rijk: #c08a1e; }
+#aanzien .rijk-zeegroen { --rijk: #2e8a86; }
+#aanzien .rijk-bruin { --rijk: #9a5a2a; }
+
+#aanzien .rijk-vlak {
+  fill: var(--rijk);
+  fill-opacity: 0.06;
   transition: fill-opacity 150ms;
 }
 
-/* Hoe vaker je er was, hoe meer het rijk in jouw kleur staat: een wassing van oker. */
-#aanzien .kaart-buurt.stap-1 path { fill: #ecd59a; fill-opacity: 0.6; }
-#aanzien .kaart-buurt.stap-2 path { fill: #e2c070; fill-opacity: 0.65; }
-#aanzien .kaart-buurt.stap-3 path { fill: #d4a54a; fill-opacity: 0.65; }
-#aanzien .kaart-buurt.stap-4 path { fill: #c08b2e; fill-opacity: 0.7; }
-
-#aanzien .kaart-buurt:hover path {
-  fill-opacity: 0.85;
+#aanzien .rijk-mist {
+  fill: url("#az-kaart-mist");
 }
 
-#aanzien .kaart-buurt:focus-visible path,
-#aanzien .kaart-buurt.gekozen path {
+#aanzien .mist {
+  fill: none;
+  stroke: #9c8662;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+
+/* In de mist: een witte waas over het rijk. */
+#aanzien .kaart-buurt.stap-0 .rijk-vlak {
+  fill: #fffaea;
+  fill-opacity: 0.5;
+}
+
+#aanzien .rijk-band {
+  fill: none;
+  stroke: var(--rijk);
+  stroke-width: 9;
+  stroke-opacity: 0.12;
+  stroke-linejoin: round;
+}
+
+#aanzien .rijk-grens {
+  fill: none;
+  stroke: var(--inkt);
+  stroke-width: 2.2;
+  stroke-dasharray: 0.5 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Bezocht: de mist trekt op en het rijk kleurt voller naarmate je er vaker was. */
+#aanzien .kaart-buurt:not(.stap-0) .rijk-mist { display: none; }
+#aanzien .kaart-buurt:not(.stap-0) .rijk-band { stroke-opacity: 0.4; }
+#aanzien .kaart-buurt.stap-1 .rijk-vlak { fill-opacity: 0.14; }
+#aanzien .kaart-buurt.stap-2 .rijk-vlak { fill-opacity: 0.22; }
+#aanzien .kaart-buurt.stap-3 .rijk-vlak { fill-opacity: 0.32; }
+#aanzien .kaart-buurt.stap-4 .rijk-vlak { fill-opacity: 0.42; }
+
+#aanzien .kaart-buurt:hover .rijk-band {
+  stroke-opacity: 0.6;
+}
+
+#aanzien .kaart-buurt:focus-visible .rijk-grens,
+#aanzien .kaart-buurt.gekozen .rijk-grens {
   stroke: #a8322c;
   stroke-width: 3.5;
   stroke-dasharray: none;
 }
 
 #aanzien .kaart-buurt-titel {
-  font-family: var(--oud-kapitalen);
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  font-family: var(--oud);
+  font-size: 13px;
+  font-style: italic;
   fill: var(--sepia);
   pointer-events: none;
 }
 
 #aanzien .kaart-buurt-label {
-  font-family: var(--oud);
-  font-size: 20px;
+  font-family: var(--oud-kapitalen);
+  font-size: 18px;
+  letter-spacing: 0.14em;
   fill: var(--inkt);
   pointer-events: none;
 }
 
+/* Plekken: getekende gebouwtjes. Vaag zolang je er niet was, in kleur als je ze ontdekte. */
 #aanzien .kaart-pin {
+  --lm-muur: #f1e7cb;
+  --lm-dak: #cdbd99;
+  --lm-groen: #d5cda8;
+  --lm-steen: #ddd3b8;
+  --lm-vlag: #d9ccae;
+  --lm-inkt: #9c8662;
+
   cursor: pointer;
   outline: none;
 }
 
-#aanzien .pin-schaduw {
-  fill: rgb(74 52 24 / 25%);
+#aanzien .kaart-pin.ontdekt {
+  --lm-muur: #f8eed4;
+  --lm-dak: #a8322c;
+  --lm-groen: #6f8f45;
+  --lm-steen: #b9ad95;
+  --lm-vlag: #d9a520;
+  --lm-inkt: #3a2a14;
 }
+
+#aanzien .pin-lijf path,
+#aanzien .pin-lijf circle {
+  stroke: var(--lm-inkt);
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+#aanzien .lm-muur,
+#aanzien .lm-wiek { fill: var(--lm-muur); }
+#aanzien .lm-dak { fill: var(--lm-dak); }
+#aanzien .lm-groen { fill: var(--lm-groen); }
+#aanzien .lm-steen { fill: var(--lm-steen); }
+#aanzien .lm-vlag { fill: var(--lm-vlag); }
+#aanzien .lm-donker { fill: var(--lm-inkt); }
+
+#aanzien .lm-lijn,
+#aanzien .lm-zuil,
+#aanzien .lm-stam {
+  fill: none;
+}
+
+#aanzien .pin-lijf .lm-zuil { stroke-width: 2.6; }
+#aanzien .pin-lijf .lm-stam { stroke-width: 2.4; }
 
 #aanzien .pin-lijf {
   transform-box: fill-box;
-  transform-origin: 50% 50%;
+  transform-origin: 50% 100%;
   transition: transform 150ms;
 }
 
-#aanzien .pin-rand {
-  fill: #f3e6c4;
-  stroke: var(--sepia);
-  stroke-width: 1.5;
+#aanzien .pin-schaduw {
+  fill: rgb(74 52 24 / 22%);
 }
 
-#aanzien .pin-binnen {
-  fill: none;
-  stroke: var(--sepia);
-  stroke-width: 1;
-  stroke-dasharray: 2 2;
+#aanzien .pin-gloed {
+  fill: url("#az-kaart-gloed");
+  opacity: 0;
 }
 
-#aanzien .pin-icoon {
-  fill: var(--sepia);
+#aanzien .gloed-midden {
+  stop-color: #f2c64a;
+  stop-opacity: 0.85;
 }
 
-#aanzien .kaart-pin.ontdekt .pin-rand {
-  fill: #b8862b;
-  stroke: #7a5414;
+#aanzien .gloed-rand {
+  stop-color: #f2c64a;
+  stop-opacity: 0;
 }
 
-#aanzien .kaart-pin.ontdekt .pin-binnen {
-  stroke: #f6dc8a;
-  stroke-dasharray: none;
+#aanzien .kaart-pin.ontdekt .pin-gloed {
+  opacity: 1;
 }
 
-#aanzien .kaart-pin.ontdekt .pin-lijf {
-  filter: drop-shadow(0 0 5px rgb(230 180 60 / 75%));
-}
-
-#aanzien .kaart-pin.ontdekt .pin-icoon {
-  fill: #fff4d0;
+#aanzien .pin-raak {
+  fill: transparent;
 }
 
 #aanzien .kaart-pin:hover .pin-lijf,
 #aanzien .kaart-pin:focus-visible .pin-lijf,
 #aanzien .kaart-pin.gekozen .pin-lijf {
-  transform: scale(1.22);
+  transform: scale(1.3);
 }
 
-#aanzien .kaart-pin:focus-visible .pin-rand,
-#aanzien .kaart-pin.gekozen .pin-rand {
+#aanzien .kaart-pin:focus-visible .pin-schaduw,
+#aanzien .kaart-pin.gekozen .pin-schaduw {
+  fill: none;
   stroke: #a8322c;
-  stroke-width: 3;
+  stroke-width: 2.5;
+}
+
+#aanzien .kaart-naam {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#aanzien .kaart-naam.zichtbaar {
+  visibility: visible;
+}
+
+#aanzien .kaart-naam text {
+  font-family: var(--oud);
+  font-size: 15px;
+  fill: var(--inkt);
+}
+
+#aanzien .kaart-naam .kaart-naam-rand {
+  fill: none;
+  stroke: #f6ecd0;
+  stroke-width: 5;
+  stroke-linejoin: round;
 }
 
 #aanzien .windroos-ring {
@@ -2642,22 +2739,26 @@
 #aanzien .legenda-pin {
   width: 0.95em;
   height: 0.95em;
-  border: 2px solid #8a6a3c;
-  border-radius: 50%;
-  background: #f3e6c4;
+  border: 2px solid #9c8662;
+  border-radius: 0.15em 0.15em 0 0;
+  background: #f1e7cb;
 }
 
 #aanzien .legenda-pin.ontdekt {
-  border-color: #7a5414;
-  background: #b8862b;
-  box-shadow: 0 0 4px rgb(230 180 60 / 80%);
+  border-color: #3a2a14;
+  background: #a8322c;
+  box-shadow: 0 0 5px rgb(242 198 74 / 90%);
 }
 
-#aanzien .kaart-legenda .stap-0 { border: 1px dashed #4a3418; background: #f6ead0; }
-#aanzien .kaart-legenda .stap-1 { background: #ecd59a; }
-#aanzien .kaart-legenda .stap-2 { background: #e2c070; }
-#aanzien .kaart-legenda .stap-3 { background: #d4a54a; }
-#aanzien .kaart-legenda .stap-4 { background: #c08b2e; }
+#aanzien .kaart-legenda .stap-0 {
+  border: 1px dotted #4a3418;
+  background: repeating-linear-gradient(135deg, #f0e0b6 0 3px, #cdbd99 3px 4px);
+}
+
+#aanzien .kaart-legenda .stap-1 { background: rgb(107 63 160 / 14%); }
+#aanzien .kaart-legenda .stap-2 { background: rgb(107 63 160 / 22%); }
+#aanzien .kaart-legenda .stap-3 { background: rgb(107 63 160 / 32%); }
+#aanzien .kaart-legenda .stap-4 { background: rgb(107 63 160 / 42%); }
 
 /* ---------- Bekendheid ---------- */
 
