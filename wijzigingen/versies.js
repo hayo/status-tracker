@@ -21,6 +21,7 @@ export const VERSIES = [
       'Je statussymbolen hangen als uitrusting rond je avatar.',
       'Nieuw: de Erelijst, met je pad, titels, prestaties, je jaaroverzicht en New Game+.',
       'Wie wil, kan "vergeten worden" aanzetten: na vier weken stilte zakt je PR.',
+      'Een nieuwe startpagina legt uit hoe het spel werkt. De knop opent de tool.',
     ],
   },
   {

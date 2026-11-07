@@ -7,6 +7,9 @@ Ereburger.
 Demo: https://hayobethlehem.nl/forge/status-tracker en
 https://hayo.github.io/status-tracker/
 
+De startpagina (`index.html`) legt uit hoe het spel werkt. De knop "Open de
+tool" opent de tool zelf (`app.html`).
+
 - **Status**: je karakter met rang en niveau, de XP-balk naar de volgende rang,
   de rangladder, je skills met elk een eigen niveau, je statussymbolen als
   trofeeën, recente activiteiten, een kalender van 17 weken, punten per week en
@@ -24,8 +27,10 @@ de letters en iconen staan in de repo.
 ## Opbouw
 
 ```
-index.html                de app, en de losse pagina eromheen
-index.php                 binnen een site: geeft alleen het artikel uit index.html door
+index.html                de landingspagina: wat het is en hoe het werkt, met een knop naar de tool
+landing.css               de opmaak van de landingspagina, bovenop app.css
+app.html                  de tool, en de losse pagina eromheen
+index.php                 binnen een site: geeft alleen het artikel uit app.html door
 app.css                   de opmaak, alles onder #aanzien
 standalone.css            de achtergrond en de groene balk van de losse pagina
 app.js                    de app: tonen, loggen, bewaren
@@ -57,9 +62,9 @@ de voettekst en de pagina met wijzigingen lezen het daar.
 
 ## Draaien
 
-Zet de map op een webserver en open `index.html`. Een module laadt niet vanaf
-`file:`, dus lokaal: `python3 -m http.server` in de map, en dan
-`http://localhost:8000/`.
+Zet de map op een webserver en open `index.html`, of meteen `app.html`. Een
+module laadt niet vanaf `file:`, dus lokaal: `python3 -m http.server` in de map,
+en dan `http://localhost:8000/`.
 
 GitHub Pages doet hetzelfde. Zet het één keer aan onder Settings, Pages: Deploy
 from a branch, `main`, map `/ (root)`.
@@ -67,10 +72,10 @@ from a branch, `main`, map `/ (root)`.
 ### Binnen een site
 
 De map kan ook in een site staan, zoals op hayobethlehem.nl. De parser van de
-site sluit dan `index.php` in. Dat geeft alleen het artikel `#aanzien` uit
-`index.html` door, met `app.css` en `app.js` erbij. De site zet er kop, menu en
-opmaak omheen. Wordt `index.php` zelf opgevraagd, dan levert het gewoon
-`index.html`. Zo is `index.html` de enige bron van de inhoud.
+site sluit dan `index.php` in. Dat geeft de tool door: alleen het artikel
+`#aanzien` uit `app.html`, met `app.css` en `app.js` erbij. De site zet er kop en
+menu omheen. Wordt `index.php` zelf opgevraagd, dan levert het de
+landingspagina, `index.html`. Zo is `app.html` de enige bron van de tool.
 
 Binnen een site registreert de app geen service worker. Dat doet hij alleen als
 losse pagina, met het manifest in de kop.
@@ -115,7 +120,7 @@ ook op de statuspagina. Een activiteit van 100 PR of meer krijgt een gekleurde
 rand.
 
 Een `icoon` is de naam van een icoon uit Font Awesome Free (solid), zoals
-`mug-hot`. Het moet in de sprite boven in `index.html` staan, als
+`mug-hot`. Het moet in de sprite boven in `app.html` staan, als
 `<symbol id="az-i-mug-hot">`. Een nieuw icoon neem je over uit
 `svgs/solid/<naam>.svg` van het npm-pakket `@fortawesome/fontawesome-free`: de
 `viewBox` en het pad. Een `kleur` is een van `teal`, `blauw`, `rood`, `navy`,
@@ -123,6 +128,13 @@ Een `icoon` is de naam van een icoon uit Font Awesome Free (solid), zoals
 
 Een skill telt tot `EIGENSCHAP_MAX` punten: dat is 100 / 100. Elke 10 is een
 niveau. De rang van je karakter is ook zijn niveau: Voorbijganger is niveau 1.
+
+### De landingspagina
+
+De landingspagina is gewone HTML, zonder script. Ze noemt een paar aantallen
+(76 activiteiten, 7 rangen, 19 prestaties) en de rangen en terreinen. Verander
+je die in `gegevens.js`, pas dan ook `index.html` aan. De iconen staan in een
+eigen sprite boven in `index.html`.
 
 ## Spelregels
 

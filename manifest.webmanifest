@@ -4,7 +4,7 @@
   "description": "Level je karakter op in de Wassenaarse samenleving.",
   "lang": "nl",
   "dir": "ltr",
-  "start_url": "./",
+  "start_url": "app.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f9f6f0",

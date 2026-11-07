@@ -3,21 +3,22 @@
 /**
  * Wassenaar Aanzien binnen een site, zoals op hayobethlehem.nl/forge.
  *
- * Los opgevraagd levert dit gewoon index.html. Binnen een site, via de parser, alleen het artikel
- * #aanzien, met de opmaak en het script erbij. De site zet er kop, menu en de tokens van
- * standalone.css omheen. Zo is index.html de enige bron van de inhoud.
+ * Los opgevraagd levert dit de landingspagina, index.html. Binnen een site, via de parser, de
+ * tool zelf: alleen het artikel #aanzien uit app.html, met de opmaak en het script erbij. De site
+ * zet er kop en menu omheen. Zo is app.html de enige bron van de tool.
  */
 
 declare(strict_types=1);
 
 (static function (): void {
-    $html = (string) file_get_contents(__DIR__ . '/index.html');
     $script = realpath((string) ($_SERVER['SCRIPT_FILENAME'] ?? ''));
 
     if ($script !== false && dirname($script) === realpath(__DIR__)) {
-        echo $html;
+        readfile(__DIR__ . '/index.html');
         return;
     }
+
+    $html = (string) file_get_contents(__DIR__ . '/app.html');
 
     // De URL van deze map, afgeleid van de documentroot, met de wijzigingsdatum tegen een oude cache.
     $slash = static fn (string $p): string => str_replace('\\', '/', $p);
@@ -32,7 +33,7 @@ declare(strict_types=1);
     );
 
     if (!preg_match('~<!-- begin inhoud[^>]*-->(.*)<!-- einde inhoud -->~s', $html, $deel)) {
-        throw new RuntimeException('In index.html staat geen inhoud tussen de markeringen.');
+        throw new RuntimeException('In app.html staat geen inhoud tussen de markeringen.');
     }
 
     echo '<link rel="stylesheet" href="', $url('app.css'), '">', "\n",

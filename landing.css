@@ -1,0 +1,304 @@
+/*
+ * De landingspagina. Bouwt op app.css: dezelfde kleuren, letters, panelen, avatar en ladder.
+ * Hier staat alleen wat de landingspagina extra heeft.
+ */
+
+#aanzien .merk {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  color: #fff;
+  font-family: var(--serif);
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+#aanzien .knop-goud {
+  border-color: var(--goud);
+  background: linear-gradient(135deg, #e6c450, var(--goud) 55%, var(--goud-donker));
+  color: var(--navy);
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgb(212 175 55 / 35%);
+}
+
+#aanzien .knop-goud:hover {
+  border-color: var(--goud-donker);
+  background: var(--goud);
+}
+
+#aanzien a.knop-licht {
+  text-decoration: none;
+}
+
+#aanzien .knop-groot {
+  min-height: 3.25em;
+  padding: 0.75em 1.6em;
+  font-size: 1.05em;
+}
+
+#aanzien section {
+  margin-bottom: 2em;
+}
+
+/* ---------- Held ---------- */
+
+#aanzien .held {
+  display: grid;
+  align-items: center;
+  gap: 2em;
+  padding: 1.5em 0 1em;
+}
+
+@media (width >= 56em) {
+  #aanzien .held {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 3em;
+    padding: 3em 0 2em;
+  }
+}
+
+#aanzien .held h1 {
+  margin: 0.2em 0 0.5em;
+  color: var(--navy);
+  font-size: clamp(2em, 5vw, 3em);
+  line-height: 1.1;
+}
+
+#aanzien .intro {
+  color: var(--zacht);
+  font-size: 1.15em;
+}
+
+#aanzien .feitjes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-top: 1.5em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .feitjes li {
+  padding: 0.35em 0.9em;
+  border: 1px solid var(--goud-rand);
+  border-radius: 2em;
+  background: var(--goud-licht);
+  font-size: 0.9em;
+}
+
+#aanzien .feitjes strong {
+  color: var(--goud-tekst);
+}
+
+#aanzien .voorbeeld {
+  margin: 0;
+}
+
+#aanzien .voorbeeld-kaart {
+  margin: 0;
+  padding: 2em 1.75em;
+  transform: rotate(1.5deg);
+}
+
+#aanzien .voorbeeld-kaart .karakter-wie {
+  margin-bottom: 1.25em;
+}
+
+#aanzien .voorbeeld-pr {
+  margin: 0 0 0.75em;
+  color: var(--zacht);
+  font-weight: 700;
+}
+
+#aanzien .voorbeeld-pr .pr {
+  margin-right: 0.15em;
+}
+
+#aanzien .voorbeeld-beloning {
+  display: grid;
+  gap: 0.4em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85em;
+}
+
+#aanzien .voorbeeld-beloning li {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.5em 0.75em;
+  border: 1px solid var(--goud-rand);
+  border-radius: 0.6em;
+  background: var(--goud-licht);
+  font-weight: 600;
+}
+
+#aanzien .voorbeeld-beloning .icoon {
+  color: var(--goud-donker);
+}
+
+#aanzien .voorbeeld figcaption {
+  margin-top: 0.75em;
+  color: var(--zacht);
+  font-size: 0.85em;
+  font-style: italic;
+  text-align: center;
+}
+
+/* ---------- Stappen en kenmerken ---------- */
+
+#aanzien .stappen {
+  display: grid;
+  gap: 1.5em;
+  padding: 0;
+  list-style: none;
+  counter-reset: stap;
+}
+
+@media (width >= 46em) {
+  #aanzien .stappen {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 64em) {
+  #aanzien .stappen {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+#aanzien .stappen li {
+  position: relative;
+  counter-increment: stap;
+}
+
+#aanzien .stappen li::before {
+  content: counter(stap);
+  position: absolute;
+  top: -0.3em;
+  left: 2.1em;
+  display: grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font-size: 0.8em;
+  font-weight: 800;
+}
+
+#aanzien .stap-icoon {
+  display: grid;
+  place-items: center;
+  width: 3em;
+  height: 3em;
+  margin-bottom: 0.75em;
+  border-radius: 50%;
+  background: var(--goud-licht);
+  color: var(--goud-donker);
+}
+
+#aanzien .stap-icoon .icoon {
+  width: 1.4em;
+  height: 1.4em;
+}
+
+#aanzien :is(.stappen, .kenmerken) h3 {
+  padding: 0;
+  border: 0;
+  font-size: 1.1em;
+}
+
+#aanzien :is(.stappen, .kenmerken) p {
+  margin: 0;
+  color: var(--zacht);
+  font-size: 0.92em;
+}
+
+#aanzien .kenmerken {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  gap: 1em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .kenmerken li {
+  margin: 0;
+  border-top: 4px solid var(--cat);
+}
+
+#aanzien .kenmerk-icoon {
+  width: 2.6em;
+  height: 2.6em;
+  margin-bottom: 0.6em;
+  padding: 0.6em;
+  border-radius: 50%;
+  background: var(--cat-licht);
+  color: var(--cat);
+}
+
+/* ---------- Terreinen, privacy en slot ---------- */
+
+#aanzien .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .chips li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.45em 0.9em;
+  border-radius: 2em;
+  background: var(--cat-licht);
+  color: var(--cat);
+  font-size: 0.9em;
+  font-weight: 700;
+}
+
+#aanzien .vinkjes {
+  display: grid;
+  gap: 0.6em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .vinkjes li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6em;
+}
+
+#aanzien .vinkjes .icoon {
+  margin-top: 0.2em;
+  color: #15803d;
+}
+
+#aanzien .slot {
+  padding: 2.5em 1.5em;
+  text-align: center;
+}
+
+#aanzien .slot h2 {
+  color: #fff;
+  font-size: 2em;
+}
+
+#aanzien .slot .knoppen {
+  justify-content: center;
+}
+
+#aanzien .slot-kroon {
+  width: 3.5em;
+  height: 3.5em;
+  color: var(--goud);
+  filter: drop-shadow(0 0 12px rgb(212 175 55 / 50%));
+}
