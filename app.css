@@ -153,6 +153,7 @@
 #aanzien .cat-oranje { --cat: #9a3412; --cat-licht: #ffedd5; }
 #aanzien .cat-amber { --cat: #92400e; --cat-licht: #fef3c7; }
 #aanzien .cat-goud { --cat: #7a5c0e; --cat-licht: #fbf1cf; }
+#aanzien .cat-zilver { --cat: #374151; --cat-licht: #e5e7eb; }
 
 #aanzien .skill-civic { --cat: #2563eb; }
 #aanzien .skill-cultural { --cat: #9333ea; }
@@ -837,7 +838,7 @@
   border-left: 4px solid var(--cat);
 }
 
-#aanzien .strategie h3 {
+#aanzien .strategie h4 {
   padding: 0;
   border: 0;
   color: var(--tekst);
@@ -1576,6 +1577,227 @@
   margin-left: auto;
   letter-spacing: 0.04em;
   text-transform: none;
+}
+
+/* ---------- Sociaal: eisen, roddel, verplichtingen, kapitaal, netwerk ---------- */
+
+#aanzien .eisen-kop {
+  margin: 1.25em 0 0.4em;
+  font-size: 0.9em;
+  font-weight: 700;
+}
+
+#aanzien .eisen {
+  display: grid;
+  gap: 0.35em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.88em;
+}
+
+#aanzien .eis {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+  color: var(--zacht);
+}
+
+#aanzien .eis-icoon {
+  margin-top: 0.15em;
+  color: var(--goud-donker);
+}
+
+#aanzien .klaar .eis-icoon {
+  color: #15803d;
+}
+
+#aanzien .roddel {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  margin: 0 0 1.5em;
+  padding: 0.8em 1.1em;
+  border-left: 4px solid #15803d;
+  border-radius: 0.6em;
+  background: #f0fdf4;
+  font-size: 0.92em;
+}
+
+#aanzien .roddel.blaam {
+  border-left-color: var(--rood);
+  background: #fef2f2;
+}
+
+#aanzien .roddel > .icoon {
+  width: 1.4em;
+  height: 1.4em;
+  color: var(--zacht);
+}
+
+#aanzien .verplichtingen {
+  display: grid;
+  gap: 0.5em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .verplichting {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em 0.75em;
+  padding: 0.7em 0.9em;
+  border: 1px solid var(--goud-rand);
+  border-radius: 0.6em;
+  background: var(--goud-licht);
+  font-size: 0.9em;
+}
+
+#aanzien .verplichting > span {
+  flex: 1 1 14em;
+}
+
+#aanzien .verplichting > .icoon {
+  color: var(--goud-donker);
+}
+
+#aanzien .verplichting.te-laat {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+#aanzien .kapitaal-kop {
+  margin-top: 1.5em;
+  color: var(--navy);
+  font-family: var(--serif);
+}
+
+#aanzien .kapitaal {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
+  gap: 0.6em;
+}
+
+#aanzien .kapitaal > div {
+  padding: 0.6em 0.8em;
+  border-radius: 0.6em;
+  background: var(--vlak);
+}
+
+#aanzien .kapitaal dt {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  color: var(--zacht);
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+#aanzien .kapitaal dd {
+  margin: 0.15em 0 0;
+  color: var(--navy);
+  font-size: 1.2em;
+  font-weight: 800;
+}
+
+#aanzien .netwerk {
+  display: grid;
+  gap: 0.4em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .netwerk > li:not(.leeg) {
+  display: grid;
+  grid-template-columns: minmax(5em, auto) 1fr auto;
+  align-items: center;
+  gap: 0.75em;
+  padding: 0.5em 0.75em;
+  border-radius: 0.5em;
+  background: var(--vlak);
+  font-size: 0.9em;
+}
+
+#aanzien .netwerk-wie {
+  font-weight: 700;
+}
+
+#aanzien .band {
+  padding: 0.1em 0.5em;
+  border-radius: 1em;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-size: 0.8em;
+  font-weight: 700;
+}
+
+#aanzien .band.zwak {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+#aanzien .band.hecht {
+  background: var(--goud-licht);
+  color: var(--goud-tekst);
+}
+
+#aanzien .wetenschap {
+  display: grid;
+  gap: 0.6em;
+  padding-left: 1.2em;
+  color: var(--zacht);
+  font-size: 0.92em;
+}
+
+#aanzien .wetenschap strong {
+  color: var(--tekst);
+}
+
+#aanzien .quiz {
+  display: grid;
+  gap: 1.25em;
+}
+
+#aanzien .quizvraag.goed legend::after {
+  content: " ✓";
+  color: #15803d;
+}
+
+#aanzien .quiz-uitleg {
+  margin: 0.4em 0 0;
+  color: var(--zacht);
+  font-size: 0.9em;
+}
+
+#aanzien .quizvraag.goed .quiz-uitleg {
+  color: #15803d;
+  font-weight: 600;
+}
+
+#aanzien .nationaal {
+  display: grid;
+  gap: 0.4em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .nationale-dag {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+#aanzien .nationaal .icoon {
+  color: var(--goud-donker);
+}
+
+#aanzien .log-contact {
+  margin-bottom: 0.75em;
+}
+
+#aanzien .log-contact select {
+  width: 100%;
 }
 
 /* ---------- Opslag op de server ---------- */

@@ -5,8 +5,10 @@
  */
 
 import {
-  RANGEN, EIGENSCHAPPEN, CATEGORIEEN, PRESTATIES, TITELS, PADEN, PAD_BONUS, MISSIES,
+  RANGEN, EIGENSCHAPPEN, CATEGORIEEN, SYMBOLEN, PRESTATIES, TITELS, PADEN, PAD_BONUS, MISSIES,
   REEKS_STAP, REEKS_MAX, EVENTS, VERGETEN_NA, VERGETEN_PER_WEEK, VERGETEN_MAX,
+  WEDERKERIG_WEKEN, WEDERKERIG_BONUS, BEDANK_DAGEN, BEDANK_BONUS, VERZADIGD_NA, VERZADIGD_FACTOR,
+  NIEUWE_BRUG, HECHT_VANAF, OPZICHTIG, INGETOGEN, RODDEL, NATIONALE_DAGEN, NATIONAAL_MARGE, NATIONAAL_BONUS,
 } from './gegevens.js';
 
 /* ---------- Datums ---------- */
@@ -98,15 +100,99 @@ export function volgendEvent(vandaag = new Date()) {
 
 export const pad = (spel) => PADEN.find((p) => p.id === spel.pad) ?? null;
 
-// De bonussen voor een activiteit op een datum: reeks, event en pad. Ze vermenigvuldigen.
-export function bonussen(spel, activiteit, datum) {
+// De nationale dag rond een datum, of null.
+export function nationaleDag(datum) {
+  const d = alsDatum(datum);
+  return NATIONALE_DAGEN.find(([, md]) => Math.abs(dagenTussen(alsDatum(`${d.getFullYear()}-${md}`), d)) <= NATIONAAL_MARGE) ?? null;
+}
+
+export function komendeNationaleDagen(vandaag = new Date(), aantal = 5) {
+  const j = vandaag.getFullYear();
+  return NATIONALE_DAGEN
+    .map(([land, md]) => {
+      let d = alsDatum(`${j}-${md}`);
+      if (dagenTussen(vandaag, d) < -NATIONAAL_MARGE) d = alsDatum(`${j + 1}-${md}`);
+      return { land, datum: d, over: dagenTussen(plusDagen(vandaag, 0), d) };
+    })
+    .sort((a, b) => a.datum - b.datum)
+    .slice(0, aantal);
+}
+
+/* ---------- Netwerk, gastvrijheid en opvolging ---------- */
+
+// Je netwerk: iedereen die je bij een activiteit noemde, op initialen of bijnaam.
+export function netwerk(logboek) {
+  const mensen = new Map();
+  for (const r of [...logboek].sort((a, b) => a.datum.localeCompare(b.datum))) {
+    const wie = r.contact?.wie?.trim();
+    if (!wie) continue;
+    const sleutel = wie.toLocaleLowerCase('nl');
+    const m = mensen.get(sleutel) ?? { wie, rol: r.contact.rol, keer: 0, laatste: r.datum };
+    m.keer++;
+    m.laatste = r.datum;
+    if (r.contact.rol) m.rol = r.contact.rol;
+    mensen.set(sleutel, m);
+  }
+  const lijst = [...mensen.values()].sort((a, b) => b.keer - a.keer || b.laatste.localeCompare(a.laatste));
+  return { mensen: lijst, rollen: new Set(lijst.map((m) => m.rol).filter(Boolean)), hecht: lijst.filter((m) => m.keer >= HECHT_VANAF).length };
+}
+
+// Wederkerigheid: elke tegenuitnodiging beantwoordt de oudste open uitnodiging.
+export function gastvrijheid(logboek, vandaag = new Date()) {
+  const open = [];
+  let opTijd = 0, tegen = 0;
+  for (const r of [...logboek].sort((a, b) => a.datum.localeCompare(b.datum) || (a.tijd ?? '').localeCompare(b.tijd ?? ''))) {
+    const a = ACTIVITEITEN.get(r.activiteit);
+    if (a?.uitnodiging) open.push(r);
+    if (a?.tegen) {
+      tegen++;
+      const u = open.shift();
+      if (u && dagenTussen(alsDatum(u.datum), alsDatum(r.datum)) <= WEDERKERIG_WEKEN * 7) opTijd++;
+    }
+  }
+  return {
+    open: open.map((r) => ({ regel: r, dagen: dagenTussen(alsDatum(r.datum), vandaag), resterend: WEDERKERIG_WEKEN * 7 - dagenTussen(alsDatum(r.datum), vandaag) })),
+    opTijd,
+    tegen,
+  };
+}
+
+// Activiteiten die om een bedankje vragen, en dat nog niet kregen.
+export function opvolgingen(logboek, vandaag = new Date()) {
+  const bedankt = new Set(logboek.map((r) => r.voor).filter(Boolean));
+  return logboek
+    .filter((r) => ACTIVITEITEN.get(r.activiteit)?.bedank && !bedankt.has(r.id))
+    .map((r) => ({ regel: r, resterend: BEDANK_DAGEN - dagenTussen(alsDatum(r.datum), vandaag) }));
+}
+
+/* ---------- Bonussen ---------- */
+
+// De bonussen voor een activiteit of symbool op een datum. Ze vermenigvuldigen.
+// extra: { symbool, voor (de regel die je bedankt), rol (van wie je noemde) }.
+export function bonussen(spel, item, datum, extra = {}) {
   const lijst = [];
+  const ervoor = spel.logboek.filter((x) => x.datum <= datum);
+  if (extra.symbool) {
+    const discretie = eigenschappen(spel.logboek).stealth;
+    if (item.stijl === 'opzichtig' && discretie < OPZICHTIG.onder) lijst.push(['Te opzichtig', OPZICHTIG.factor]);
+    if (item.stijl === 'ingetogen' && discretie >= INGETOGEN.vanaf) lijst.push(['Stijlvol ingetogen', INGETOGEN.factor]);
+    return { lijst, factor: lijst.reduce((f, [, x]) => f * x, 1) };
+  }
   const r = reeksVoor(actieveWeken(spel.logboek.filter((x) => x.datum < datum)), maandag(alsDatum(datum)));
   if (r) lijst.push([`Reeks ${r} ${r === 1 ? 'week' : 'weken'}`, Math.min(REEKS_MAX, 1 + r * REEKS_STAP)]);
   const e = event(datum);
   if (e) lijst.push([e.naam, e.factor]);
+  const a = ACTIVITEITEN.get(item.id);
   const p = pad(spel);
-  if (p?.terreinen.includes(ACTIVITEITEN.get(activiteit.id)?.terrein)) lijst.push([p.naam, 1 + PAD_BONUS]);
+  if (p?.terreinen.includes(a?.terrein)) lijst.push([p.naam, 1 + PAD_BONUS]);
+  const n = nationaleDag(datum);
+  if (a?.nationaal && n) lijst.push([`Nationale dag van ${n[0]}`, NATIONAAL_BONUS]);
+  if (a?.tegen && gastvrijheid(ervoor, alsDatum(datum)).open.some((u) => u.resterend >= 0)) lijst.push(['Wederkerigheid', WEDERKERIG_BONUS]);
+  if (extra.voor && dagenTussen(alsDatum(extra.voor.datum), alsDatum(datum)) <= BEDANK_DAGEN) lijst.push(['Op tijd bedankt', BEDANK_BONUS]);
+  if (extra.rol && !netwerk(ervoor).rollen.has(extra.rol)) lijst.push([`Nieuwe brug: ${extra.rol.toLocaleLowerCase('nl')}`, NIEUWE_BRUG]);
+  const week = weekVan(datum);
+  const keer = spel.logboek.filter((x) => x.activiteit === item.id && weekVan(x.datum) === week).length;
+  if (keer >= VERZADIGD_NA) lijst.push(['Verzadigd: al vaak deze week', VERZADIGD_FACTOR]);
   return { lijst, factor: lijst.reduce((f, [, x]) => f * x, 1) };
 }
 
@@ -135,6 +221,22 @@ export function statistiek(spel) {
     prestige: spel.ronde,
     event: acties.filter((r) => r.event).length,
     comeback: datums.some((d, i) => i > 0 && dagenTussen(alsDatum(datums[i - 1]), alsDatum(d)) >= 28) ? 1 : 0,
+    ...(() => {
+      const n = netwerk(spel.logboek);
+      const g = gastvrijheid(spel.logboek);
+      const regels = new Map(spel.logboek.map((r) => [r.id, r]));
+      return {
+        contacten: n.mensen.length,
+        rollen: n.rollen.size,
+        hecht: n.hecht,
+        wederkerig: g.opTijd,
+        tegen: g.tegen,
+        bedankt: spel.logboek.filter((r) => r.voor && regels.has(r.voor) && dagenTussen(alsDatum(regels.get(r.voor).datum), alsDatum(r.datum)) <= BEDANK_DAGEN).length,
+        lof: spel.logboek.filter((r) => r.roddel && r.punten > 0).length,
+        blaam: spel.logboek.filter((r) => r.roddel && r.punten < 0).length,
+        quiz: new Set(spel.logboek.map((r) => r.quiz).filter(Boolean)).size,
+      };
+    })(),
   };
 }
 
@@ -157,9 +259,21 @@ export function voortgang(v, st) {
     prestige: () => st.prestige,
     event: () => st.event,
     comeback: () => st.comeback,
+    contacten: () => st.contacten,
+    rollen: () => st.rollen,
+    hecht: () => st.hecht,
+    wederkerig: () => st.wederkerig,
+    tegen: () => st.tegen,
+    bedankt: () => st.bedankt,
+    lof: () => st.lof,
+    blaam: () => st.blaam,
+    quiz: () => st.quiz,
   }[v.soort];
   if (v.soort === 'alle') {
     return { nu: v.lijst.filter((d) => gehaald(d, st)).length, doel: v.lijst.length };
+  }
+  if (v.soort === 'een') {
+    return { nu: v.lijst.some((d) => gehaald(d, st)) ? 1 : 0, doel: 1 };
   }
   return { nu: Math.min(doel, nu()), doel };
 }
@@ -171,6 +285,54 @@ export function ontgrendeld(spel, st = statistiek(spel)) {
     prestaties: new Set(PRESTATIES.filter((p) => gehaald(p.voorwaarde, st)).map((p) => p.id)),
     titels: new Set(TITELS.filter((t) => gehaald(t.voorwaarde, st)).map((t) => t.id)),
   };
+}
+
+/* ---------- Rang ---------- */
+
+// Dagen sinds het begin van deze ronde.
+export function dagenInSpel(spel, vandaag = new Date()) {
+  const eerste = spel.logboek.filter((r) => ronde(r) === spel.ronde).map((r) => r.datum).sort()[0];
+  return eerste ? Math.max(0, dagenTussen(alsDatum(eerste), vandaag)) : 0;
+}
+
+// Je rang vraagt PR, tijd en een ritueel. Zonder ritueel of tijd blijf je hangen, hoeveel PR je ook hebt.
+export function rang(spel, st = statistiek(spel)) {
+  const punten = stand(spel), dagen = dagenInSpel(spel);
+  const eisen = (r) => ({ punten: punten >= r.min, dagen: dagen >= r.dagen, ritueel: !r.ritueel || gehaald(r.ritueel.voorwaarde, st) });
+  let index = 0;
+  while (RANGEN[index + 1] && Object.values(eisen(RANGEN[index + 1])).every(Boolean)) index++;
+  const volgende = RANGEN[index + 1];
+  return { index, punten, dagen, volgende: volgende ? { ...volgende, eisen: eisen(volgende) } : null };
+}
+
+// Bourdieu: je kapitaal in vier soorten.
+export function kapitaal(spel, st = statistiek(spel)) {
+  return {
+    economisch: st.skills.financial,
+    cultureel: st.skills.cultural,
+    sociaal: st.skills.civic + st.skills.stealth,
+    symbolisch: spel.logboek.filter((r) => r.symbolen?.length).reduce((s, r) => s + r.punten, 0),
+  };
+}
+
+/* ---------- Roddel ---------- */
+
+// Eén keer per week oordeelt het dorp over je vorige week: lof of blaam. Of niets.
+export function roddel(spel, vandaag = new Date()) {
+  const week = maandag(vandaag), sleutel = dagSleutel(week);
+  if (spel.logboek.some((r) => r.roddel === sleutel)) return null;
+  const vorige = dagSleutel(plusDagen(week, -7));
+  const toen = spel.logboek.filter((r) => telt(r) && !r.roddel && !r.missie && r.datum >= vorige && r.datum < sleutel);
+  if (!toen.length) return null;
+  const acties = toen.filter((r) => ACTIVITEITEN.has(r.activiteit));
+  const verlopen = gastvrijheid(spel.logboek, vandaag).open.some((u) => u.resterend < 0 && u.resterend >= -14);
+  const discretie = eigenschappen(spel.logboek).stealth;
+  const pronk = toen.some((r) => r.symbolen?.some((id) => SYMBOLEN.find((x) => x.id === id)?.stijl === 'opzichtig')) && discretie < OPZICHTIG.onder;
+  const bedankt = new Set(spel.logboek.map((r) => r.voor).filter(Boolean));
+  const gemist = acties.filter((r) => ACTIVITEITEN.get(r.activiteit).bedank && !bedankt.has(r.id)).length;
+  const terreinen = new Set(acties.map((r) => ACTIVITEITEN.get(r.activiteit).terrein));
+  const soort = verlopen ? 'gierig' : pronk ? 'opzichtig' : gemist >= 2 ? 'ondankbaar' : acties.length >= 3 && terreinen.size >= 2 ? 'lof' : null;
+  return soort ? { id: sleutel, soort, ...RODDEL[soort] } : null;
 }
 
 /* ---------- Weekmissies ---------- */

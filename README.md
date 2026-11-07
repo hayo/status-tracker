@@ -112,13 +112,20 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 
 | Wat | Velden |
 | --- | --- |
-| `RANGEN` | `min` (punten vanaf), `naam`, `uitleg`, `icoon` |
+| `RANGEN` | `min` (punten vanaf), `dagen` (tijd in het spel), `ritueel` (`tekst` en `voorwaarde`), `naam`, `uitleg`, `icoon` |
 | `EIGENSCHAPPEN` | sleutel => `naam` en `icoon`. `EIGENSCHAP_MAX` is het aantal punten waarbij de balk vol is |
-| `CATEGORIEEN` | `id`, `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap]` |
-| `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `eigenschap` |
+| `CATEGORIEEN` | `id`, `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |
+| `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `stijl?` (`opzichtig` of `ingetogen`), `eigenschap` |
+| `ROLLEN` | de rollen voor het netwerk |
+| `NATIONALE_DAGEN` | `[land, MM-DD]` |
+| `QUIZ` | `id`, `vraag`, `antwoorden`, `goed` (index), `uitleg` |
 | `STARTVRAGEN` | `id`, `vraag`, `eigenschap`, `deel` (welk deel van de punten naar de eigenschap gaat), en `antwoorden` als `[tekst, punten]` |
 
-Een nieuwe activiteit krijgt een nieuw id, zoals `a12`. Verander nooit een
+De kenmerken van een activiteit: `uitnodiging` (je werd uitgenodigd), `tegen` (je
+nodigde zelf uit), `bedank` (vraagt om een bedankje) en `nationaal` (extra XP rond
+een nationale dag).
+
+Een nieuwe activiteit krijgt een nieuw id, zoals `a19`. Verander nooit een
 bestaand id: het logboek verwijst ernaar. Een nieuw terrein verschijnt vanzelf,
 ook op de statuspagina. Een activiteit van 100 PR of meer krijgt een gekleurde
 rand.
@@ -128,7 +135,7 @@ Een `icoon` is de naam van een icoon uit Font Awesome Free (solid), zoals
 `<symbol id="az-i-mug-hot">`. Een nieuw icoon neem je over uit
 `svgs/solid/<naam>.svg` van het npm-pakket `@fortawesome/fontawesome-free`: de
 `viewBox` en het pad. Een `kleur` is een van `teal`, `blauw`, `rood`, `navy`,
-`paars`, `groen`, `oranje`, `amber` of `goud`.
+`paars`, `groen`, `oranje`, `amber`, `goud` of `zilver`.
 
 Een skill telt tot `EIGENSCHAP_MAX` punten: dat is 100 / 100. Elke 10 is een
 niveau. De rang van je karakter is ook zijn niveau: Voorbijganger is niveau 1.
@@ -136,7 +143,7 @@ niveau. De rang van je karakter is ook zijn niveau: Voorbijganger is niveau 1.
 ### De landingspagina
 
 De landingspagina is gewone HTML, zonder script. Ze noemt een paar aantallen
-(76 activiteiten, 7 rangen, 19 prestaties) en de rangen en terreinen. Verander
+(98 activiteiten, 7 rangen, 28 prestaties, tien terreinen) en de rangen en terreinen. Verander
 je die in `gegevens.js`, pas dan ook `index.html` aan. De iconen staan in een
 eigen sprite boven in `index.html`.
 
@@ -144,15 +151,32 @@ eigen sprite boven in `index.html`.
 
 De regels staan in `spel.js`, de getallen en teksten in `gegevens.js`.
 
-- **Rang en niveau.** Je PR bepaalt je rang (`RANGEN`). Voorbijganger is niveau
-  1, Ereburger niveau 7.
+- **Rang en niveau.** Een rang vraagt drie dingen: genoeg PR (`min`), genoeg
+  dagen sinds het begin van deze ronde (`dagen`), en een `ritueel`, zoals lid
+  worden van een club. Zo werkt het ook in een dorp: je koopt je niet in
+  (Elias en Scotson), en je stapt over via een overgangsmoment (Van Gennep).
+  De statuspagina toont wat er nog moet. Voorbijganger is niveau 1, Ereburger
+  niveau 7.
 - **Skills.** Elke activiteit telt mee voor één skill. `EIGENSCHAP_MAX` punten is
   100 / 100; elke tiende daarvan is een niveau.
 - **Bonussen.** Op een activiteit, niet op een statussymbool. Ze vermenigvuldigen:
   - reeks: `REEKS_STAP` per week op rij actief vóór de week van de activiteit,
     tot `REEKS_MAX`;
   - event: de `factor` van een event in `EVENTS`, op de datum van de activiteit;
-  - pad: `1 + PAD_BONUS` op de terreinen van je pad.
+  - pad: `1 + PAD_BONUS` op de terreinen van je pad;
+  - nationale dag: `NATIONAAL_BONUS` op een activiteit met `nationaal`, tot
+    `NATIONAAL_MARGE` dagen van een dag in `NATIONALE_DAGEN`;
+  - wederkerigheid: `WEDERKERIG_BONUS` op een activiteit met `tegen`, als er een
+    uitnodiging open staat van minder dan `WEDERKERIG_WEKEN` weken;
+  - op tijd bedankt: `BEDANK_BONUS` op een bedankje binnen `BEDANK_DAGEN` dagen;
+  - nieuwe brug: `NIEUWE_BRUG` als je iemand noemt in een rol die nog niet in je
+    netwerk zat;
+  - verzadigd: `VERZADIGD_FACTOR` als je dezelfde activiteit die week al
+    `VERZADIGD_NA` keer deed.
+
+  Op een statussymbool telt alleen de stijl: opzichtig levert `OPZICHTIG.factor`
+  op met minder dan `OPZICHTIG.onder` sociale discretie, ingetogen
+  `INGETOGEN.factor` vanaf `INGETOGEN.vanaf`.
 
   De regel in het logboek bewaart de punten mét bonus, de `basis` en de
   `bonussen` als tekst. Later van pad wisselen verandert dus niets aan wat je al
@@ -171,6 +195,23 @@ De regels staan in `spel.js`, de getallen en teksten in `gegevens.js`.
   rang, skill-niveaus, prestaties, titels en missies. Is er iets bij, dan toont
   hij het beloningsvenster.
 - **Uitrusting.** Je acht duurste statussymbolen hangen rond je avatar.
+- **Netwerk.** Bij het loggen vul je optioneel in met wie je was: initialen of een
+  bijnaam, en een rol uit `ROLLEN`. Nooit een volledige naam. De Erelijst toont
+  je mensen, je rollen en je hechte banden (`HECHT_VANAF` keer gezien), tegen
+  het getal van Dunbar (`DUNBAR`).
+- **Sociale verplichtingen.** Elke uitnodiging staat open tot een
+  tegenuitnodiging (de oudste eerst). Na een activiteit met `bedank` vraagt het
+  spel om een bedankje; de knop "Gedaan" logt het, gekoppeld via `voor`.
+- **Roddel.** Bij je eerste actie van een week oordeelt het dorp één keer over je
+  vorige week (`RODDEL`): blaam als een uitnodiging net te laat is, als je
+  pronkte met een opzichtig symbool zonder discretie, of als je twee bedankjes
+  vergat; lof bij drie activiteiten in twee terreinen. Het wordt een regel in het
+  logboek, met `roddel` en de PR.
+- **Kapitaal.** Naar Bourdieu: economisch (financiële slagkracht), cultureel,
+  sociaal (maatschappelijke invloed plus discretie) en symbolisch (de PR van je
+  statussymbolen).
+- **Etiquettequiz.** Onder Strategie. Elk goed antwoord geeft één keer
+  `QUIZ_PUNTEN`, als een regel met `quiz`.
 - **Vergeten worden.** Staat uit, tenzij je het aanzet onder Gegevens. Na
   `VERGETEN_NA` weken zonder iets te loggen zakt je PR met `VERGETEN_PER_WEEK` per
   week, tot `VERGETEN_MAX`. Het wordt niet bewaard, maar steeds berekend: log je

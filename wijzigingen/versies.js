@@ -9,6 +9,22 @@
 
 export const VERSIES = [
   {
+    versie: '2.3',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'Een nieuwe rang vraagt nu ook tijd in het dorp en een ritueel, zoals lid worden van een club. Je ziet precies wat er nog moet.',
+      'Wederkerigheid: word je uitgenodigd, nodig dan binnen zes weken terug uit. Dat geeft ×1,5.',
+      'Na een diner of borrel vraagt het spel om een bedankje. Binnen twee dagen geeft ×2.',
+      'Het dorp praat over je: elke week lof of blaam, op basis van je vorige week.',
+      'Je netwerk: vul bij het loggen in met wie je was, met initialen en een rol. Een nieuwe rol geeft ×1,5.',
+      'Opzichtige statussymbolen leveren minder op zonder sociale discretie; ingetogen symbolen meer.',
+      'Dezelfde activiteit vaker dan drie keer per week levert de helft op.',
+      'Nieuw terrein: Protocol en etiquette. Plus een etiquettequiz en de nationale dagen, met ×2 op een nationale-dagreceptie.',
+      'Twintig nieuwe activiteiten, negen nieuwe prestaties en drie nieuwe titels.',
+      'Je kapitaal naar Bourdieu, en onder Strategie wat de wetenschap zegt.',
+    ],
+  },
+  {
     versie: '2.2',
     datum: '2026-11-07',
     wijzigingen: [

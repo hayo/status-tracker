@@ -3,14 +3,31 @@
  * Alleen gegevens, geen code. Een id mag je nooit veranderen: het logboek verwijst ernaar.
  */
 
+// Een rang vraagt PR (min), tijd in het spel (dagen) en een ritueel: een overgangsmoment, zoals in het echt.
+// Het ritueel is een voorwaarde zoals bij de prestaties (zie boven PRESTATIES).
 export const RANGEN = [
-  { min: 0, naam: 'Voorbijganger', uitleg: 'Een simpele passant in de groene lanen van Wassenaar.', icoon: 'person-walking' },
-  { min: 500, naam: 'Nieuwkomer', uitleg: 'Recent geland. Je observeert de ongeschreven regels.', icoon: 'box-open' },
-  { min: 1500, naam: 'Geïntroduceerde', uitleg: 'Er wordt voor je ingestaan. Je bezoekt besloten bijeenkomsten.', icoon: 'handshake' },
-  { min: 3500, naam: 'Lid', uitleg: 'Een actief en gerespecteerd lid van de lokale gemeenschap.', icoon: 'id-card' },
-  { min: 7500, naam: 'Patroon', uitleg: 'Een sponsor van het dorp. Je dwingt respect af.', icoon: 'building-columns' },
-  { min: 15000, naam: 'Wassenaarder', uitleg: 'Niet te onderscheiden van oud geld. Het dorp is van jou.', icoon: 'chess-knight' },
-  { min: 30000, naam: 'Ereburger', uitleg: 'Het absolute toppunt van de lokale samenleving.', icoon: 'crown' },
+  { min: 0, dagen: 0, naam: 'Voorbijganger', uitleg: 'Een simpele passant in de groene lanen van Wassenaar.', icoon: 'person-walking' },
+  { min: 500, dagen: 0, naam: 'Nieuwkomer', uitleg: 'Recent geland. Je observeert de ongeschreven regels.', icoon: 'box-open' },
+  {
+    min: 1500, dagen: 14, naam: 'Geïntroduceerde', uitleg: 'Er wordt voor je ingestaan. Je bezoekt besloten bijeenkomsten.', icoon: 'handshake',
+    ritueel: { tekst: 'Iemand nam je mee of nodigde je thuis uit', voorwaarde: { soort: 'een', lijst: [{ soort: 'activiteit', id: 'i07' }, { soort: 'activiteit', id: 'i03' }, { soort: 'activiteit', id: 'i04' }] } },
+  },
+  {
+    min: 3500, dagen: 90, naam: 'Lid', uitleg: 'Een actief en gerespecteerd lid van de lokale gemeenschap.', icoon: 'id-card',
+    ritueel: { tekst: 'Je werd lid van een vereniging of club', voorwaarde: { soort: 'een', lijst: [{ soort: 'symbool', id: 'm_vereniging' }, { soort: 'symbool', id: 'm_lid_oostdorp' }, { soort: 'symbool', id: 'm_rotary' }, { soort: 'symbool', id: 'm_bestuur' }] } },
+  },
+  {
+    min: 7500, dagen: 180, naam: 'Patroon', uitleg: 'Een sponsor van het dorp. Je dwingt respect af.', icoon: 'building-columns',
+    ritueel: { tekst: 'Je gaf iets terug: een diner, een donatie of een sponsoring', voorwaarde: { soort: 'een', lijst: [{ soort: 'activiteit', id: 'i08' }, { soort: 'activiteit', id: 'f06' }, { soort: 'activiteit', id: 'g11' }] } },
+  },
+  {
+    min: 15000, dagen: 365, naam: 'Wassenaarder', uitleg: 'Niet te onderscheiden van oud geld. Het dorp is van jou.', icoon: 'chess-knight',
+    ritueel: { tekst: 'Je bent gezien in zeven terreinen', voorwaarde: { soort: 'terreinen', aantal: 7 } },
+  },
+  {
+    min: 30000, dagen: 730, naam: 'Ereburger', uitleg: 'Het absolute toppunt van de lokale samenleving.', icoon: 'crown',
+    ritueel: { tekst: 'Erkenning van hogerhand: lintje, raadszetel of de burgemeester', voorwaarde: { soort: 'een', lijst: [{ soort: 'symbool', id: 'm_knight' }, { soort: 'symbool', id: 'm_council' }, { soort: 'symbool', id: 'm_mayor' }] } },
+  },
 ];
 
 // De vaardigheden van je karakter. Kleur is een klasse in app.css.
@@ -42,7 +59,14 @@ export const CATEGORIEEN = [
       ['a08', 'Vergadering van Buurtvereniging Oostdorp bijgewoond', 60, 'civic'],
       ['a09', 'Meegedaan aan Burendag of een opschoondag in de wijk', 70, 'civic'],
       ['a10', 'Vrijwilliger bij de Oranjevereniging', 100, 'civic'],
-      ['a11', 'Buurtfeest of straatborrel georganiseerd', 150, 'civic'],
+      ['a11', 'Buurtfeest of straatborrel georganiseerd', 150, 'civic', { tegen: true }],
+      ['a12', 'Condoleancekaart gestuurd of naar een uitvaart geweest', 60, 'civic'],
+      ['a13', 'Buren gefeliciteerd of op kraamvisite geweest', 40, 'civic'],
+      ['a14', 'Een verjaardag onthouden, met een kaart', 20, 'stealth'],
+      ['a15', 'Een oudere buur geholpen', 50, 'civic'],
+      ['a16', 'Iemands naam onthouden en de volgende keer gebruikt', 15, 'stealth'],
+      ['a17', 'De buurtapp behulpzaam beantwoord', 15, 'civic'],
+      ['a18', 'Nieuwjaarsreceptie van de gemeente bezocht', 80, 'civic'],
     ],
   },
   {
@@ -105,7 +129,9 @@ export const CATEGORIEEN = [
       ['e04', 'Borrel van de internationale gemeenschap bezocht', 80, 'stealth'],
       ['e05', 'International Festival van de American School bezocht', 100, 'cultural'],
       ['e06', 'Lezing van de Diplomat Club Wassenaar bijgewoond', 250, 'stealth'],
-      ['e07', 'Uitgenodigd voor een handelsdiner, bijvoorbeeld op De Wittenburg', 400, 'stealth'],
+      ['e07', 'Uitgenodigd voor een handelsdiner, bijvoorbeeld op De Wittenburg', 400, 'stealth', { uitnodiging: true, bedank: true }],
+      ['e08', 'Twee mensen uit verschillende kringen aan elkaar voorgesteld', 80, 'stealth'],
+      ['e09', 'Nationale-dagreceptie van een ambassade bijgewoond', 200, 'stealth', { nationaal: true }],
     ],
   },
   {
@@ -169,37 +195,61 @@ export const CATEGORIEEN = [
     activiteiten: [
       ['i01', 'Zondagse wandeling door De Kieviet', 20, 'stealth'],
       ['i02', 'Bedankkaart met de hand geschreven', 30, 'stealth'],
-      ['i03', 'Borrel bij iemand thuis bijgewoond', 80, 'stealth'],
-      ['i04', 'Uitgenodigd voor een verjaardag in De Kieviet of Rijksdorp', 120, 'stealth'],
-      ['i05', 'Zelf een tuinborrel gegeven voor buren en contacten', 150, 'stealth'],
+      ['i03', 'Borrel bij iemand thuis bijgewoond', 80, 'stealth', { uitnodiging: true, bedank: true }],
+      ['i04', 'Uitgenodigd voor een verjaardag in De Kieviet of Rijksdorp', 120, 'stealth', { uitnodiging: true, bedank: true }],
+      ['i05', 'Zelf een tuinborrel gegeven voor buren en contacten', 150, 'stealth', { tegen: true }],
+      ['i06', 'Eetclub of boekenclub bijgewoond', 60, 'cultural'],
+      ['i07', 'Als introducé meegenomen naar de golfclub of de Rotary', 120, 'stealth', { uitnodiging: true, bedank: true }],
+      ['i08', 'Een diner thuis gegeven', 150, 'stealth', { tegen: true }],
+      ['i09', 'Een tegenbezoek gebracht', 60, 'stealth', { tegen: true }],
     ],
   },
-].map((c) => ({ ...c, activiteiten: c.activiteiten.map(([id, naam, punten, eigenschap]) => ({ id, naam, punten, eigenschap })) }));
+  {
+    id: 'protocol',
+    naam: 'Protocol en etiquette',
+    icoon: 'scroll',
+    kleur: 'zilver',
+    activiteiten: [
+      ['p01', 'Binnen twee dagen geantwoord op een uitnodiging (RSVP)', 20, 'stealth'],
+      ['p02', 'De juiste dresscode gedragen', 20, 'cultural'],
+      ['p03', 'Een bedankje gestuurd: kaart of bloemen', 30, 'stealth'],
+      ['p04', 'Visitekaartjes uitgewisseld', 20, 'stealth'],
+      ['p05', 'Een ambassadeur correct aangesproken', 40, 'cultural'],
+      ['p06', 'Een korte toast uitgebracht', 80, 'civic'],
+      ['p07', 'Small talk gevoerd in een derde taal', 40, 'cultural'],
+      ['p08', 'Discreet gebleven over een besloten bijeenkomst', 50, 'stealth'],
+      ['p09', 'Als gastheer de tafelschikking goed gedaan', 60, 'cultural'],
+    ],
+  },
+// Kenmerken (vijfde veld): uitnodiging (je werd uitgenodigd), tegen (je nodigde zelf uit),
+// bedank (vraagt om een bedankje), nationaal (extra XP rond een nationale dag).
+].map((c) => ({ ...c, activiteiten: c.activiteiten.map(([id, naam, punten, eigenschap, kenmerken = {}]) => ({ id, naam, punten, eigenschap, ...kenmerken })) }));
 
 export const SYMBOLEN = [
-  { id: 'm_lid_oostdorp', punten: 300, naam: 'Lid van Buurtvereniging Oostdorp', icoon: 'house-chimney', eigenschap: 'civic' },
-  { id: 'm_slager', punten: 300, naam: 'Bij naam begroet bij Slagerij Groeneveld', icoon: 'drumstick-bite', eigenschap: 'financial' },
-  { id: 'm_pops', punten: 300, naam: 'Bij Pops weten ze wat je drinkt', icoon: 'mug-hot', eigenschap: 'stealth' },
+  { id: 'm_vereniging', punten: 250, naam: 'Lid van een lokale vereniging of club', icoon: 'people-group', eigenschap: 'civic' },
+  { id: 'm_lid_oostdorp', punten: 300, naam: 'Lid van Buurtvereniging Oostdorp', icoon: 'house-chimney', stijl: 'ingetogen', eigenschap: 'civic' },
+  { id: 'm_slager', punten: 300, naam: 'Bij naam begroet bij Slagerij Groeneveld', icoon: 'drumstick-bite', stijl: 'ingetogen', eigenschap: 'financial' },
+  { id: 'm_pops', punten: 300, naam: 'Bij Pops weten ze wat je drinkt', icoon: 'mug-hot', stijl: 'ingetogen', eigenschap: 'stealth' },
   { id: 'm_news', punten: 400, naam: 'Genoemd in De Wassenaarse Krant', icoon: 'newspaper', eigenschap: 'civic' },
   { id: 'm_heritage_map', punten: 600, naam: 'Beschermer van Wassenaars erfgoed', icoon: 'landmark-dome', eigenschap: 'cultural' },
-  { id: 'm_art', punten: 600, naam: 'Schilderij van de Haagse School gekocht', icoon: 'image', eigenschap: 'cultural' },
-  { id: 'm_car', punten: 700, naam: 'Klassieke Porsche of Land Rover gekocht', icoon: 'car', eigenschap: 'financial' },
+  { id: 'm_art', punten: 600, naam: 'Schilderij van de Haagse School gekocht', icoon: 'image', stijl: 'ingetogen', eigenschap: 'cultural' },
+  { id: 'm_car', punten: 700, naam: 'Klassieke Porsche of Land Rover gekocht', icoon: 'car', stijl: 'opzichtig', eigenschap: 'financial' },
   { id: 'm_rotary', punten: 700, naam: 'Bestuurslid van de Rotary of Lions Club', icoon: 'handshake-angle', eigenschap: 'civic' },
   { id: 'm_bestuur', punten: 700, naam: 'Bestuurslid van een lokale stichting of vereniging', icoon: 'users', eigenschap: 'civic' },
   { id: 'm_paauw', punten: 800, naam: 'Je zienswijze over De Paauw werd genoemd in de raad', icoon: 'tree', eigenschap: 'cultural' },
   { id: 'm_brigade', punten: 800, naam: 'Vaste vrijwilliger bij de Reddingsbrigade', icoon: 'life-ring', eigenschap: 'physical' },
   { id: 'm_museum', punten: 900, naam: 'Nieuwe website van het Dorpsmuseum live, met jouw hulp', icoon: 'landmark', eigenschap: 'cultural' },
   { id: 'm_civic_tool', punten: 1000, naam: 'Je civic tool wordt gebruikt door de gemeente', icoon: 'code-branch', eigenschap: 'civic' },
-  { id: 'm_haring', punten: 1200, naam: 'Jaarlijkse haringparty georganiseerd', icoon: 'fish-fins', eigenschap: 'stealth' },
+  { id: 'm_haring', punten: 1200, naam: 'Jaarlijkse haringparty georganiseerd', icoon: 'fish-fins', stijl: 'ingetogen', eigenschap: 'stealth' },
   { id: 'm_mayor_consult', punten: 1200, naam: 'De burgemeester vroeg je om advies over tech', icoon: 'lightbulb', eigenschap: 'civic' },
   { id: 'm_council', punten: 1500, naam: 'Gekozen in de gemeenteraad van Wassenaar', icoon: 'landmark', eigenschap: 'civic' },
   { id: 'm_spreker', punten: 1500, naam: 'Spreker bij de Diplomat Club Wassenaar', icoon: 'microphone', eigenschap: 'stealth' },
-  { id: 'm_strand', punten: 1800, naam: 'Strandhuisje bij de Wassenaarse Slag', icoon: 'umbrella-beach', eigenschap: 'cultural' },
-  { id: 'm_haagsche', punten: 2000, naam: 'Ballotage gehaald bij de Koninklijke Haagsche Golf', icoon: 'golf-ball-tee', eigenschap: 'physical' },
-  { id: 'm_house', punten: 2500, naam: 'Rijksmonument gekocht', icoon: 'house-flag', eigenschap: 'financial' },
-  { id: 'm_mayor', punten: 3000, naam: 'Je tutoyeert de burgemeester', icoon: 'handshake-simple', eigenschap: 'stealth' },
+  { id: 'm_strand', punten: 1800, naam: 'Strandhuisje bij de Wassenaarse Slag', icoon: 'umbrella-beach', stijl: 'opzichtig', eigenschap: 'cultural' },
+  { id: 'm_haagsche', punten: 2000, naam: 'Ballotage gehaald bij de Koninklijke Haagsche Golf', icoon: 'golf-ball-tee', stijl: 'opzichtig', eigenschap: 'physical' },
+  { id: 'm_house', punten: 2500, naam: 'Rijksmonument gekocht', icoon: 'house-flag', stijl: 'opzichtig', eigenschap: 'financial' },
+  { id: 'm_mayor', punten: 3000, naam: 'Je tutoyeert de burgemeester', icoon: 'handshake-simple', stijl: 'ingetogen', eigenschap: 'stealth' },
   { id: 'm_knight', punten: 5000, naam: 'Ridder in de Orde van Oranje-Nassau', icoon: 'medal', eigenschap: 'civic' },
-  { id: 'm_royal', punten: 8000, naam: 'In de inner circle van het Koninklijk Huis', icoon: 'chess-king', eigenschap: 'stealth' },
+  { id: 'm_royal', punten: 8000, naam: 'In de inner circle van het Koninklijk Huis', icoon: 'chess-king', stijl: 'ingetogen', eigenschap: 'stealth' },
 ];
 
 // Startvragen: per antwoord de punten. De eigenschap krijgt punten × deel.
@@ -248,7 +298,10 @@ export const STARTVRAGEN = [
  * verschillend (zo veel verschillende activiteiten), reeks (langste reeks in weken), week (PR in één week),
  * dag (terreinen op één dag), symbool (id), symbolen (aantal), skill (id, punten), missies (voltooid),
  * prestige (keer New Game+), event (gelogd tijdens een event), comeback (na 4 weken stilte weer actief),
- * alle (een lijst voorwaarden die allemaal moeten).
+ * contacten (aantal mensen in je netwerk), rollen (verschillende rollen), hecht (hechte banden),
+ * wederkerig (uitnodigingen op tijd beantwoord), tegen (zelf uitgenodigd), bedankt (op tijd bedankt),
+ * lof (keer lovend besproken), blaam (keer kritisch besproken), quiz (vragen goed beantwoord),
+ * alle (een lijst die allemaal moet), een (een lijst waarvan er één moet).
  */
 
 export const PRESTATIES = [
@@ -270,6 +323,15 @@ export const PRESTATIES = [
   { id: 'p_duizendpoot', naam: 'Duizendpoot', uitleg: 'Drie terreinen op één dag.', icoon: 'bolt', geheim: true, voorwaarde: { soort: 'dag', aantal: 3 } },
   { id: 'p_feest', naam: 'Feestneus', uitleg: 'Log iets tijdens een event.', icoon: 'champagne-glasses', geheim: true, voorwaarde: { soort: 'event', aantal: 1 } },
   { id: 'p_comeback', naam: 'De terugkeer', uitleg: 'Weer actief na vier weken stilte.', icoon: 'arrow-trend-up', geheim: true, voorwaarde: { soort: 'comeback', aantal: 1 } },
+  { id: 'p_brug', naam: 'Bruggenbouwer', uitleg: 'Mensen uit acht verschillende rollen in je netwerk.', icoon: 'people-group', voorwaarde: { soort: 'rollen', aantal: 8 } },
+  { id: 'p_dunbar', naam: 'Kring van Dunbar', uitleg: 'Vijftig mensen in je netwerk.', icoon: 'users', voorwaarde: { soort: 'contacten', aantal: 50 } },
+  { id: 'p_hecht', naam: 'Hechte kring', uitleg: 'Vijf hechte banden: mensen die je zes keer of vaker zag.', icoon: 'hand-holding-heart', voorwaarde: { soort: 'hecht', aantal: 5 } },
+  { id: 'p_gastvrij', naam: 'Wie wat brengt', uitleg: 'Vijf uitnodigingen op tijd beantwoord met een tegenuitnodiging.', icoon: 'gift', voorwaarde: { soort: 'wederkerig', aantal: 5 } },
+  { id: 'p_bedankt', naam: 'Altijd een kaartje', uitleg: 'Tien keer binnen twee dagen bedankt.', icoon: 'envelope', voorwaarde: { soort: 'bedankt', aantal: 10 } },
+  { id: 'p_chatham', naam: 'Chatham House', uitleg: 'Tien keer discreet gebleven over een besloten bijeenkomst.', icoon: 'user-secret', voorwaarde: { soort: 'activiteit', id: 'p08', aantal: 10 } },
+  { id: 'p_lof', naam: 'Gesprek van de dag', uitleg: 'Vijf keer lovend besproken in het dorp.', icoon: 'comments', voorwaarde: { soort: 'lof', aantal: 5 } },
+  { id: 'p_quiz', naam: 'Etiquette-expert', uitleg: 'Alle vragen van de etiquettequiz goed.', icoon: 'scroll', voorwaarde: { soort: 'quiz', aantal: 12 } },
+  { id: 'p_tong', naam: 'Over de tong', uitleg: 'Het dorp sprak er schande van.', icoon: 'comments', geheim: true, voorwaarde: { soort: 'blaam', aantal: 1 } },
   { id: 'p_schaduw', naam: 'Eminence grise', uitleg: 'Sociale discretie op 75 / 100.', icoon: 'user-secret', geheim: true, voorwaarde: { soort: 'skill', id: 'stealth', aantal: 3000 } },
 ];
 
@@ -283,6 +345,9 @@ export const TITELS = [
   { id: 't_haring', naam: 'Haringbaron', uitleg: 'Een haringparty en vijf tuinborrels.', voorwaarde: { soort: 'alle', lijst: [{ soort: 'symbool', id: 'm_haring' }, { soort: 'activiteit', id: 'i05', aantal: 5 }] } },
   { id: 't_data', naam: 'Datapionier', uitleg: 'De Gemeenteraad Tracker twintig keer bijgewerkt.', voorwaarde: { soort: 'activiteit', id: 'b03', aantal: 20 } },
   { id: 't_oostdorp', naam: 'Oostdorper in hart en nieren', uitleg: 'Twintig keer actief in Oostdorp en het dorp.', voorwaarde: { soort: 'terrein', id: 'dorp', aantal: 20 } },
+  { id: 't_protocol', naam: 'Protocollair', uitleg: 'Alle vragen van de etiquettequiz goed.', voorwaarde: { soort: 'quiz', aantal: 12 } },
+  { id: 't_gastheer', naam: 'Gastheer van de lanen', uitleg: 'Tien keer zelf mensen uitgenodigd.', voorwaarde: { soort: 'tegen', aantal: 10 } },
+  { id: 't_spin', naam: 'De spin in het web', uitleg: 'Vijfentwintig mensen in tien verschillende rollen.', voorwaarde: { soort: 'alle', lijst: [{ soort: 'contacten', aantal: 25 }, { soort: 'rollen', aantal: 10 }] } },
   { id: 't_wereld', naam: 'Wereldburger', uitleg: 'Tien keer actief in diplomatieke en expat-kringen.', voorwaarde: { soort: 'terrein', id: 'diplomatiek', aantal: 10 } },
 ];
 
@@ -322,3 +387,70 @@ export const EVENTS = [
 export const VERGETEN_NA = 4;
 export const VERGETEN_PER_WEEK = 0.02;
 export const VERGETEN_MAX = 0.2;
+
+/* ---------- Sociale regels ---------- */
+
+// Wederkerigheid (Mauss): een uitnodiging vraagt om een tegenuitnodiging, binnen zo veel weken.
+export const WEDERKERIG_WEKEN = 6;
+export const WEDERKERIG_BONUS = 1.5;
+
+// Na een activiteit met bedank: binnen zo veel dagen een bedankje sturen geeft deze factor.
+export const BEDANK_DAGEN = 2;
+export const BEDANK_BONUS = 2;
+
+// Verzadiging (Dunbar: kwaliteit boven kwantiteit): vaker dan dit per week levert minder op.
+export const VERZADIGD_NA = 3;
+export const VERZADIGD_FACTOR = 0.5;
+
+// Netwerk: iemand in een rol die nog niet in je netwerk zat, geeft extra XP.
+export const NIEUWE_BRUG = 1.5;
+export const HECHT_VANAF = 6; // zo vaak gezien is een hechte band
+export const DUNBAR = 150;
+
+// Ingetogenheid (Veblen, Bourdieu): opzichtige symbolen leveren minder op zonder sociale discretie,
+// ingetogen symbolen meer met.
+export const OPZICHTIG = { onder: 1000, factor: 0.7 };
+export const INGETOGEN = { vanaf: 2000, factor: 1.25 };
+
+// Roddel (Elias en Scotson): één keer per week oordeelt het dorp over je vorige week.
+export const RODDEL = {
+  lof: { punten: 75, tekst: 'Men spreekt met lof over je inzet in het dorp.' },
+  gierig: { punten: -50, tekst: 'Men zegt dat je wel komt eten, maar nooit terug uitnodigt.' },
+  opzichtig: { punten: -50, tekst: 'Men vindt je wat opzichtig. Oud geld pronkt niet.' },
+  ondankbaar: { punten: -30, tekst: 'Men mist je bedankjes.' },
+};
+
+// De rollen in je netwerk. Je logt nooit een naam, alleen initialen of een bijnaam en een rol.
+export const ROLLEN = [
+  'Buur', 'Dorpsgenoot', 'Raadslid of wethouder', 'Ambtenaar', 'Journalist', 'Diplomaat', 'Expat',
+  'Ondernemer', 'Bestuurder van een vereniging', 'Cultuur of erfgoed', 'Sport of natuur',
+  'Oud-Wassenaarse familie', 'Haagse politiek of Rijk',
+];
+
+// Nationale dagen (MM-DD). Ambassades houden hun receptie vaak rond deze dag, soms op een andere.
+export const NATIONALE_DAGEN = [
+  ['India', '01-26'], ['Japan', '02-23'], ['Ierland', '03-17'], ['Griekenland', '03-25'],
+  ['Noorwegen', '05-17'], ['Italië', '06-02'], ['Zweden', '06-06'], ['Portugal', '06-10'],
+  ['Canada', '07-01'], ['Verenigde Staten', '07-04'], ['Frankrijk', '07-14'], ['België', '07-21'],
+  ['Zwitserland', '08-01'], ['Brazilië', '09-07'], ['Mexico', '09-16'], ['China', '10-01'],
+  ['Duitsland', '10-03'], ['Spanje', '10-12'], ['Oostenrijk', '10-26'],
+];
+export const NATIONAAL_MARGE = 3; // dagen voor en na
+export const NATIONAAL_BONUS = 2;
+
+// De etiquettequiz. Elk goed antwoord geeft één keer punten voor Cultureel besef.
+export const QUIZ_PUNTEN = 25;
+export const QUIZ = [
+  { id: 'q01', vraag: 'Op de uitnodiging staat "tenue de ville". Wat trek je aan?', antwoorden: ['Een donker pak met stropdas, of een nette jurk', 'Een smoking', 'Een jeans met colbert'], goed: 0, uitleg: 'Tenue de ville is net, maar niet feestelijk: pak en das, of een nette jurk of mantelpak.' },
+  { id: 'q02', vraag: 'Wat betekent "black tie"?', antwoorden: ['Een zwart pak met zwarte das', 'Een smoking met strik', 'Een rokkostuum met witte strik'], goed: 1, uitleg: 'Black tie is een smoking met een zwarte strik; voor vrouwen een avondjurk.' },
+  { id: 'q03', vraag: 'En "white tie"?', antwoorden: ['Een wit overhemd zonder das', 'Een smoking met witte strik', 'Een rokkostuum met witte strik: het formeelst'], goed: 2, uitleg: 'White tie is de formeelste dresscode: rokkostuum met wit vest en witte strik.' },
+  { id: 'q04', vraag: 'Hoe spreek je een ambassadeur aan?', antwoorden: ['Excellentie', 'Hoogheid', 'Edelachtbare'], goed: 0, uitleg: 'Een ambassadeur is "Excellentie". Hoogheid is voor prinsen en prinsessen, edelachtbare voor een rechter of burgemeester.' },
+  { id: 'q05', vraag: 'Waar zit de eregast aan tafel?', antwoorden: ['Aan het hoofd van de tafel', 'Rechts van de gastheer of gastvrouw', 'Zo dicht mogelijk bij de deur'], goed: 1, uitleg: 'De eregast zit rechts van de gastheer of gastvrouw.' },
+  { id: 'q06', vraag: 'Wat betekent R.S.V.P. op een uitnodiging?', antwoorden: ['Kom op tijd', 'Neem een cadeau mee', 'Laat weten of je komt'], goed: 2, uitleg: '"Répondez s\'il vous plaît": antwoord, liefst binnen een paar dagen.' },
+  { id: 'q07', vraag: 'Een gesprek valt onder de Chatham House-regel. Wat mag je?', antwoorden: ['Gebruiken wat er gezegd is, zonder te zeggen wie het zei', 'Alles citeren, met naam', 'Niets gebruiken van wat er gezegd is'], goed: 0, uitleg: 'Je mag de inhoud gebruiken, maar niet wie het zei of wie er was.' },
+  { id: 'q08', vraag: 'Je was te gast bij iemand thuis. Wat doe je daarna?', antwoorden: ['Niets, dat is ouderwets', 'Binnen een paar dagen bedanken, met een kaart of bloemen', 'Dezelfde avond een berichtje met een tegenuitnodiging'], goed: 1, uitleg: 'Een kaartje of bloemen binnen een paar dagen. De tegenuitnodiging volgt later.' },
+  { id: 'q09', vraag: 'Hoe begin je nu een brief aan een jonkheer?', antwoorden: ['"Geachte heer" en zijn achternaam', '"Hoogheid"', '"Excellentie"'], goed: 0, uitleg: '"Hoogwelgeboren heer" bestaat nog, maar is sterk verouderd. "Geachte heer …" is prima.' },
+  { id: 'q10', vraag: 'Wat draag je meestal op een nationale-dagreceptie van een ambassade?', antwoorden: ['Zakelijke kleding', 'Avondkleding', 'Iets in de kleuren van het land'], goed: 0, uitleg: 'Meestal zakelijk, tenzij de uitnodiging iets anders zegt.' },
+  { id: 'q11', vraag: 'Hoe laat kom je op een diplomatiek diner?', antwoorden: ['Een kwartier te vroeg', 'Precies op tijd', 'Een half uur later, dat is chic'], goed: 1, uitleg: 'Op tijd. Te vroeg stoort de gastheer, te laat de tafelschikking.' },
+  { id: 'q12', vraag: 'Je stelt twee mensen aan elkaar voor. Wie noem je eerst?', antwoorden: ['Maakt niet uit', 'De jongste of lager in rang', 'De oudste of hoger in rang'], goed: 2, uitleg: 'Je noemt eerst wie hoger in rang of ouder is, en stelt de ander aan diegene voor.' },
+];

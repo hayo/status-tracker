@@ -10,9 +10,11 @@
 import { VERSIES } from './wijzigingen/versies.js';
 import {
   RANGEN, EIGENSCHAPPEN, EIGENSCHAP_MAX, CATEGORIEEN, SYMBOLEN, STARTVRAGEN, PRESTATIES, TITELS, PADEN, PAD_VANAF,
+  ROLLEN, QUIZ, QUIZ_PUNTEN, DUNBAR, HECHT_VANAF, NATIONAAL_MARGE,
 } from './gegevens.js';
 import {
-  dagSleutel, alsDatum, plusDagen, maandag, dagenTussen, ACTIVITEITEN, telt, rangIndex, stand, verval,
+  dagSleutel, alsDatum, plusDagen, maandag, dagenTussen, ACTIVITEITEN, telt, rangIndex, rang as rangVan, verval,
+  kapitaal, netwerk, gastvrijheid, opvolgingen, roddel, nationaleDag, komendeNationaleDagen,
   behaald, perWeek, reeks, event, volgendEvent, pad, bonussen, statistiek, voortgang, ontgrendeld,
   missies, jaren, jaaroverzicht, samenvoegen,
 } from './spel.js';
@@ -234,10 +236,10 @@ const gesorteerd = () => [...spel.logboek].sort((a, b) => b.datum.localeCompare(
 /* ---------- Status ---------- */
 
 function toonStatus() {
-  const p = stand(spel);
-  const i = rangIndex(p);
-  const rang = RANGEN[i], volgende = RANGEN[i + 1];
   const st = statistiek(spel);
+  const nu = rangVan(spel, st);
+  const p = nu.punten, i = nu.index;
+  const rang = RANGEN[i], volgende = nu.volgende;
   const vrij = ontgrendeld(spel, st);
   const titel = TITELS.find((t) => t.id === spel.titel && vrij.titels.has(t.id));
   const gekozenPad = pad(spel);
@@ -264,7 +266,15 @@ function toonStatus() {
 
   el.voortgang.value = volgende ? Math.min(100, ((p - rang.min) / (volgende.min - rang.min)) * 100) : 100;
   el.volgende.textContent = volgende ? volgende.naam : 'maximale rang bereikt';
-  el.nodig.textContent = volgende ? `${getal(volgende.min - p)} PR nodig` : '';
+  el.nodig.textContent = volgende ? (p < volgende.min ? `${getal(volgende.min - p)} PR nodig` : 'PR gehaald') : '';
+  el.eisen.replaceChildren(...(volgende ? [
+    [volgende.eisen.punten, `${getal(volgende.min)} PR`, `je hebt er ${getal(p)}`],
+    [volgende.eisen.dagen, `${volgende.dagen} dagen in het dorp`, `je bent er ${nu.dagen} ${nu.dagen === 1 ? 'dag' : 'dagen'}`],
+    ...(volgende.ritueel ? [[volgende.eisen.ritueel, volgende.ritueel.tekst, volgende.eisen.ritueel ? 'gedaan' : 'nog niet']] : []),
+  ].map(([klaar, eis, stand]) => maak('li', { class: klaar ? 'eis klaar' : 'eis' },
+    icoon(klaar ? 'circle-check' : 'hourglass-half', 'icoon eis-icoon'), maak('span', {}, maak('strong', { tekst: eis }), ` — ${stand}`))) : []));
+  el.eisenKop.hidden = !volgende;
+  el.eisenKop.textContent = volgende ? `Om ${volgende.naam} te worden:` : '';
   el.ladder.replaceChildren(...RANGEN.map((r, j) => maak('li', {
     class: j < i ? 'gehaald' : j === i ? 'nu' : undefined,
     'aria-current': j === i ? 'step' : undefined,
@@ -272,6 +282,21 @@ function toonStatus() {
   el.padOproep.hidden = !(i >= PAD_VANAF && !gekozenPad);
 
   toonMissies();
+  toonVerplichtingen();
+
+  const kap = kapitaal(spel, st);
+  el.kapitaal.replaceChildren(...[
+    ['coins', 'Economisch', kap.economisch], ['palette', 'Cultureel', kap.cultureel],
+    ['users', 'Sociaal', kap.sociaal], ['medal', 'Symbolisch', kap.symbolisch],
+  ].map(([ic, dt, dd]) => maak('div', {}, maak('dt', {}, icoon(ic), dt), maak('dd', { tekst: getal(dd) }))));
+
+  const laatste = gesorteerd().find((r) => r.roddel);
+  const recent = laatste && dagenTussen(alsDatum(laatste.datum), new Date()) <= 14;
+  el.roddel.hidden = !recent;
+  if (recent) {
+    el.roddel.classList.toggle('blaam', laatste.punten < 0);
+    el.roddelTekst.textContent = `${laatste.naam.replace(/^Roddel: /, '')} (${laatste.punten > 0 ? '+' : '−'}${getal(Math.abs(laatste.punten))} PR)`;
+  }
 
   const weken = perWeek(spel.logboek, KALENDER_WEKEN);
   const r = reeks(spel.logboek);
@@ -324,6 +349,21 @@ function toonMissies() {
     meter(`az-missie-${n}`, m.nu / m.doel))));
 }
 
+// Wat je nog moet doen: bedankjes en tegenuitnodigingen.
+function toonVerplichtingen() {
+  const nu = new Date();
+  const bedank = opvolgingen(spel.logboek, nu).filter((o) => o.resterend >= 0);
+  const uit = gastvrijheid(spel.logboek, nu).open;
+  el.verplichtingenBlok.hidden = !bedank.length && !uit.length;
+  const dagen = (n) => (n <= 0 ? 'vandaag nog' : n === 1 ? 'nog 1 dag' : `nog ${n} dagen`);
+  el.verplichtingen.replaceChildren(
+    ...bedank.map((o) => maak('li', { class: 'verplichting' }, icoon('envelope'),
+      maak('span', {}, maak('strong', { tekst: 'Stuur een bedankje' }), ` voor: ${o.regel.naam} (${dagen(o.resterend)}, ×2 PR)`),
+      maak('button', { type: 'button', class: 'knop knop-klein', bij: () => vraagLog(ACTIVITEITEN.get('p03'), false, { voor: o.regel }) }, 'Gedaan'))),
+    ...uit.map((u) => maak('li', { class: u.resterend < 0 ? 'verplichting te-laat' : 'verplichting' }, icoon('utensils'),
+      maak('span', {}, maak('strong', { tekst: 'Nodig terug uit' }), ` na: ${u.regel.naam} — ${u.resterend < 0 ? 'te laat, het dorp praat erover' : `${dagen(u.resterend)} voor ×1,5 PR`}`))));
+}
+
 function logRegel(r) {
   const extra = [r.notitie, r.bonussen?.length ? `${r.bonussen.join(' · ')} (basis ${getal(r.basis)})` : null].filter(Boolean).join(' — ');
   return maak('li', {},
@@ -336,12 +376,16 @@ function logRegel(r) {
 }
 
 function toonEvent() {
-  const nu = event(vandaag());
+  const land = nationaleDag(vandaag());
+  const nu = event(vandaag()) ?? (land && {
+    naam: `Nationale dag van ${land[0]}`, factor: 2, icoon: 'flag', alleen: ' op een nationale-dagreceptie',
+    tot: dagSleutel(plusDagen(alsDatum(`2026-${land[1]}`), NATIONAAL_MARGE)).slice(5),
+  });
   const straks = volgendEvent();
   for (const banner of [el.eventStatus, el.eventLoggen]) {
     banner.classList.toggle('actief', Boolean(nu));
     banner.replaceChildren(icoon(nu ? nu.icoon : 'calendar-days', 'icoon event-icoon'), maak('p', {},
-      maak('strong', { tekst: nu ? `${nu.naam}: ${factor(nu.factor)} XP!` : `Volgend event: ${straks.naam}` }), ' ',
+      maak('strong', { tekst: nu ? `${nu.naam}: ${factor(nu.factor)} XP${nu.alleen ?? ''}!` : `Volgend event: ${straks.naam}` }), ' ',
       maak('span', { tekst: nu ? `Nog tot ${datumKort.format(alsDatum(`2026-${nu.tot}`))}.` : `Vanaf ${datumKort.format(alsDatum(`2026-${straks.van}`))}: ${factor(straks.factor)} XP.` })));
   }
 }
@@ -462,7 +506,7 @@ function filter() {
 function toonErelijst() {
   const st = statistiek(spel);
   const vrij = ontgrendeld(spel, st);
-  const i = rangIndex(stand(spel));
+  const i = rangVan(spel, st).index;
 
   el.paden.replaceChildren(...PADEN.map((p) => maak('li', { class: spel.pad === p.id ? 'pad gekozen' : 'pad' },
     icoon(p.icoon),
@@ -511,6 +555,60 @@ function toonErelijst() {
   toonJaar(gekozen);
 }
 
+function toonNetwerk() {
+  const n = netwerk(spel.logboek);
+  el.netwerkCijfers.replaceChildren(...[
+    ['users', 'Mensen', `${n.mensen.length} / ${DUNBAR}`],
+    ['people-group', 'Rollen', `${n.rollen.size} / ${ROLLEN.length}`],
+    ['hand-holding-heart', 'Hechte banden', getal(n.hecht)],
+  ].map(([ic, dt, dd]) => maak('div', {}, maak('dt', {}, icoon(ic), dt), maak('dd', { tekst: dd }))));
+  el.netwerkLijst.replaceChildren(...(n.mensen.length
+    ? n.mensen.slice(0, 30).map((m) => maak('li', {},
+      maak('span', { class: 'netwerk-wie', tekst: m.wie }),
+      maak('span', { class: 'zacht', tekst: m.rol || 'rol onbekend' }),
+      maak('span', { class: m.keer >= HECHT_VANAF ? 'band hecht' : m.keer >= 3 ? 'band' : 'band zwak', tekst: `${m.keer >= HECHT_VANAF ? 'hecht' : m.keer >= 3 ? 'gewoon' : 'zwak'} · ${m.keer}×` })))
+    : [maak('li', { class: 'leeg', tekst: 'Nog niemand. Vul bij het loggen in met wie je was.' })]));
+  el.ontbrekend.textContent = n.mensen.length
+    ? `Nog niemand in je netwerk als: ${ROLLEN.filter((r) => !n.rollen.has(r)).join(', ').toLocaleLowerCase('nl') || 'alle rollen gedekt!'}.`
+    : '';
+}
+
+function bouwQuiz() {
+  el.quiz.replaceChildren(...QUIZ.map((q, n) => maak('fieldset', { class: 'quizvraag', 'data-vraag': q.id },
+    maak('legend', { tekst: `${n + 1}. ${q.vraag}` }),
+    ...q.antwoorden.map((a, j) => maak('label', { class: 'keuze' },
+      maak('input', { type: 'radio', name: `az-quiz-${q.id}`, value: j, bij: () => beantwoord(q, j) }), maak('span', { tekst: a }))),
+    maak('p', { class: 'quiz-uitleg', role: 'status' }))));
+}
+
+function toonQuiz() {
+  const goed = new Set(spel.logboek.map((r) => r.quiz).filter(Boolean));
+  for (const q of QUIZ) {
+    const vak = el.quiz.querySelector(`[data-vraag="${q.id}"]`);
+    if (!goed.has(q.id)) continue;
+    vak.classList.add('goed');
+    vak.disabled = true;
+    vak.querySelectorAll('input')[q.goed].checked = true;
+    vak.querySelector('.quiz-uitleg').textContent = `Goed! ${q.uitleg}`;
+  }
+  el.quizStand.textContent = `${goed.size} / ${QUIZ.length} goed`;
+}
+
+function beantwoord(q, j) {
+  const uitleg = el.quiz.querySelector(`[data-vraag="${q.id}"] .quiz-uitleg`);
+  if (j !== q.goed) {
+    uitleg.textContent = 'Helaas, dat is het niet. Probeer het nog eens.';
+    return;
+  }
+  voegToe({ datum: vandaag(), naam: `Etiquettequiz: ${q.vraag}`, punten: QUIZ_PUNTEN, eigenschappen: { cultural: QUIZ_PUNTEN }, quiz: q.id });
+  meld('Goed!', `+${QUIZ_PUNTEN} PR & XP voor Cultureel besef.`);
+}
+
+function toonNationaleDagen() {
+  el.nationaleDagen.replaceChildren(...komendeNationaleDagen(new Date(), 6).map((d) => maak('li', { class: 'nationale-dag' },
+    icoon('flag'), maak('span', {}, maak('strong', { tekst: d.land }), ` — ${datumKort.format(d.datum)}${d.over <= 0 ? ' (nu!)' : ` (over ${d.over} ${d.over === 1 ? 'dag' : 'dagen'})`}`))));
+}
+
 function keuzeTitel(id, naam, uitleg) {
   return maak('label', { class: 'keuze' },
     maak('input', { type: 'radio', name: 'az-titel', value: id ?? '', checked: (spel.titel ?? null) === id || (id === null && !spel.titel), bij: () => kiesTitel(id) }),
@@ -539,7 +637,7 @@ function toonJaar(jaar) {
 // Wat je nu hebt. Na een actie vergelijken we dit, voor het beloningsvenster.
 function momentopname() {
   const st = statistiek(spel);
-  return { rang: rangIndex(stand(spel)), skills: st.skills, ...ontgrendeld(spel, st) };
+  return { rang: rangVan(spel, st).index, skills: st.skills, ...ontgrendeld(spel, st) };
 }
 
 function beloningen(voor, na) {
@@ -571,6 +669,11 @@ function voegToe(regel, stil = false) {
     spel.logboek.push({ id: nieuwId(), tijd: new Date().toISOString(), ronde: spel.ronde, datum: vandaag(), naam: `Weekmissie: ${m.tekst}`, punten: m.beloning, eigenschappen: {}, missie: m.id });
     extra.push(['circle-check', `Weekmissie voltooid: ${m.tekst} (+${getal(m.beloning)} PR)`]);
   }
+  const rd = roddel(spel);
+  if (rd) {
+    spel.logboek.push({ id: nieuwId(), tijd: new Date().toISOString(), ronde: spel.ronde, datum: vandaag(), naam: `Roddel: ${rd.tekst}`, punten: rd.punten, eigenschappen: {}, roddel: rd.id });
+    extra.push(['comments', `${rd.punten > 0 ? 'Lof' : 'Er wordt over je gepraat'}: ${rd.tekst} (${rd.punten > 0 ? '+' : '−'}${getal(Math.abs(rd.punten))} PR)`]);
+  }
   bewaar();
   verwerk();
   if (!stil) toonBeloningen([...beloningen(voor, momentopname()), ...extra]);
@@ -580,18 +683,21 @@ function voegToe(regel, stil = false) {
 
 let teLoggen = null;
 
-function vraagLog(item, symbool = false) {
-  teLoggen = { item, symbool };
-  el.logTitel.textContent = item.naam;
+function vraagLog(item, symbool = false, extra = {}) {
+  teLoggen = { item, symbool, voor: extra.voor };
+  el.logTitel.textContent = extra.voor ? `${item.naam} — voor: ${extra.voor.naam}` : item.naam;
   el.logDatum.value = el.logDatum.max = vandaag();
-  el.logNotitie.value = '';
+  el.logNotitie.value = el.logWie.value = el.logRol.value = '';
+  el.logContact.hidden = symbool;
+  el.logContact.open = false;
+  el.logMensen.replaceChildren(...netwerk(spel.logboek).mensen.map((m) => maak('option', { value: m.wie })));
   toonBonus();
   el.logVenster.showModal();
 }
 
 function berekening() {
-  const { item, symbool } = teLoggen;
-  const b = symbool ? { lijst: [], factor: 1 } : bonussen(spel, item, el.logDatum.value || vandaag());
+  const { item, symbool, voor } = teLoggen;
+  const b = bonussen(spel, item, el.logDatum.value || vandaag(), { symbool, voor, rol: el.logRol.value || null });
   return { ...b, punten: Math.round(item.punten * b.factor) };
 }
 
@@ -606,14 +712,21 @@ function toonBonus() {
 }
 
 el.logDatum.addEventListener('input', () => teLoggen && toonBonus());
+el.logRol.addEventListener('change', () => teLoggen && toonBonus());
+el.logWie.addEventListener('change', () => {
+  const bekend = netwerk(spel.logboek).mensen.find((m) => m.wie.toLocaleLowerCase('nl') === el.logWie.value.trim().toLocaleLowerCase('nl'));
+  if (bekend?.rol) el.logRol.value = bekend.rol;
+  if (teLoggen) toonBonus();
+});
 
 el.logVenster.addEventListener('close', () => {
   if (el.logVenster.returnValue !== 'ja' || !teLoggen) return;
-  const { item, symbool } = teLoggen;
+  const { item, symbool, voor } = teLoggen;
   const b = berekening();
   teLoggen = null;
   const notitie = el.logNotitie.value.trim();
   const datum = el.logDatum.value || vandaag();
+  const wie = el.logWie.value.trim(), rol = el.logRol.value;
   voegToe({
     datum,
     naam: symbool ? `Statussymbool: ${item.naam}` : item.naam,
@@ -623,6 +736,8 @@ el.logVenster.addEventListener('close', () => {
     ...(b.lijst.length ? { basis: item.punten, bonussen: b.lijst.map(([n, f]) => `${n} ${factor(f)}`) } : {}),
     ...(event(datum) && !symbool ? { event: true } : {}),
     ...(notitie ? { notitie } : {}),
+    ...(!symbool && (wie || rol) ? { contact: { wie, rol } } : {}),
+    ...(voor ? { voor: voor.id } : {}),
   });
   if (symbool) meld('Status verhoogd', `${item.naam}: geclaimd!`);
   else meld('Activiteit gelogd', `+${getal(b.punten)} PR & XP verdiend!`);
@@ -817,6 +932,9 @@ function verwerk() {
   toonStatus();
   toonLoggen();
   toonErelijst();
+  toonNetwerk();
+  toonQuiz();
+  toonNationaleDagen();
   el.vergeten.checked = spel.vergeten;
 }
 
@@ -839,6 +957,8 @@ try { spel = laad(); } catch { spel = null; }
 sync = laadSync();
 bouwStart();
 bouwActiviteiten();
+bouwQuiz();
+el.logRol.append(...ROLLEN.map((r) => maak('option', { value: r }, r)));
 toonVersies();
 toonSync();
 if (spel) verwerk();
