@@ -119,13 +119,19 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 | `ROLLEN` | de rollen voor het netwerk |
 | `NATIONALE_DAGEN` | `[land, MM-DD]` |
 | `QUIZ` | `id`, `vraag`, `antwoorden`, `goed` (index), `uitleg` |
+| `PLEKKEN` | `id`, `naam`, `icoon`: de dorpskaart |
+| `BUURTEN` | de buurten die je bij het loggen kiest |
+| `DOSSIERS` | `id`, `naam`, `icoon`; met `DOSSIER_STAPPEN` en `DOSSIER_BELONING` |
 | `STARTVRAGEN` | `id`, `vraag`, `eigenschap`, `deel` (welk deel van de punten naar de eigenschap gaat), en `antwoorden` als `[tekst, punten]` |
 
 De kenmerken van een activiteit: `uitnodiging` (je werd uitgenodigd), `tegen` (je
 nodigde zelf uit), `bedank` (vraagt om een bedankje) en `nationaal` (extra XP rond
-een nationale dag).
+een nationale dag), `plek` (een id uit `PLEKKEN`), `dossierstap` (1 tot 4) en
+`stil` (nooit een bonus, zoals bij de Dodenherdenking).
 
-Een nieuwe activiteit krijgt een nieuw id, zoals `a19`. Verander nooit een
+Een nieuwe activiteit krijgt een nieuw id, zoals `a24`. Een nieuwe plek op de
+dorpskaart: zet hem in `PLEKKEN` en geef een of meer activiteiten die `plek`.
+Verhoog dan ook het aantal bij de prestatie Kenner van het dorp (`p_kenner`). Verander nooit een
 bestaand id: het logboek verwijst ernaar. Een nieuw terrein verschijnt vanzelf,
 ook op de statuspagina. Een activiteit van 100 PR of meer krijgt een gekleurde
 rand.
@@ -143,7 +149,7 @@ niveau. De rang van je karakter is ook zijn niveau: Voorbijganger is niveau 1.
 ### De landingspagina
 
 De landingspagina is gewone HTML, zonder script. Ze noemt een paar aantallen
-(98 activiteiten, 7 rangen, 28 prestaties, tien terreinen) en de rangen en terreinen. Verander
+(123 activiteiten, 7 rangen, 34 prestaties, elf terreinen, 21 plekken) en de rangen en terreinen. Verander
 je die in `gegevens.js`, pas dan ook `index.html` aan. De iconen staan in een
 eigen sprite boven in `index.html`.
 
@@ -210,6 +216,15 @@ De regels staan in `spel.js`, de getallen en teksten in `gegevens.js`.
 - **Kapitaal.** Naar Bourdieu: economisch (financiële slagkracht), cultureel,
   sociaal (maatschappelijke invloed plus discretie) en symbolisch (de PR van je
   statussymbolen).
+- **Dorpskaart.** Een activiteit met een `plek` die je nog nooit logde, geeft
+  `ONTDEKKING_BONUS`. De Erelijst toont welke plekken je ontdekte.
+- **Buurten.** Bij het loggen kies je optioneel een buurt uit `BUURTEN`. De
+  Erelijst telt per buurt.
+- **Dossiers.** De vier activiteiten met `dossierstap` vragen welk dossier. Heb
+  je in een dossier alle vier de stappen gedaan, dan komt er één keer een regel
+  "Dossier afgerond" met `DOSSIER_BELONING`, met `dossierAf`.
+- **Stil.** Een activiteit met `stil` krijgt nooit een bonus: een herdenking is
+  geen wedstrijd.
 - **Etiquettequiz.** Onder Strategie. Elk goed antwoord geeft één keer
   `QUIZ_PUNTEN`, als een regel met `quiz`.
 - **Vergeten worden.** Staat uit, tenzij je het aanzet onder Gegevens. Na
@@ -222,7 +237,8 @@ De regels staan in `spel.js`, de getallen en teksten in `gegevens.js`.
 - **Jaaroverzicht.** Per jaar uit het logboek: PR, activiteiten, beste maand,
   favorieten, langste reeks en hoe ver je rang steeg.
 
-De data van de events zijn bij benadering. Pas ze aan in `EVENTS`.
+De data van de events zijn bij benadering. Pas ze aan in `EVENTS`. Controleer ook
+de buurtnamen in `BUURTEN`; Zuid en Maaldrift zijn niet bevestigd.
 
 ## Je gegevens
 

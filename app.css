@@ -1800,6 +1800,133 @@
   width: 100%;
 }
 
+/* ---------- Dorpskaart, buurten en dossiers ---------- */
+
+#aanzien .plekken {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11em, 1fr));
+  gap: 0.5em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .plek {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.55em 0.75em;
+  border: 1px dashed #d1d5db;
+  border-radius: 0.6em;
+  color: var(--zacht);
+  font-size: 0.88em;
+}
+
+#aanzien .plek.ontdekt {
+  border: 1px solid var(--goud-rand);
+  background: var(--goud-licht);
+  color: var(--tekst);
+  font-weight: 600;
+}
+
+#aanzien .ontdekt .plek-icoon {
+  color: var(--goud-donker);
+}
+
+#aanzien .buurten {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .buurt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.35em 0.85em;
+  border-radius: 2em;
+  background: #f3f4f6;
+  color: var(--zacht);
+  font-size: 0.88em;
+  font-weight: 600;
+}
+
+#aanzien .buurt.actief {
+  background: #ccfbf1;
+  color: #115e59;
+}
+
+#aanzien .buurt-aantal {
+  font-variant-numeric: tabular-nums;
+}
+
+#aanzien .dossiers {
+  display: grid;
+  gap: 0.75em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .dossier {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75em;
+  padding: 0.8em 1em;
+  border: 1px solid var(--lijn);
+  border-radius: 0.75em;
+  background: var(--vlak);
+}
+
+#aanzien .dossier > .icoon {
+  width: 1.4em;
+  height: 1.4em;
+  color: #1e40af;
+}
+
+#aanzien .dossier.af {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+#aanzien .dossier-naam {
+  margin: 0 0 0.4em;
+  font-weight: 700;
+}
+
+#aanzien .dossier-stappen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.75em;
+}
+
+#aanzien .stap {
+  padding: 0.15em 0.6em;
+  border-radius: 1em;
+  background: #e5e7eb;
+  color: #4b5563;
+}
+
+#aanzien .stap.gedaan {
+  background: #1e40af;
+  color: #fff;
+}
+
+#aanzien .dossier-status {
+  color: var(--zacht);
+  font-size: 0.85em;
+  font-weight: 800;
+}
+
+#aanzien .af .dossier-status {
+  color: #15803d;
+}
+
 /* ---------- Opslag op de server ---------- */
 
 #aanzien .koppel {

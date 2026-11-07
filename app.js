@@ -10,11 +10,11 @@
 import { VERSIES } from './wijzigingen/versies.js';
 import {
   RANGEN, EIGENSCHAPPEN, EIGENSCHAP_MAX, CATEGORIEEN, SYMBOLEN, STARTVRAGEN, PRESTATIES, TITELS, PADEN, PAD_VANAF,
-  ROLLEN, QUIZ, QUIZ_PUNTEN, DUNBAR, HECHT_VANAF, NATIONAAL_MARGE,
+  ROLLEN, QUIZ, QUIZ_PUNTEN, DUNBAR, HECHT_VANAF, NATIONAAL_MARGE, PLEKKEN, BUURTEN, DOSSIER_STAPPEN, DOSSIER_BELONING,
 } from './gegevens.js';
 import {
   dagSleutel, alsDatum, plusDagen, maandag, dagenTussen, ACTIVITEITEN, telt, rangIndex, rang as rangVan, verval,
-  kapitaal, netwerk, gastvrijheid, opvolgingen, roddel, nationaleDag, komendeNationaleDagen,
+  kapitaal, netwerk, gastvrijheid, opvolgingen, roddel, nationaleDag, komendeNationaleDagen, dossiers,
   behaald, perWeek, reeks, event, volgendEvent, pad, bonussen, statistiek, voortgang, ontgrendeld,
   missies, jaren, jaaroverzicht, samenvoegen,
 } from './spel.js';
@@ -573,6 +573,24 @@ function toonNetwerk() {
     : '';
 }
 
+function toonDorpskaart() {
+  const st = statistiek(spel);
+  const gezien = new Set(spel.logboek.map((r) => ACTIVITEITEN.get(r.activiteit)?.plek).filter(Boolean));
+  el.plekkenTeller.textContent = `${gezien.size} / ${PLEKKEN.length}`;
+  el.plekken.replaceChildren(...PLEKKEN.map((p) => maak('li', { class: gezien.has(p.id) ? 'plek ontdekt' : 'plek' },
+    icoon(gezien.has(p.id) ? p.icoon : 'location-dot', 'icoon plek-icoon'), maak('span', { tekst: p.naam }),
+    maak('span', { class: 'verborgen', tekst: gezien.has(p.id) ? '(ontdekt)' : '(nog niet ontdekt)' }))));
+  el.buurten.replaceChildren(...BUURTEN.map((b) => maak('li', { class: st.perBuurt.has(b) ? 'buurt actief' : 'buurt' },
+    maak('span', { tekst: b }), maak('span', { class: 'buurt-aantal', tekst: `${st.perBuurt.get(b) ?? 0}×` }))));
+  el.dossiers.replaceChildren(...dossiers(spel.logboek).map((d) => maak('li', { class: d.af ? 'dossier af' : 'dossier' },
+    icoon(d.icoon),
+    maak('div', {},
+      maak('p', { class: 'dossier-naam', tekst: d.naam }),
+      maak('ol', { class: 'dossier-stappen', 'aria-label': `${d.stappen.size} van ${DOSSIER_STAPPEN.length} stappen` },
+        ...DOSSIER_STAPPEN.map((stap, n) => maak('li', { class: d.stappen.has(n + 1) ? 'stap gedaan' : 'stap', tekst: stap })))),
+    maak('span', { class: 'dossier-status', tekst: d.af ? 'Afgerond' : `${d.stappen.size} / ${DOSSIER_STAPPEN.length}` }))));
+}
+
 function bouwQuiz() {
   el.quiz.replaceChildren(...QUIZ.map((q, n) => maak('fieldset', { class: 'quizvraag', 'data-vraag': q.id },
     maak('legend', { tekst: `${n + 1}. ${q.vraag}` }),
@@ -669,6 +687,11 @@ function voegToe(regel, stil = false) {
     spel.logboek.push({ id: nieuwId(), tijd: new Date().toISOString(), ronde: spel.ronde, datum: vandaag(), naam: `Weekmissie: ${m.tekst}`, punten: m.beloning, eigenschappen: {}, missie: m.id });
     extra.push(['circle-check', `Weekmissie voltooid: ${m.tekst} (+${getal(m.beloning)} PR)`]);
   }
+  for (const d of dossiers(spel.logboek)) {
+    if (d.af || d.stappen.size < DOSSIER_STAPPEN.length) continue;
+    spel.logboek.push({ id: nieuwId(), tijd: new Date().toISOString(), ronde: spel.ronde, datum: vandaag(), naam: `Dossier afgerond: ${d.naam}`, punten: DOSSIER_BELONING, eigenschappen: { civic: DOSSIER_BELONING }, dossierAf: d.id });
+    extra.push(['folder-open', `Dossier afgerond: ${d.naam} (+${getal(DOSSIER_BELONING)} PR)`]);
+  }
   const rd = roddel(spel);
   if (rd) {
     spel.logboek.push({ id: nieuwId(), tijd: new Date().toISOString(), ronde: spel.ronde, datum: vandaag(), naam: `Roddel: ${rd.tekst}`, punten: rd.punten, eigenschappen: {}, roddel: rd.id });
@@ -687,7 +710,9 @@ function vraagLog(item, symbool = false, extra = {}) {
   teLoggen = { item, symbool, voor: extra.voor };
   el.logTitel.textContent = extra.voor ? `${item.naam} — voor: ${extra.voor.naam}` : item.naam;
   el.logDatum.value = el.logDatum.max = vandaag();
-  el.logNotitie.value = el.logWie.value = el.logRol.value = '';
+  el.logNotitie.value = el.logWie.value = el.logRol.value = el.logBuurt.value = el.logDossier.value = '';
+  el.logDossierVak.hidden = !item.dossierstap;
+  el.logDossier.required = Boolean(item.dossierstap);
   el.logContact.hidden = symbool;
   el.logContact.open = false;
   el.logMensen.replaceChildren(...netwerk(spel.logboek).mensen.map((m) => maak('option', { value: m.wie })));
@@ -726,7 +751,8 @@ el.logVenster.addEventListener('close', () => {
   teLoggen = null;
   const notitie = el.logNotitie.value.trim();
   const datum = el.logDatum.value || vandaag();
-  const wie = el.logWie.value.trim(), rol = el.logRol.value;
+  const wie = el.logWie.value.trim(), rol = el.logRol.value, buurt = el.logBuurt.value;
+  const dossier = item.dossierstap ? el.logDossier.value : '';
   voegToe({
     datum,
     naam: symbool ? `Statussymbool: ${item.naam}` : item.naam,
@@ -738,6 +764,8 @@ el.logVenster.addEventListener('close', () => {
     ...(notitie ? { notitie } : {}),
     ...(!symbool && (wie || rol) ? { contact: { wie, rol } } : {}),
     ...(voor ? { voor: voor.id } : {}),
+    ...(buurt && !symbool ? { buurt } : {}),
+    ...(dossier ? { dossier } : {}),
   });
   if (symbool) meld('Status verhoogd', `${item.naam}: geclaimd!`);
   else meld('Activiteit gelogd', `+${getal(b.punten)} PR & XP verdiend!`);
@@ -933,6 +961,7 @@ function verwerk() {
   toonLoggen();
   toonErelijst();
   toonNetwerk();
+  toonDorpskaart();
   toonQuiz();
   toonNationaleDagen();
   el.vergeten.checked = spel.vergeten;
@@ -959,6 +988,8 @@ bouwStart();
 bouwActiviteiten();
 bouwQuiz();
 el.logRol.append(...ROLLEN.map((r) => maak('option', { value: r }, r)));
+el.logBuurt.append(...BUURTEN.map((b) => maak('option', { value: b }, b)));
+el.logDossier.append(...dossiers([]).map((d) => maak('option', { value: d.id }, d.naam)));
 toonVersies();
 toonSync();
 if (spel) verwerk();

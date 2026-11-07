@@ -14,7 +14,7 @@ export const RANGEN = [
   },
   {
     min: 3500, dagen: 90, naam: 'Lid', uitleg: 'Een actief en gerespecteerd lid van de lokale gemeenschap.', icoon: 'id-card',
-    ritueel: { tekst: 'Je werd lid van een vereniging of club', voorwaarde: { soort: 'een', lijst: [{ soort: 'symbool', id: 'm_vereniging' }, { soort: 'symbool', id: 'm_lid_oostdorp' }, { soort: 'symbool', id: 'm_rotary' }, { soort: 'symbool', id: 'm_bestuur' }] } },
+    ritueel: { tekst: 'Je werd lid van een vereniging of club', voorwaarde: { soort: 'een', lijst: [{ soort: 'symbool', id: 'm_vereniging' }, { soort: 'symbool', id: 'm_lid_oostdorp' }, { soort: 'symbool', id: 'm_rotary' }, { soort: 'symbool', id: 'm_bestuur' }, { soort: 'symbool', id: 'm_hgc' }, { soort: 'symbool', id: 'm_rozenstein' }] } },
   },
   {
     min: 7500, dagen: 180, naam: 'Patroon', uitleg: 'Een sponsor van het dorp. Je dwingt respect af.', icoon: 'building-columns',
@@ -52,10 +52,10 @@ export const CATEGORIEEN = [
       ['a01', 'Buren gegroet en bij hun naam genoemd', 10, 'civic'],
       ['a02', 'Praatje gemaakt in de supermarkt', 20, 'civic'],
       ['a03', 'Wandeling door het dorp met een praatje onderweg', 15, 'physical'],
-      ['a04', 'Koffie of borrel bij Pops in het centrum', 30, 'stealth'],
+      ['a04', 'Koffie of borrel bij Pops in het centrum', 30, 'stealth', { plek: 'pops' }],
       ['a05', 'Nieuwe buren welkom geheten', 40, 'stealth'],
       ['a06', 'Koningsdag in het dorp gevierd', 40, 'civic'],
-      ['a07', 'Voorstelling in De Warenar bezocht', 50, 'cultural'],
+      ['a07', 'Voorstelling in De Warenar bezocht', 50, 'cultural', { plek: 'warenar' }],
       ['a08', 'Vergadering van Buurtvereniging Oostdorp bijgewoond', 60, 'civic'],
       ['a09', 'Meegedaan aan Burendag of een opschoondag in de wijk', 70, 'civic'],
       ['a10', 'Vrijwilliger bij de Oranjevereniging', 100, 'civic'],
@@ -66,7 +66,12 @@ export const CATEGORIEEN = [
       ['a15', 'Een oudere buur geholpen', 50, 'civic'],
       ['a16', 'Iemands naam onthouden en de volgende keer gebruikt', 15, 'stealth'],
       ['a17', 'De buurtapp behulpzaam beantwoord', 15, 'civic'],
-      ['a18', 'Nieuwjaarsreceptie van de gemeente bezocht', 80, 'civic'],
+      ['a18', 'Nieuwjaarsreceptie van de gemeente bezocht', 80, 'civic', { plek: 'paauw' }],
+      ['a19', 'Dodenherdenking op 4 mei bijgewoond', 40, 'civic', { stil: true }],
+      ['a20', 'Koffietafel op Koningsdag in het centrum', 40, 'civic', { plek: 'langstraat' }],
+      ['a21', 'Spullen verkocht op de vrijmarkt van Koningsdag', 30, 'financial'],
+      ['a22', 'Jazzavond van de Jazz Sociëteit in het Deylerhuis', 50, 'cultural', { plek: 'deylerhuis' }],
+      ['a23', 'Kerstmarkt in het centrum bezocht', 30, 'financial', { plek: 'langstraat' }],
     ],
   },
   {
@@ -78,13 +83,14 @@ export const CATEGORIEEN = [
       ['b01', 'Raadsvergadering gevolgd, live of teruggekeken', 30, 'civic'],
       ['b02', 'Open data van de gemeente opgevraagd of gebruikt', 40, 'civic'],
       ['b03', 'Gemeenteraad Tracker bijgewerkt', 50, 'civic'],
-      ['b04', 'Raadsvergadering bijgewoond op de publieke tribune', 60, 'stealth'],
+      ['b04', 'Raadsvergadering bijgewoond op de publieke tribune', 60, 'stealth', { plek: 'paauw' }],
       ['b05', 'Blog over Wassenaar gepubliceerd op hayobethlehem.nl', 80, 'civic'],
       ['b06', 'Maandelijks overzicht van stemgedrag naar journalisten gestuurd', 120, 'civic'],
       ['b07', 'Vraag van een raadslid beantwoord met data', 120, 'civic'],
       ['b08', 'Data gedeeld met een journalist van De Wassenaarse Krant of Sleutelstad', 150, 'civic'],
-      ['b09', 'Ingesproken bij een commissievergadering', 150, 'civic'],
+      ['b09', 'Ingesproken bij een commissievergadering', 150, 'civic', { plek: 'paauw' }],
       ['b10', 'Lokale media gebruikten jouw data in een artikel', 200, 'civic'],
+      ['b11', 'Brief of reactie geplaatst in De Wassenaarse Krant, Sleutelstad of wassenaarders.nl', 70, 'civic'],
     ],
   },
   {
@@ -93,14 +99,15 @@ export const CATEGORIEEN = [
     icoon: 'landmark-dome',
     kleur: 'rood',
     activiteiten: [
-      ['c01', 'Dorpsmuseum Wassenaar bezocht', 30, 'cultural'],
-      ['c02', 'Kasteel Duivenvoorde bezocht', 40, 'cultural'],
+      ['c01', 'Dorpsmuseum Wassenaar bezocht', 30, 'cultural', { plek: 'dorpsmuseum' }],
+      ['c02', 'Kasteel Duivenvoorde bezocht', 40, 'cultural', { plek: 'duivenvoorde' }],
       ['c03', 'Erfgoedwandeling of Open Monumentendag', 50, 'cultural'],
       ['c04', 'Lezing van de historische vereniging bijgewoond', 50, 'cultural'],
       ['c05', 'Zienswijze ingediend over Landgoed De Paauw', 60, 'civic'],
-      ['c06', 'Dorpsmuseum geadviseerd over digitalisering', 75, 'cultural'],
+      ['c06', 'Dorpsmuseum geadviseerd over digitalisering', 75, 'cultural', { plek: 'dorpsmuseum' }],
       ['c07', 'Blog geschreven over Princess Garden of de Tuin van Ruys', 80, 'cultural'],
-      ['c08', 'Meegeholpen met het digitaliseren van de museumcollectie', 120, 'cultural'],
+      ['c08', 'Meegeholpen met het digitaliseren van de museumcollectie', 120, 'cultural', { plek: 'dorpsmuseum' }],
+      ['c09', 'Als vrijwilliger een rondleiding gegeven in het Dorpsmuseum', 90, 'cultural', { plek: 'dorpsmuseum' }],
     ],
   },
   {
@@ -127,11 +134,12 @@ export const CATEGORIEEN = [
       ['e02', 'WhatsApp-buurtpreventie voor expats beheerd', 50, 'stealth'],
       ['e03', 'Expat-buren uitgenodigd voor koffie', 60, 'stealth'],
       ['e04', 'Borrel van de internationale gemeenschap bezocht', 80, 'stealth'],
-      ['e05', 'International Festival van de American School bezocht', 100, 'cultural'],
+      ['e05', 'International Festival van de American School bezocht', 100, 'cultural', { plek: 'ash' }],
       ['e06', 'Lezing van de Diplomat Club Wassenaar bijgewoond', 250, 'stealth'],
-      ['e07', 'Uitgenodigd voor een handelsdiner, bijvoorbeeld op De Wittenburg', 400, 'stealth', { uitnodiging: true, bedank: true }],
+      ['e07', 'Uitgenodigd voor een handelsdiner, bijvoorbeeld op De Wittenburg', 400, 'stealth', { uitnodiging: true, bedank: true, plek: 'wittenburg' }],
       ['e08', 'Twee mensen uit verschillende kringen aan elkaar voorgesteld', 80, 'stealth'],
       ['e09', 'Nationale-dagreceptie van een ambassade bijgewoond', 200, 'stealth', { nationaal: true }],
+      ['e10', 'Gastles gegeven op de American School', 120, 'cultural', { plek: 'ash' }],
     ],
   },
   {
@@ -140,16 +148,21 @@ export const CATEGORIEEN = [
     icoon: 'tree',
     kleur: 'groen',
     activiteiten: [
-      ['f01', 'Strandwandeling bij de Wassenaarse Slag', 20, 'physical'],
-      ['f02', 'Gewandeld of gefietst in Meijendel of Berkheide', 25, 'physical'],
-      ['f03', 'Vogels gespot en gefotografeerd in Meijendel', 30, 'physical'],
-      ['f04', 'Getennist bij Kielten', 40, 'physical'],
+      ['f01', 'Strandwandeling bij de Wassenaarse Slag', 20, 'physical', { plek: 'slag' }],
+      ['f02', 'Gewandeld of gefietst in Meijendel of Berkheide', 25, 'physical', { plek: 'meijendel' }],
+      ['f03', 'Vogels gespot en gefotografeerd in Meijendel', 30, 'physical', { plek: 'meijendel' }],
+      ['f04', 'Getennist bij Kielten', 40, 'physical', { plek: 'kielten' }],
       ['f05', 'Meegetraind met het WZK Tri-Team', 60, 'physical'],
       ['f06', 'Gedoneerd aan Stichting Duivenvoorde', 80, 'cultural'],
       ['f07', 'Meegedaan aan een natuurwerkdag of strandopruimactie', 80, 'physical'],
-      ['f08', 'Vrijwilliger bij Kasteel Duivenvoorde', 100, 'cultural'],
-      ['f09', 'Vrijwilliger bij de Wassenaarse Reddingsbrigade', 150, 'physical'],
-      ['f10', 'Meegedaan aan de Zwemloop Wassenaar', 200, 'physical'],
+      ['f08', 'Vrijwilliger bij Kasteel Duivenvoorde', 100, 'cultural', { plek: 'duivenvoorde' }],
+      ['f09', 'Vrijwilliger bij de Wassenaarse Reddingsbrigade', 150, 'physical', { plek: 'slag' }],
+      ['f10', 'Meegedaan aan de Zwemloop Wassenaar', 200, 'physical', { plek: 'slag' }],
+      ['f11', 'Wedstrijd van HGC Heren 1 bezocht op De Roggewoning', 40, 'physical', { plek: 'roggewoning' }],
+      ['f12', 'Op de 9-holesbaan van Groen-Geel gespeeld', 50, 'physical', { plek: 'roggewoning' }],
+      ['f13', 'Geholpen bij het jeugdvoetbal van Graaf Willem II VAC', 80, 'civic', { plek: 'roggewoning' }],
+      ['f14', 'Als introducé gegolfd op Rozenstein', 100, 'physical', { plek: 'rozenstein', uitnodiging: true, bedank: true }],
+      ['f15', 'De Avondvierdaagse Wassenaar gelopen', 60, 'physical'],
     ],
   },
   {
@@ -159,8 +172,8 @@ export const CATEGORIEEN = [
     kleur: 'oranje',
     activiteiten: [
       ['g01', 'Bloemen gekocht bij een lokale bloemist', 15, 'financial'],
-      ['g02', 'Kwaliteitsvlees gehaald bij Slagerij Groeneveld', 20, 'financial'],
-      ['g03', 'Boodschappen gedaan bij een speciaalzaak in de Langstraat', 20, 'financial'],
+      ['g02', 'Kwaliteitsvlees gehaald bij Slagerij Groeneveld', 20, 'financial', { plek: 'langstraat' }],
+      ['g03', 'Boodschappen gedaan bij een speciaalzaak in de Langstraat', 20, 'financial', { plek: 'langstraat' }],
       ['g04', 'Gegeten bij een lokaal restaurant', 40, 'financial'],
       ['g05', 'Spullen gebracht naar de Kinderkringloop', 40, 'civic'],
       ['g06', 'Gecollecteerd voor een goed doel in de wijk', 60, 'civic'],
@@ -173,7 +186,7 @@ export const CATEGORIEEN = [
   },
   {
     id: 'overlast',
-    naam: 'Lokale noodzaken',
+    naam: 'Lokale noodzaken en dossiers',
     icoon: 'bicycle',
     kleur: 'amber',
     activiteiten: [
@@ -185,6 +198,10 @@ export const CATEGORIEEN = [
       ['h06', 'Opiniestuk over fatbikes gepubliceerd', 90, 'civic'],
       ['h07', 'Campagne gevoerd voor 30 km per uur', 120, 'civic'],
       ['h08', 'Inzichten met data over de Noordrand gepubliceerd', 120, 'civic'],
+      ['h09', 'Dossier, stap 1: informatieavond bijgewoond', 50, 'civic', { dossierstap: 1 }],
+      ['h10', 'Dossier, stap 2: zienswijze ingediend', 80, 'civic', { dossierstap: 2 }],
+      ['h11', 'Dossier, stap 3: ingesproken in de commissie', 150, 'civic', { dossierstap: 3 }],
+      ['h12', 'Dossier, stap 4: uitkomst gevolgd en erover geblogd', 100, 'civic', { dossierstap: 4 }],
     ],
   },
   {
@@ -205,6 +222,22 @@ export const CATEGORIEEN = [
     ],
   },
   {
+    id: 'kaart',
+    naam: 'Dorpskaart: plekken',
+    icoon: 'map',
+    kleur: 'teal',
+    activiteiten: [
+      ['k01', 'Molen De Windlust bezocht op een open dag', 40, 'cultural', { plek: 'windlust' }],
+      ['k02', 'Gewandeld op Landgoed De Horsten, thee bij het paviljoen', 40, 'physical', { plek: 'horsten' }],
+      ['k03', 'Tentoonstelling in Museum Voorlinden bezocht', 80, 'cultural', { plek: 'voorlinden' }],
+      ['k04', 'Excursie vanuit bezoekerscentrum De Tapuit in Meijendel', 50, 'physical', { plek: 'tapuit' }],
+      ['k05', 'Met kinderen of logés naar Duinrell', 50, 'physical', { plek: 'duinrell' }],
+      ['k06', 'Het Louwman Museum bezocht', 50, 'cultural', { plek: 'louwman' }],
+      ['k07', 'Zonsondergang aan de Wassenaarse Slag', 25, 'physical', { plek: 'slag' }],
+      ['k08', 'Een route door Nationaal Park Hollandse Duinen gelopen', 40, 'physical', { plek: 'hollandseduinen' }],
+    ],
+  },
+  {
     id: 'protocol',
     naam: 'Protocol en etiquette',
     icoon: 'scroll',
@@ -222,11 +255,19 @@ export const CATEGORIEEN = [
     ],
   },
 // Kenmerken (vijfde veld): uitnodiging (je werd uitgenodigd), tegen (je nodigde zelf uit),
-// bedank (vraagt om een bedankje), nationaal (extra XP rond een nationale dag).
+// bedank (vraagt om een bedankje), nationaal (extra XP rond een nationale dag), plek (id in PLEKKEN),
+// dossierstap (1 tot 4, je kiest een dossier uit DOSSIERS), stil (nooit een bonus, zoals bij een herdenking).
 ].map((c) => ({ ...c, activiteiten: c.activiteiten.map(([id, naam, punten, eigenschap, kenmerken = {}]) => ({ id, naam, punten, eigenschap, ...kenmerken })) }));
 
 export const SYMBOLEN = [
   { id: 'm_vereniging', punten: 250, naam: 'Lid van een lokale vereniging of club', icoon: 'people-group', eigenschap: 'civic' },
+  { id: 'm_hgc', punten: 400, naam: 'Lid van HGC', icoon: 'hockey-puck', stijl: 'ingetogen', eigenschap: 'physical' },
+  { id: 'm_rozenstein', punten: 900, naam: 'Lid van Golfclub Rozenstein', icoon: 'golf-ball-tee', eigenschap: 'physical' },
+  { id: 'm_barbour', punten: 200, naam: 'Een Barbour-jas die ouder is dan je kinderen', icoon: 'shirt', stijl: 'ingetogen', eigenschap: 'stealth' },
+  { id: 'm_hond', punten: 200, naam: 'Je hond kent de weg door Meijendel beter dan jij', icoon: 'dog', stijl: 'ingetogen', eigenschap: 'physical' },
+  { id: 'm_boswachter', punten: 250, naam: 'De boswachter groet je bij naam', icoon: 'tree', stijl: 'ingetogen', eigenschap: 'physical' },
+  { id: 'm_fiets', punten: 150, naam: 'Je fiets heeft een mand en is minstens twintig jaar oud', icoon: 'bicycle', stijl: 'ingetogen', eigenschap: 'stealth' },
+  { id: 'm_familieborrel', punten: 600, naam: 'Uitgenodigd op de nieuwjaarsborrel van een oude familie', icoon: 'champagne-glasses', stijl: 'ingetogen', eigenschap: 'stealth' },
   { id: 'm_lid_oostdorp', punten: 300, naam: 'Lid van Buurtvereniging Oostdorp', icoon: 'house-chimney', stijl: 'ingetogen', eigenschap: 'civic' },
   { id: 'm_slager', punten: 300, naam: 'Bij naam begroet bij Slagerij Groeneveld', icoon: 'drumstick-bite', stijl: 'ingetogen', eigenschap: 'financial' },
   { id: 'm_pops', punten: 300, naam: 'Bij Pops weten ze wat je drinkt', icoon: 'mug-hot', stijl: 'ingetogen', eigenschap: 'stealth' },
@@ -301,6 +342,7 @@ export const STARTVRAGEN = [
  * contacten (aantal mensen in je netwerk), rollen (verschillende rollen), hecht (hechte banden),
  * wederkerig (uitnodigingen op tijd beantwoord), tegen (zelf uitgenodigd), bedankt (op tijd bedankt),
  * lof (keer lovend besproken), blaam (keer kritisch besproken), quiz (vragen goed beantwoord),
+ * plekken (ontdekt op de dorpskaart), buurten (actief in zo veel buurten), buurt (id, zo vaak), dossiers (afgerond),
  * alle (een lijst die allemaal moet), een (een lijst waarvan er één moet).
  */
 
@@ -331,6 +373,12 @@ export const PRESTATIES = [
   { id: 'p_chatham', naam: 'Chatham House', uitleg: 'Tien keer discreet gebleven over een besloten bijeenkomst.', icoon: 'user-secret', voorwaarde: { soort: 'activiteit', id: 'p08', aantal: 10 } },
   { id: 'p_lof', naam: 'Gesprek van de dag', uitleg: 'Vijf keer lovend besproken in het dorp.', icoon: 'comments', voorwaarde: { soort: 'lof', aantal: 5 } },
   { id: 'p_quiz', naam: 'Etiquette-expert', uitleg: 'Alle vragen van de etiquettequiz goed.', icoon: 'scroll', voorwaarde: { soort: 'quiz', aantal: 12 } },
+  { id: 'p_verkenner', naam: 'Dorpsverkenner', uitleg: 'Tien plekken op de dorpskaart ontdekt.', icoon: 'map', voorwaarde: { soort: 'plekken', aantal: 10 } },
+  { id: 'p_kenner', naam: 'Kenner van het dorp', uitleg: 'Alle plekken op de dorpskaart ontdekt.', icoon: 'location-dot', voorwaarde: { soort: 'plekken', aantal: 21 } },
+  { id: 'p_schutting', naam: 'Over de schutting', uitleg: 'Actief in alle buurten van Wassenaar.', icoon: 'house', voorwaarde: { soort: 'buurten', aantal: 7 } },
+  { id: 'p_kieviet', naam: 'Kievietse kringen', uitleg: 'Tien keer actief in De Kieviet.', icoon: 'chess-rook', voorwaarde: { soort: 'buurt', id: 'De Kieviet', aantal: 10 } },
+  { id: 'p_dossier', naam: 'Dossierkenner', uitleg: 'Eén lokaal dossier van begin tot eind gevolgd.', icoon: 'folder-open', voorwaarde: { soort: 'dossiers', aantal: 1 } },
+  { id: 'p_waakhond', naam: 'Waakhond van het dorp', uitleg: 'Drie lokale dossiers afgerond.', icoon: 'folder-open', voorwaarde: { soort: 'dossiers', aantal: 3 } },
   { id: 'p_tong', naam: 'Over de tong', uitleg: 'Het dorp sprak er schande van.', icoon: 'comments', geheim: true, voorwaarde: { soort: 'blaam', aantal: 1 } },
   { id: 'p_schaduw', naam: 'Eminence grise', uitleg: 'Sociale discretie op 75 / 100.', icoon: 'user-secret', geheim: true, voorwaarde: { soort: 'skill', id: 'stealth', aantal: 3000 } },
 ];
@@ -348,6 +396,7 @@ export const TITELS = [
   { id: 't_protocol', naam: 'Protocollair', uitleg: 'Alle vragen van de etiquettequiz goed.', voorwaarde: { soort: 'quiz', aantal: 12 } },
   { id: 't_gastheer', naam: 'Gastheer van de lanen', uitleg: 'Tien keer zelf mensen uitgenodigd.', voorwaarde: { soort: 'tegen', aantal: 10 } },
   { id: 't_spin', naam: 'De spin in het web', uitleg: 'Vijfentwintig mensen in tien verschillende rollen.', voorwaarde: { soort: 'alle', lijst: [{ soort: 'contacten', aantal: 25 }, { soort: 'rollen', aantal: 10 }] } },
+  { id: 't_inspreker', naam: 'Inspreker van dienst', uitleg: 'Alle zes de lokale dossiers afgerond.', voorwaarde: { soort: 'dossiers', aantal: 6 } },
   { id: 't_wereld', naam: 'Wereldburger', uitleg: 'Tien keer actief in diplomatieke en expat-kringen.', voorwaarde: { soort: 'terrein', id: 'diplomatiek', aantal: 10 } },
 ];
 
@@ -378,6 +427,7 @@ export const REEKS_MAX = 1.5;
 // Events met extra XP. Data als MM-DD; pas ze gerust aan.
 export const EVENTS = [
   { naam: 'Koningsweek', van: '04-21', tot: '04-27', factor: 2, icoon: 'crown' },
+  { naam: 'Avondvierdaagse', van: '05-25', tot: '05-29', factor: 1.5, icoon: 'person-walking' },
   { naam: 'Hollandse Nieuwe', van: '06-01', tot: '06-21', factor: 2, icoon: 'fish-fins' },
   { naam: 'Open Monumentendag', van: '09-08', tot: '09-14', factor: 2, icoon: 'landmark-dome' },
   { naam: 'Kerst in het dorp', van: '12-15', tot: '12-31', factor: 2, icoon: 'star' },
@@ -454,3 +504,46 @@ export const QUIZ = [
   { id: 'q11', vraag: 'Hoe laat kom je op een diplomatiek diner?', antwoorden: ['Een kwartier te vroeg', 'Precies op tijd', 'Een half uur later, dat is chic'], goed: 1, uitleg: 'Op tijd. Te vroeg stoort de gastheer, te laat de tafelschikking.' },
   { id: 'q12', vraag: 'Je stelt twee mensen aan elkaar voor. Wie noem je eerst?', antwoorden: ['Maakt niet uit', 'De jongste of lager in rang', 'De oudste of hoger in rang'], goed: 2, uitleg: 'Je noemt eerst wie hoger in rang of ouder is, en stelt de ander aan diegene voor.' },
 ];
+
+/* ---------- Hyperlokaal ---------- */
+
+// De dorpskaart: elke plek telt één keer als ontdekking, met extra XP.
+export const ONTDEKKING_BONUS = 2;
+export const PLEKKEN = [
+  { id: 'windlust', naam: 'Molen De Windlust', icoon: 'wind' },
+  { id: 'horsten', naam: 'Landgoed De Horsten', icoon: 'tree' },
+  { id: 'voorlinden', naam: 'Museum Voorlinden', icoon: 'image' },
+  { id: 'tapuit', naam: 'De Tapuit in Meijendel', icoon: 'binoculars' },
+  { id: 'meijendel', naam: 'Meijendel', icoon: 'dove' },
+  { id: 'hollandseduinen', naam: 'Nationaal Park Hollandse Duinen', icoon: 'mountain-sun' },
+  { id: 'slag', naam: 'Wassenaarse Slag', icoon: 'umbrella-beach' },
+  { id: 'duinrell', naam: 'Duinrell', icoon: 'ticket' },
+  { id: 'louwman', naam: 'Louwman Museum', icoon: 'car' },
+  { id: 'paauw', naam: 'Raadhuis De Paauw', icoon: 'landmark-dome' },
+  { id: 'dorpsmuseum', naam: 'Dorpsmuseum', icoon: 'landmark' },
+  { id: 'duivenvoorde', naam: 'Kasteel Duivenvoorde', icoon: 'chess-rook' },
+  { id: 'wittenburg', naam: 'Kasteel De Wittenburg', icoon: 'chess-rook' },
+  { id: 'warenar', naam: 'De Warenar', icoon: 'masks-theater' },
+  { id: 'deylerhuis', naam: 'Deylerhuis', icoon: 'music' },
+  { id: 'pops', naam: 'Pops', icoon: 'mug-hot' },
+  { id: 'langstraat', naam: 'Langstraat', icoon: 'store' },
+  { id: 'ash', naam: 'American School', icoon: 'school' },
+  { id: 'roggewoning', naam: 'Sportpark De Roggewoning', icoon: 'hockey-puck' },
+  { id: 'rozenstein', naam: 'Golfclub Rozenstein', icoon: 'golf-ball-tee' },
+  { id: 'kielten', naam: 'Kielten', icoon: 'futbol' },
+];
+
+// De buurten. Bij het loggen kies je er optioneel één.
+export const BUURTEN = ['Oostdorp', 'Kerkehout', 'Centrum', 'De Kieviet', 'Rijksdorp', 'Zuid', 'Maaldrift'];
+
+// Lokale dossiers. Je volgt er een in vier stappen (de activiteiten met dossierstap).
+export const DOSSIER_BELONING = 250;
+export const DOSSIERS = [
+  { id: 'noordrand', naam: 'De Noordrand en de woningbouw', icoon: 'house' },
+  { id: 'paauw', naam: 'Landgoed De Paauw: Princess Garden en de Tuin van Ruys', icoon: 'landmark-dome' },
+  { id: 'leegstand', naam: 'Leegstand in de Langstraat en de Luifelbaan', icoon: 'store' },
+  { id: 'verkeer', naam: 'Verkeer op de Rijksstraatweg en 30 km/u', icoon: 'road' },
+  { id: 'fatbikes', naam: 'Fatbikes bij de scholen en de Slag', icoon: 'bicycle' },
+  { id: 'kieviet', naam: 'Bomenkap en villabouw in De Kieviet', icoon: 'tree' },
+];
+export const DOSSIER_STAPPEN = ['Informatieavond', 'Zienswijze', 'Inspreken', 'Uitkomst en blog'];

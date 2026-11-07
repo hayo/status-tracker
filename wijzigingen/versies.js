@@ -9,6 +9,19 @@
 
 export const VERSIES = [
   {
+    versie: '2.4',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'De dorpskaart: 21 plekken, van Molen De Windlust tot Museum Voorlinden. Een plek die je voor het eerst bezoekt, geeft ×2.',
+      'Clubs en sport: HGC, Groen-Geel, Graaf Willem II VAC, Golfclub Rozenstein en de Avondvierdaagse.',
+      'De dorpskalender: Koningsdag in het centrum, jazz in het Deylerhuis, de kerstmarkt en de Dodenherdenking. Tijdens de Avondvierdaagse krijg je ×1,5.',
+      'Kies bij het loggen de buurt. Nieuwe prestaties voor alle buurten en voor De Kieviet.',
+      'Lokale dossiers: volg er een in vier stappen, van informatieavond tot blog. Een afgerond dossier geeft 250 PR.',
+      'Nieuwe statussymbolen, zoals een oude Barbour-jas en een fiets met een mand.',
+      'In totaal 25 nieuwe activiteiten, 6 prestaties en 1 titel.',
+    ],
+  },
+  {
     versie: '2.3',
     datum: '2026-11-07',
     wijzigingen: [

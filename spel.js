@@ -9,6 +9,7 @@ import {
   REEKS_STAP, REEKS_MAX, EVENTS, VERGETEN_NA, VERGETEN_PER_WEEK, VERGETEN_MAX,
   WEDERKERIG_WEKEN, WEDERKERIG_BONUS, BEDANK_DAGEN, BEDANK_BONUS, VERZADIGD_NA, VERZADIGD_FACTOR,
   NIEUWE_BRUG, HECHT_VANAF, OPZICHTIG, INGETOGEN, RODDEL, NATIONALE_DAGEN, NATIONAAL_MARGE, NATIONAAL_BONUS,
+  PLEKKEN, ONTDEKKING_BONUS, DOSSIERS,
 } from './gegevens.js';
 
 /* ---------- Datums ---------- */
@@ -86,7 +87,7 @@ function langsteReeks(weken) {
   return beste;
 }
 
-/* ---------- Bonussen ---------- */
+/* ---------- Events, paden en nationale dagen ---------- */
 
 export function event(datum) {
   const md = datum.slice(5);
@@ -165,6 +166,15 @@ export function opvolgingen(logboek, vandaag = new Date()) {
     .map((r) => ({ regel: r, resterend: BEDANK_DAGEN - dagenTussen(alsDatum(r.datum), vandaag) }));
 }
 
+// Per dossier: welke van de vier stappen je deed, en of het al is afgerond.
+export function dossiers(logboek) {
+  return DOSSIERS.map((d) => ({
+    ...d,
+    stappen: new Set(logboek.filter((r) => r.dossier === d.id).map((r) => ACTIVITEITEN.get(r.activiteit)?.dossierstap).filter(Boolean)),
+    af: logboek.some((r) => r.dossierAf === d.id),
+  }));
+}
+
 /* ---------- Bonussen ---------- */
 
 // De bonussen voor een activiteit of symbool op een datum. Ze vermenigvuldigen.
@@ -178,11 +188,12 @@ export function bonussen(spel, item, datum, extra = {}) {
     if (item.stijl === 'ingetogen' && discretie >= INGETOGEN.vanaf) lijst.push(['Stijlvol ingetogen', INGETOGEN.factor]);
     return { lijst, factor: lijst.reduce((f, [, x]) => f * x, 1) };
   }
+  const a = ACTIVITEITEN.get(item.id);
+  if (a?.stil) return { lijst, factor: 1 };
   const r = reeksVoor(actieveWeken(spel.logboek.filter((x) => x.datum < datum)), maandag(alsDatum(datum)));
   if (r) lijst.push([`Reeks ${r} ${r === 1 ? 'week' : 'weken'}`, Math.min(REEKS_MAX, 1 + r * REEKS_STAP)]);
   const e = event(datum);
   if (e) lijst.push([e.naam, e.factor]);
-  const a = ACTIVITEITEN.get(item.id);
   const p = pad(spel);
   if (p?.terreinen.includes(a?.terrein)) lijst.push([p.naam, 1 + PAD_BONUS]);
   const n = nationaleDag(datum);
@@ -190,6 +201,9 @@ export function bonussen(spel, item, datum, extra = {}) {
   if (a?.tegen && gastvrijheid(ervoor, alsDatum(datum)).open.some((u) => u.resterend >= 0)) lijst.push(['Wederkerigheid', WEDERKERIG_BONUS]);
   if (extra.voor && dagenTussen(alsDatum(extra.voor.datum), alsDatum(datum)) <= BEDANK_DAGEN) lijst.push(['Op tijd bedankt', BEDANK_BONUS]);
   if (extra.rol && !netwerk(ervoor).rollen.has(extra.rol)) lijst.push([`Nieuwe brug: ${extra.rol.toLocaleLowerCase('nl')}`, NIEUWE_BRUG]);
+  if (a?.plek && !ervoor.some((x) => ACTIVITEITEN.get(x.activiteit)?.plek === a.plek)) {
+    lijst.push([`Nieuwe plek: ${PLEKKEN.find((x) => x.id === a.plek)?.naam ?? a.plek}`, ONTDEKKING_BONUS]);
+  }
   const week = weekVan(datum);
   const keer = spel.logboek.filter((x) => x.activiteit === item.id && weekVan(x.datum) === week).length;
   if (keer >= VERZADIGD_NA) lijst.push(['Verzadigd: al vaak deze week', VERZADIGD_FACTOR]);
@@ -235,6 +249,9 @@ export function statistiek(spel) {
         lof: spel.logboek.filter((r) => r.roddel && r.punten > 0).length,
         blaam: spel.logboek.filter((r) => r.roddel && r.punten < 0).length,
         quiz: new Set(spel.logboek.map((r) => r.quiz).filter(Boolean)).size,
+        plekken: new Set(acties.map((r) => ACTIVITEITEN.get(r.activiteit).plek).filter(Boolean)).size,
+        perBuurt: tel(spel.logboek.map((r) => r.buurt).filter(Boolean)),
+        dossiers: spel.logboek.filter((r) => r.dossierAf).length,
       };
     })(),
   };
@@ -268,6 +285,10 @@ export function voortgang(v, st) {
     lof: () => st.lof,
     blaam: () => st.blaam,
     quiz: () => st.quiz,
+    plekken: () => st.plekken,
+    buurten: () => st.perBuurt.size,
+    buurt: () => st.perBuurt.get(v.id) ?? 0,
+    dossiers: () => st.dossiers,
   }[v.soort];
   if (v.soort === 'alle') {
     return { nu: v.lijst.filter((d) => gehaald(d, st)).length, doel: v.lijst.length };
