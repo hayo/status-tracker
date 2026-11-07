@@ -141,7 +141,7 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 | `CATEGORIEEN` | `id`, `kringen` (gewicht per kring), `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |
 | `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `stijl?` (`opzichtig` of `ingetogen`), `kringen?`, `eigenschap` |
 | `KRINGEN` | de vier kringen; met `KRING_STANDEN` en `KRING_SYMBOOL` |
-| `KAART` | de kaart in een vlak van 1000 bij 700: `titel`, `zeeNaam`, zee, kust en duinen (paden), `duinNamen`, `bossen` en `buurten` (hoekpunten die rijken delen; de kaart tekent de grenzen grillig; een buurt heeft een `titel` als rijk en een `kleur` voor zijn wapen), `wegen` (pad, soort en waar de naam staat) en per plek een punt en een tekening (`kasteel`, `molen`, `tempel`, `koepel`, `huis`, `herberg`, `markt`, `tent`, `vuurtoren`, `boom`, `berg`, `uitkijk` of `vlag`) |
+| `KAART` | de kaart in een vlak van 1000 bij 700: `titel`, `zeeNaam`, zee, kust en duinen (paden), `duinNamen`, `bossen` en `buurten` (hoekpunten die rijken delen; de kaart tekent de grenzen grillig; een buurt heeft een `titel` als rijk en een `kleur` voor zijn wapen), `wegen` (pad, soort en waar de naam staat) en per plek een punt en een tekening (`kasteel`, `molen`, `tempel`, `koepel`, `huis`, `herberg`, `markt`, `school`, `tent`, `vuurtoren`, `boom`, `berg`, `uitkijk`, `vlag` of `baan`) |
 | `ERKENNING` | `dagen` voor de bekendheid, de `niveaus`, en `verhoudingVanaf` |
 | `GUNFACTOR`, `ENERGIE`, `TYPEN` | de getallen voor gunfactor en energie, en de typen introvert en extravert |
 | `ROLLEN` | de rollen voor het netwerk |
@@ -179,7 +179,7 @@ niveau. De rang van je karakter is ook zijn niveau: Voorbijganger is niveau 1.
 ### De landingspagina
 
 De landingspagina is gewone HTML, zonder script. Ze noemt een paar aantallen
-(292 activiteiten, 7 rangen, 45 prestaties, dertien terreinen, 21 plekken) en de rangen en terreinen. Verander
+(292 activiteiten, 7 rangen, 45 prestaties, dertien terreinen, 23 plekken) en de rangen en terreinen. Verander
 je die in `gegevens.js`, pas dan ook `index.html` aan. De iconen staan in een
 eigen sprite boven in `index.html`.
 

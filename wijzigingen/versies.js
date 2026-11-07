@@ -9,12 +9,20 @@
 
 export const VERSIES = [
   {
+    versie: '2.8.2',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'De school en de tennisclub van je zoon staan nu op de kaart: de school in het Centrum, de tennisclub in Maaldrift. Je eerste bezoek geeft ×2.',
+      'De school en de club worden niet meer bij naam genoemd.',
+    ],
+  },
+  {
     versie: '2.8.1',
     datum: '2026-11-07',
     wijzigingen: [
-      'Bij Gezin staan nu acties voor Tennisclub Oude Eik, zoals bardienst, rijden naar uitwedstrijden en helpen bij de clubkampioenschappen.',
-      'Ook voor de Montessorischool: klassenouder zijn, een gastles over je vak, helpen bij het schoolfeest en ouders uit de klas uitnodigen.',
-      'Twee nieuwe statussymbolen: bekend langs de baan bij Oude Eik, en vaste hulpouder op de Montessorischool.',
+      'Bij Gezin staan nu acties voor de tennisclub van je zoon, zoals bardienst, rijden naar uitwedstrijden en helpen bij de clubkampioenschappen.',
+      'Ook voor de school van je zoon: klassenouder zijn, een gastles over je vak, helpen bij het schoolfeest en ouders uit de klas uitnodigen.',
+      'Twee nieuwe statussymbolen: bekend langs de tennisbaan, en vaste hulpouder op school.',
     ],
   },
   {

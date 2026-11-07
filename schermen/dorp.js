@@ -117,6 +117,14 @@ const TEKENINGEN = {
   uitkijk: () => [
     pad('lm-lijn', 'M-7 10L-4 -6M7 10L4 -6M-6 5L5 -1M6 5L-5 -1'),
     pad('lm-muur', 'M-8 -6H8V-9H-8Z'), pad('lm-dak', 'M-10 -9L0 -18L10 -9Z')],
+  school: () => [
+    pad('lm-muur', 'M-15 10V-2H15V10Z'), pad('lm-dak', 'M-17 -2L-9 -9H9L17 -2Z'),
+    pad('lm-muur', 'M-4 -9V-17H4V-9Z'), pad('lm-dak', 'M-5.5 -17L0 -23L5.5 -17Z'),
+    pad('lm-donker', 'M-2 10V4H2V10ZM-11 1H-7V5H-11ZM7 1H11V5H7ZM-1.5 -15H1.5V-12H-1.5Z')],
+  baan: () => [
+    pad('lm-groen', 'M-16 10L-10 -6H10L16 10Z'), pad('lm-krijt', 'M-13 6H13M-11.5 2H11.5M0 -6V10'),
+    pad('lm-lijn', 'M-14.5 2V-2M14.5 2V-2'), pad('lm-net', 'M-14.5 -1H14.5'),
+    maak('svg:circle', { class: 'lm-vlag', cx: 6, cy: -11, r: 2.5 })],
   vlag: () => [
     pad('lm-groen', 'M-16 10Q0 1 16 10Q0 15 -16 10Z'), pad('lm-lijn', 'M0 9V-18'), pad('lm-vlag', 'M0 -18L14 -14L0 -10Z')],
 };
