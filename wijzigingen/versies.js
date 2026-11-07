@@ -9,6 +9,15 @@
 
 export const VERSIES = [
   {
+    versie: '2.7',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'Nieuw scherm Karakter: je karakterblad met avatar, acht uitrustingsvakken, een radar voor je skills en voor je kringen, en de gunfactor en je energie als meters.',
+      'Nieuw scherm Dorp: een kaart van Wassenaar. Buurten kleuren naar hoe vaak je er was, ontdekte plekken lichten goud op. Tik op een plek en log wat je daar deed.',
+      'De statuspagina is rustiger: wie je bent staat nu op je karakterblad.',
+    ],
+  },
+  {
     versie: '2.6',
     datum: '2026-11-07',
     wijzigingen: [

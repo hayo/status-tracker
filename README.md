@@ -10,6 +10,12 @@ https://hayo.github.io/status-tracker/
 De startpagina (`index.html`) legt uit hoe het spel werkt. De knop "Open de
 tool" opent de tool zelf (`app.html`).
 
+- **Karakter**: je karakterblad. Avatar met uitrustingsvakken, een radar voor je
+  skills en een voor je kringen, de gunfactor als boog, je energie als ring,
+  kapitaal, terreinen en statussymbolen.
+- **Dorp**: een schematische kaart van Wassenaar. Buurten kleuren naar je
+  aanwezigheid, ontdekte plekken lichten op; tik op een plek om te loggen.
+  Daaronder de plekken als lijst, de buurten en de dossiers.
 - **Status**: je karakter met rang en niveau, de XP-balk naar de volgende rang,
   de rangladder, je skills met elk een eigen niveau, je statussymbolen als
   trofeeën, recente activiteiten, een kalender van 17 weken, punten per week en
@@ -34,7 +40,11 @@ app.html                  de tool, en de losse pagina eromheen
 index.php                 binnen een site: geeft alleen het artikel uit app.html door
 app.css                   de opmaak, alles onder #aanzien
 standalone.css            de achtergrond en de groene balk van de losse pagina
-app.js                    de app: tonen, loggen, bewaren
+app.js                    de app: tonen, loggen, bewaren, navigatie
+ui.js                     hulpjes voor de pagina: maak, icoon, meter, getal, svgKnop
+grafieken.js              radar, boog en ring, als SVG
+schermen/karakter.js      het karakterblad
+schermen/dorp.js          de kaart van het dorp
 spel.js                   de spelregels: rang, bonussen, prestaties, missies, verval, jaaroverzicht, samenvoegen
 opslag.js                 de opslag op de server: synccode, versleutelen, lezen en schrijven
 opslag.php                de server: bewaart versleutelde voortgang per speler
@@ -117,6 +127,7 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 | `CATEGORIEEN` | `id`, `kringen` (gewicht per kring), `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |
 | `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `stijl?` (`opzichtig` of `ingetogen`), `kringen?`, `eigenschap` |
 | `KRINGEN` | de vier kringen; met `KRING_STANDEN` en `KRING_SYMBOOL` |
+| `KAART` | de kaart: zee, kust, duinen, wegen, buurten (pad en labelpunt) en de plek van elke plek, in een vlak van 1000 bij 700 |
 | `ERKENNING` | `dagen` voor de bekendheid, de `niveaus`, en `verhoudingVanaf` |
 | `GUNFACTOR`, `ENERGIE`, `TYPEN` | de getallen voor gunfactor en energie, en de typen introvert en extravert |
 | `ROLLEN` | de rollen voor het netwerk |
@@ -221,6 +232,10 @@ De regels staan in `spel.js`, de getallen en teksten in `gegevens.js`.
 - **Kapitaal.** Naar Bourdieu: economisch (financiële slagkracht), cultureel,
   sociaal (maatschappelijke invloed plus discretie) en symbolisch (de PR van je
   statussymbolen).
+- **De kaart.** `KAART` in `gegevens.js` is schematisch en niet op schaal. Een
+  nieuwe plek in `PLEKKEN` heeft ook een punt in `KAART.plekken` nodig. Elke plek
+  en buurt is een SVG-knop (`svgKnop` in `ui.js`), te bedienen met Enter en
+  spatie. Dezelfde plekken staan ook als lijst onder de kaart.
 - **Dorpskaart.** Een activiteit met een `plek` die je nog nooit logde, geeft
   `ONTDEKKING_BONUS`. De Erelijst toont welke plekken je ontdekte.
 - **Buurten.** Bij het loggen kies je optioneel een buurt uit `BUURTEN`. De

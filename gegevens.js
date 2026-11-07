@@ -669,3 +669,39 @@ export const ERKENNING = {
   niveaus: [[0, 'Onbekend'], [100, 'Gezicht in het dorp'], [300, 'Bekend gezicht'], [700, 'Bekende Wassenaarder'], [1500, 'Begrip in Wassenaar']],
   verhoudingVanaf: 10, // pas vanaf zo veel signalen telt de verhouding
 };
+
+/* ---------- De kaart ---------- */
+
+// Een schematische kaart van Wassenaar, noorden boven, niet op schaal. Coördinaten in een vlak van
+// 1000 bij 700. De ligging van buurten en plekken is bij benadering: pas ze gerust aan.
+export const KAART = {
+  breedte: 1000,
+  hoogte: 700,
+  zee: 'M0 0H600L0 520Z',
+  kust: 'M600 0L0 520',
+  duinen: [
+    { naam: 'Berkheide', pad: 'M600 0H800L632 250H311Z', label: [560, 120] },
+    { naam: 'Meijendel', pad: 'M311 250H632L330 700H0V520Z', label: [300, 420] },
+  ],
+  wegen: [
+    { naam: 'Rijksstraatweg', pad: 'M380 700L1000 140' },
+    { naam: 'A44', pad: 'M600 700L1000 330' },
+  ],
+  buurten: {
+    Rijksdorp: { pad: 'M612 175L722 165L708 300L602 312Z', label: [660, 240] },
+    Centrum: { pad: 'M728 255L830 245L838 360L716 370Z', label: [770, 360] },
+    Oostdorp: { pad: 'M830 190L972 170L980 330L842 350Z', label: [905, 265] },
+    Kerkehout: { pad: 'M716 376L838 366L846 470L708 480Z', label: [776, 402] },
+    'De Kieviet': { pad: 'M562 330L700 318L702 500L520 520Z', label: [615, 430] },
+    Zuid: { pad: 'M600 530L760 492L782 625L620 665Z', label: [690, 580] },
+    Maaldrift: { pad: 'M856 384L992 364L994 520L866 524Z', label: [925, 450] },
+  },
+  plekken: {
+    slag: [350, 230], hollandseduinen: [500, 150], meijendel: [250, 560], tapuit: [380, 470],
+    duinrell: [650, 205], wittenburg: [625, 285], voorlinden: [550, 590], louwman: [500, 670],
+    ash: [700, 600], roggewoning: [630, 640], deylerhuis: [735, 448], kielten: [815, 450],
+    paauw: [742, 322], pops: [782, 270], langstraat: [815, 296], dorpsmuseum: [805, 334],
+    warenar: [742, 278], windlust: [860, 300], horsten: [940, 215], duivenvoorde: [955, 600],
+    rozenstein: [900, 470],
+  },
+};

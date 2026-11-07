@@ -11,20 +11,23 @@ import { VERSIES } from './wijzigingen/versies.js';
 import {
   RANGEN, EIGENSCHAPPEN, EIGENSCHAP_MAX, CATEGORIEEN, SYMBOLEN, STARTVRAGEN, PRESTATIES, TITELS, PADEN, PAD_VANAF,
   ROLLEN, QUIZ, QUIZ_PUNTEN, DUNBAR, HECHT_VANAF, NATIONAAL_MARGE, PLEKKEN, BUURTEN, DOSSIER_STAPPEN, DOSSIER_BELONING,
-  KRINGEN, KRING_SYMBOOL, TYPEN, GUNFACTOR,
+  KRINGEN, KRING_SYMBOOL, TYPEN,
 } from './gegevens.js';
 import {
   dagSleutel, alsDatum, plusDagen, maandag, dagenTussen, ACTIVITEITEN, telt, rangIndex, rang as rangVan, verval,
-  kapitaal, netwerk, gastvrijheid, opvolgingen, roddel, nationaleDag, komendeNationaleDagen, dossiers,
-  kringen, kringStand, gunfactor, gunLabel, kosten, energie,
+  netwerk, gastvrijheid, opvolgingen, roddel, nationaleDag, komendeNationaleDagen, dossiers,
+  kringStand, kosten, energie,
   behaald, perWeek, reeks, event, volgendEvent, pad, bonussen, statistiek, voortgang, ontgrendeld,
   missies, jaren, jaaroverzicht, samenvoegen,
 } from './spel.js';
 import * as opslag from './opslag.js';
+import { maak, icoon, meter, getal, factor } from './ui.js';
+import { toonKarakter } from './schermen/karakter.js';
+import { bouwKaart, toonKaart } from './schermen/dorp.js';
 
 const SLEUTEL = 'wassenaar_renown';
 const SYNC_SLEUTEL = 'wassenaar_renown_sync'; // { code, revisie, open }: apart, zodat de code niet in een savegame komt
-const WEERGAVEN = ['start', 'status', 'loggen', 'erelijst', 'strategie', 'gegevens', 'wijzigingen'];
+const WEERGAVEN = ['start', 'status', 'karakter', 'dorp', 'loggen', 'erelijst', 'strategie', 'gegevens', 'wijzigingen'];
 const KALENDER_WEKEN = 17;
 const STAAF_WEKEN = 8;
 const KALENDER_STAPPEN = [1, 30, 80, 200]; // ondergrens in PR per dag voor stap 1 tot 4
@@ -36,30 +39,11 @@ const app = document.getElementById('aanzien');
 const el = {};
 for (const e of app.querySelectorAll('[id]')) el[e.id.slice(3).replace(/-(\w)/g, (_, c) => c.toUpperCase())] = e;
 
-const getal = (n) => Math.round(n).toLocaleString('nl');
-const factor = (f) => `×${f.toLocaleString('nl', { maximumFractionDigits: 2 })}`;
 const datumKort = new Intl.DateTimeFormat('nl', { day: 'numeric', month: 'short' });
 const datumLang = new Intl.DateTimeFormat('nl', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 const maandNaam = (m) => new Intl.DateTimeFormat('nl', { month: 'long' }).format(new Date(2026, m, 1));
 const nieuwId = () => crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 const vandaag = () => dagSleutel(new Date());
-const SVG = 'http://www.w3.org/2000/svg';
-
-// Maakt een element. Tekst gaat altijd via textContent, dus notities kunnen geen HTML injecteren.
-function maak(tag, eigen = {}, ...kinderen) {
-  const e = tag.startsWith('svg:') ? document.createElementNS(SVG, tag.slice(4)) : document.createElement(tag);
-  for (const [k, v] of Object.entries(eigen)) {
-    if (v === undefined || v === false) continue;
-    if (k === 'tekst') e.textContent = v;
-    else if (k === 'bij') e.addEventListener(e.tagName === 'INPUT' ? 'change' : 'click', v);
-    else e.setAttribute(k, v === true ? '' : v);
-  }
-  e.append(...kinderen.filter((k) => k !== null && k !== undefined));
-  return e;
-}
-const icoon = (naam, klasse = 'icoon') => maak('svg:svg', { class: klasse, 'aria-hidden': 'true', focusable: 'false' }, maak('svg:use', { href: `#az-i-${naam}` }));
-const meter = (id, deel) => maak('span', { class: 'spoor' }, maak('meter', { id, min: 0, max: 1, value: Math.min(1, Math.max(0, deel)) }));
-
 /* ---------- Opslag ---------- */
 
 let spel = null; // null zolang de startvragen niet zijn beantwoord
@@ -289,14 +273,7 @@ function toonStatus() {
 
   toonMissies();
   toonVerplichtingen();
-  toonPositie();
   toonBekendheid(st.erkenning);
-
-  const kap = kapitaal(spel, st);
-  el.kapitaal.replaceChildren(...[
-    ['coins', 'Economisch', kap.economisch], ['palette', 'Cultureel', kap.cultureel],
-    ['users', 'Sociaal', kap.sociaal], ['medal', 'Symbolisch', kap.symbolisch],
-  ].map(([ic, dt, dd]) => maak('div', {}, maak('dt', {}, icoon(ic), dt), maak('dd', { tekst: getal(dd) }))));
 
   const laatste = gesorteerd().find((r) => r.roddel);
   const recent = laatste && dagenTussen(alsDatum(laatste.datum), new Date()) <= 14;
@@ -321,25 +298,6 @@ function toonStatus() {
   toonWeken(weken.slice(-STAAF_WEKEN));
   el.wekenTabel.tBodies[0].replaceChildren(...weken.slice().reverse().map((w) => maak('tr', {},
     maak('th', { scope: 'row', tekst: datumKort.format(w.van) }), maak('td', { tekst: getal(w.aantal) }), maak('td', { tekst: getal(w.punten) }))));
-
-  el.eigenschappen.replaceChildren(...Object.entries(EIGENSCHAPPEN).map(([k, e]) => {
-    const deel = Math.min(1, st.skills[k] / EIGENSCHAP_MAX);
-    return maak('li', { class: `skill-${k}` },
-      maak('div', { class: 'skill-kop' }, icoon(e.icoon), maak('label', { for: `az-eig-${k}`, tekst: e.naam }),
-        maak('span', { class: 'skill-waarde', tekst: `${Math.floor(deel * 100)} / 100` }),
-        maak('span', { class: 'skill-niveau', tekst: `Niv. ${Math.floor(deel * 10)}` })),
-      meter(`az-eig-${k}`, deel));
-  }));
-
-  el.pijlers.replaceChildren(...CATEGORIEEN.map((c) => {
-    const n = c.activiteiten.filter((a) => st.perActiviteit.has(a.id)).length;
-    return maak('li', { class: `terrein cat-${c.kleur}` }, icoon(c.icoon), maak('label', { for: `az-pijler-${c.id}`, tekst: c.naam }),
-      maak('span', { class: 'terrein-waarde', tekst: `${n} / ${c.activiteiten.length}` }), meter(`az-pijler-${c.id}`, n / c.activiteiten.length));
-  }));
-
-  el.symbolenBehaald.replaceChildren(...(st.symbolen.size
-    ? SYMBOLEN.filter((s) => st.symbolen.has(s.id)).map((s) => maak('li', { class: 'trofee' }, icoon(s.icoon), maak('span', { tekst: s.naam })))
-    : [maak('li', { class: 'leeg', tekst: 'Nog geen statussymbolen geclaimd.' })]));
 
   const regels = gesorteerd().slice(0, 20);
   el.logboek.replaceChildren(...(regels.length ? regels.map(logRegel) : [maak('li', { class: 'leeg', tekst: 'Nog geen activiteiten gelogd.' })]));
@@ -367,29 +325,6 @@ function toonBekendheid(e) {
   el.bekendheidVerhouding.textContent = e.binnen + e.uit === 0
     ? 'Noteer wat er naar jou toe komt: een groet bij naam, een uitnodiging, een vraag om advies. Dat is de echte maat voor bekend zijn.'
     : `De laatste 90 dagen kwam er ${e.binnen} keer iets naar jou toe, en ging jij ${e.uit} keer naar anderen. ${e.binnen >= e.uit && e.binnen >= 10 ? 'Het omslagpunt: er komt meer naar je toe dan je zelf zoekt.' : `Voor elke 10 keer dat jij iets doet, komt er ${(e.uit ? (e.binnen / e.uit) * 10 : 10).toLocaleString('nl', { maximumFractionDigits: 1 })} naar jou toe.`}`;
-}
-
-// Je positie: stand per kring, gunfactor en energie deze week.
-function toonPositie() {
-  const stand = kringen(spel.logboek);
-  el.kringen.replaceChildren(...KRINGEN.map((k) => maak('li', { class: stand[k.id] < 0 ? 'kring negatief' : 'kring' },
-    icoon(k.icoon, 'icoon kring-icoon'),
-    maak('label', { for: `az-kring-${k.id}`, tekst: k.naam }),
-    maak('span', { class: 'kring-stand', tekst: `${kringStand(stand[k.id])} · ${getal(stand[k.id])}` }),
-    maak('span', { class: 'spoor' }, maak('meter', { id: `az-kring-${k.id}`, min: 0, max: 1000, value: Math.max(0, Math.min(1000, stand[k.id])) })))));
-  const g = gunfactor(spel.logboek);
-  el.gunMeter.value = g;
-  el.gunWaarde.textContent = `${getal(g)} — ${gunLabel(g)}`;
-  el.gunUitleg.textContent = g < GUNFACTOR.streber
-    ? 'Men vindt je een streber. Strategisch netwerken levert nu minder op. Doe eens iets belangeloos.'
-    : g >= GUNFACTOR.gegund ? 'Het dorp gunt het je. Alles levert iets meer op.' : 'Belangeloze dingen laten hem stijgen, zichtbaar netwerken laat hem dalen.';
-  const e = energie(spel, vandaag());
-  el.energieMeter.value = Math.max(0, e.over);
-  el.energieWaarde.textContent = `${getal(e.over)} van ${getal(e.budget)}`;
-  el.energieUitleg.textContent = e.over < 0
-    ? 'Sociale kater: je zit over je budget. Activiteiten leveren minder op tot volgende week, behalve wat je oplaadt.'
-    : `Deze week. ${spel.type ? TYPEN.find((t) => t.id === spel.type).uitleg : 'Kies je type op de Erelijst.'} Een gezinsdag laadt altijd op.`;
-  el.energieBlok.classList.toggle('kater', e.over < 0);
 }
 
 // Wat je nog moet doen: bedankjes en tegenuitnodigingen.
@@ -1022,6 +957,8 @@ function bouwStart() {
 function verwerk() {
   toonEvent();
   toonStatus();
+  toonKarakter(el, spel, statistiek(spel), vandaag());
+  toonKaart(el, spel);
   toonLoggen();
   toonErelijst();
   toonNetwerk();
@@ -1052,6 +989,7 @@ sync = laadSync();
 bouwStart();
 bouwActiviteiten();
 bouwQuiz();
+bouwKaart(el, (a) => vraagLog(a));
 el.logRol.append(...ROLLEN.map((r) => maak('option', { value: r }, r)));
 el.logBuurt.append(...BUURTEN.map((b) => maak('option', { value: b }, b)));
 el.logDossier.append(...dossiers([]).map((d) => maak('option', { value: d.id }, d.naam)));

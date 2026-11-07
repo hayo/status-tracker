@@ -1921,6 +1921,426 @@
   color: #15803d;
 }
 
+/* ---------- Karakterblad ---------- */
+
+#aanzien .blad {
+  display: grid;
+  gap: 0 1.5em;
+}
+
+@media (width >= 56em) {
+  #aanzien .blad {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  #aanzien .blad-wie {
+    grid-column: 1 / -1;
+  }
+}
+
+#aanzien .blad-wie {
+  display: grid;
+  gap: 1.5em 2.5em;
+  padding: 2em;
+}
+
+@media (width >= 46em) {
+  #aanzien .blad-wie {
+    grid-template-columns: auto 1fr;
+  }
+}
+
+#aanzien .blad-pop {
+  display: grid;
+  justify-items: center;
+  gap: 1.25em;
+}
+
+#aanzien .avatar-groot {
+  width: 8.5em;
+  height: 8.5em;
+}
+
+#aanzien .avatar-groot .icoon {
+  width: 3.6em;
+  height: 3.6em;
+}
+
+#aanzien .vakken {
+  display: grid;
+  grid-template-columns: repeat(4, 4.5em);
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .vak {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 0.25em;
+  height: 4.5em;
+  padding: 0.3em;
+  border: 2px dashed #d1d5db;
+  border-radius: 0.6em;
+  color: #9ca3af;
+  font-size: 0.85em;
+  text-align: center;
+}
+
+#aanzien .vak > span {
+  overflow: hidden;
+  max-width: 100%;
+  font-size: 0.7em;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#aanzien .vak.vol {
+  border: 2px solid var(--goud);
+  background: linear-gradient(160deg, var(--goud-licht), #fff);
+  color: var(--goud-donker);
+  box-shadow: 0 2px 8px rgb(212 175 55 / 25%);
+}
+
+#aanzien .vak.vol > span {
+  color: var(--tekst);
+}
+
+#aanzien .vak .icoon {
+  width: 1.5em;
+  height: 1.5em;
+}
+
+#aanzien .blad-naam .rang-naam {
+  margin: 0.1em 0 0;
+}
+
+#aanzien .feiten {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
+  gap: 0.6em 1.5em;
+  margin-top: 1.25em;
+}
+
+#aanzien .feiten dt {
+  color: var(--zacht);
+  font-size: 0.75em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#aanzien .feiten dd {
+  margin: 0.1em 0 0;
+  font-weight: 700;
+}
+
+#aanzien .radar-vak,
+#aanzien .grafiek-midden {
+  display: grid;
+  justify-items: center;
+}
+
+#aanzien .radar,
+#aanzien .boog,
+#aanzien .ring {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#aanzien .radar-ring,
+#aanzien .radar-as {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 1;
+}
+
+#aanzien .radar-vlak {
+  fill: rgb(42 77 62 / 22%);
+  stroke: var(--groen);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+
+#aanzien .radar-punt {
+  fill: var(--goud);
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+#aanzien .radar-label {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--zacht);
+}
+
+#aanzien .waarden {
+  display: grid;
+  gap: 0.4em;
+  margin-top: 0.5em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .waarde {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 0.88em;
+}
+
+#aanzien .waarden .icoon {
+  color: var(--cat, var(--navy));
+}
+
+#aanzien .meters {
+  display: grid;
+  gap: 1em 2em;
+}
+
+@media (width >= 30em) {
+  #aanzien .meters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  #aanzien .meters > h3 {
+    grid-column: 1 / -1;
+  }
+}
+
+#aanzien .meter-vak {
+  text-align: center;
+}
+
+#aanzien .meter-vak h4 {
+  margin: 0.4em 0 0.2em;
+  font-family: var(--serif);
+}
+
+#aanzien .boog-zone {
+  fill: none;
+  stroke-width: 16;
+}
+
+#aanzien .zone-laag {
+  stroke: #fca5a5;
+}
+
+#aanzien .zone-midden {
+  stroke: #fcd34d;
+}
+
+#aanzien .zone-hoog {
+  stroke: #86efac;
+}
+
+#aanzien .boog-naald {
+  stroke: var(--navy);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+#aanzien .boog-as {
+  fill: var(--navy);
+}
+
+#aanzien .boog-waarde,
+#aanzien .ring-waarde {
+  font-family: var(--sans);
+  font-size: 24px;
+  font-weight: 800;
+  fill: var(--navy);
+}
+
+#aanzien .ring-spoor,
+#aanzien .ring-vulling {
+  fill: none;
+  stroke-width: 14;
+}
+
+#aanzien .ring-spoor {
+  stroke: #e5e7eb;
+}
+
+#aanzien .ring-vulling {
+  stroke: var(--groen);
+  stroke-linecap: round;
+}
+
+#aanzien .ring-laag .ring-vulling {
+  stroke: var(--rood);
+}
+
+#aanzien .blad-link {
+  margin: 0.5em 0 0;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+/* ---------- De kaart ---------- */
+
+#aanzien .kaart-raster {
+  display: grid;
+  gap: 1em 1.5em;
+}
+
+@media (width >= 56em) {
+  #aanzien .kaart-raster {
+    grid-template-columns: 2fr 1fr;
+    align-items: start;
+  }
+}
+
+#aanzien .kaart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75em;
+}
+
+#aanzien .kaart-land {
+  fill: #f2efe6;
+}
+
+#aanzien .kaart-zee {
+  fill: #cfe3f3;
+}
+
+#aanzien .kaart-kust {
+  fill: none;
+  stroke: #f3dfa2;
+  stroke-width: 14;
+}
+
+#aanzien .kaart-duin {
+  fill: #e9dfbf;
+}
+
+#aanzien .kaart-weg {
+  fill: none;
+  stroke: #d6d3cb;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+#aanzien .kaart-zee-label,
+#aanzien .kaart-duin-label {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-style: italic;
+  fill: #6b7f93;
+  pointer-events: none;
+}
+
+#aanzien .kaart-duin-label {
+  fill: #8a7a4a;
+}
+
+#aanzien .kaart-buurt {
+  cursor: pointer;
+  outline: none;
+}
+
+#aanzien .kaart-buurt path {
+  stroke: #fff;
+  stroke-width: 3;
+  transition: opacity 150ms;
+}
+
+#aanzien .kaart-buurt:hover path {
+  opacity: 0.85;
+}
+
+#aanzien .kaart-buurt:focus-visible path,
+#aanzien .kaart-buurt.gekozen path {
+  stroke: var(--navy);
+  stroke-width: 4;
+}
+
+#aanzien .kaart-buurt-label {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  fill: var(--navy);
+  pointer-events: none;
+}
+
+#aanzien .kaart-pin {
+  cursor: pointer;
+  outline: none;
+}
+
+#aanzien .pin-rand {
+  fill: #fff;
+  stroke: #9ca3af;
+  stroke-width: 2.5;
+}
+
+#aanzien .pin-icoon {
+  fill: #9ca3af;
+}
+
+#aanzien .kaart-pin.ontdekt .pin-rand {
+  fill: var(--goud);
+  stroke: #fff;
+  filter: drop-shadow(0 0 6px rgb(212 175 55 / 70%));
+}
+
+#aanzien .kaart-pin.ontdekt .pin-icoon {
+  fill: var(--navy);
+}
+
+#aanzien .kaart-pin:hover .pin-rand,
+#aanzien .kaart-pin:focus-visible .pin-rand,
+#aanzien .kaart-pin.gekozen .pin-rand {
+  stroke: var(--navy);
+  stroke-width: 4;
+}
+
+#aanzien .kaart-info {
+  padding: 1em 1.1em;
+  border: 1px solid var(--lijn);
+  border-radius: 0.75em;
+  background: var(--vlak);
+}
+
+#aanzien .kaart-info:focus {
+  outline: none;
+}
+
+#aanzien .kaart-info h3 {
+  font-size: 1.1em;
+}
+
+#aanzien .plek-status {
+  color: var(--zacht);
+  font-weight: 700;
+}
+
+#aanzien .plek-status.ontdekt {
+  color: var(--goud-tekst);
+}
+
+#aanzien .legenda-pin {
+  width: 0.9em;
+  height: 0.9em;
+  border: 2px solid #9ca3af;
+  border-radius: 50%;
+  background: #fff;
+}
+
+#aanzien .legenda-pin.ontdekt {
+  border-color: #fff;
+  background: var(--goud);
+  box-shadow: 0 0 4px rgb(212 175 55 / 80%);
+}
+
 /* ---------- Bekendheid ---------- */
 
 #aanzien .bekendheid {
@@ -1969,47 +2389,12 @@
 
 /* ---------- Je positie: kringen, gunfactor, energie ---------- */
 
-#aanzien .positie {
-  display: grid;
-  gap: 1em 2em;
-}
-
-@media (width >= 46em) {
-  #aanzien .positie {
-    grid-template-columns: 1.2fr 1fr;
-  }
-}
-
-#aanzien .positie h4 {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5em;
-  margin: 0 0 0.5em;
-  color: var(--navy);
-  font-family: var(--serif);
-}
-
-#aanzien .positie p {
-  margin: 0.4em 0 1em;
-}
-
-#aanzien .kringen {
-  display: grid;
-  gap: 0.75em;
-  padding: 0;
-  list-style: none;
-}
-
 #aanzien .kring {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 0.3em 0.6em;
   font-size: 0.9em;
-}
-
-#aanzien .kring .spoor {
-  grid-column: 1 / -1;
 }
 
 #aanzien .kring-icoon {

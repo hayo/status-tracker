@@ -133,6 +133,8 @@
     <nav class="menu" id="az-menu" aria-label="Wassenaar Aanzien" hidden>
       <ul>
         <li><a href="#status"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-chart-pie"/></svg>Status</a></li>
+        <li><a href="#karakter"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-id-card"/></svg>Karakter</a></li>
+        <li><a href="#dorp"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-map"/></svg>Dorp</a></li>
         <li><a href="#loggen" class="menu-goud"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-plus"/></svg>Log activiteit</a></li>
         <li><a href="#erelijst"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-trophy"/></svg>Erelijst</a></li>
         <li><a href="#strategie"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-book-open"/></svg>Strategie</a></li>
@@ -189,6 +191,7 @@
           <p class="pr" id="az-punten">0</p>
           <p class="karakter-bekend" id="az-karakter-bekend"></p>
           <p class="verval" id="az-verval" hidden></p>
+          <p class="blad-link"><a href="#karakter">Bekijk je karakterblad</a></p>
         </div>
       </div>
 
@@ -230,43 +233,12 @@
 
       <dl class="cijfers" id="az-cijfers"></dl>
 
-      <section class="paneel" aria-labelledby="az-positie-kop">
-        <h3 id="az-positie-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-scale-balanced"/></svg> Je positie</h3>
-        <div class="positie">
-          <div>
-            <h4>Aanzien per kring</h4>
-            <ul class="kringen" id="az-kringen"></ul>
-          </div>
-          <div>
-            <h4><label for="az-gun-meter">Gunfactor</label> <span class="kop-extra" id="az-gun-waarde"></span></h4>
-            <span class="spoor"><meter id="az-gun-meter" min="0" max="100" low="30" high="70" optimum="100" value="50"></meter></span>
-            <p class="zacht" id="az-gun-uitleg"></p>
-            <div id="az-energie-blok">
-              <h4><label for="az-energie-meter">Energie</label> <span class="kop-extra" id="az-energie-waarde"></span></h4>
-              <span class="spoor"><meter id="az-energie-meter" min="0" max="100" low="25" high="75" optimum="100" value="100"></meter></span>
-              <p class="zacht" id="az-energie-uitleg"></p>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <section class="paneel" aria-labelledby="az-skills-kop">
-        <h3 id="az-skills-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-chart-pie"/></svg> Karaktereigenschappen (skills)</h3>
-        <ul class="skills" id="az-eigenschappen"></ul>
-        <h4 class="kapitaal-kop">Je kapitaal, naar Bourdieu</h4>
-        <dl class="kapitaal" id="az-kapitaal"></dl>
-      </section>
 
-      <div class="raster">
-        <section class="paneel" aria-labelledby="az-behaald-kop">
-          <h3 id="az-behaald-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-medal"/></svg> Verworven statussymbolen</h3>
-          <ul class="trofeeen" id="az-symbolen-behaald"></ul>
-        </section>
-        <section class="paneel" aria-labelledby="az-logboek-kop">
-          <h3 id="az-logboek-kop"><svg class="icoon zacht" aria-hidden="true" focusable="false"><use href="#az-i-list-check"/></svg> Recente activiteiten</h3>
-          <ul class="logboek" id="az-logboek"></ul>
-        </section>
-      </div>
+      <section class="paneel" aria-labelledby="az-logboek-kop">
+        <h3 id="az-logboek-kop"><svg class="icoon zacht" aria-hidden="true" focusable="false"><use href="#az-i-list-check"/></svg> Recente activiteiten</h3>
+        <ul class="logboek" id="az-logboek"></ul>
+      </section>
 
       <section class="paneel" aria-labelledby="az-kalender-kop">
         <h3 id="az-kalender-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-calendar-days"/></svg> Actief in de afgelopen 17 weken</h3>
@@ -288,10 +260,97 @@
         </details>
       </section>
 
-      <section class="paneel" aria-labelledby="az-pijlers-kop">
-        <h3 id="az-pijlers-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-globe"/></svg> Verkende terreinen</h3>
-        <p class="zacht">Per terrein: hoeveel verschillende activiteiten je al deed.</p>
-        <ul class="terreinen" id="az-pijlers"></ul>
+    </section>
+
+    <section class="weergave" id="az-karakter" aria-labelledby="az-karakter-kop" hidden>
+      <h2 class="verborgen" id="az-karakter-kop" tabindex="-1">Karakterblad</h2>
+      <div class="blad">
+        <section class="paneel glas blad-wie" aria-labelledby="az-blad-rang">
+          <div class="blad-pop">
+            <div class="avatar avatar-groot">
+              <svg class="icoon" aria-hidden="true" focusable="false"><use id="az-blad-rang-icoon" href="#az-i-person-walking"/></svg>
+              <span class="niveau" id="az-blad-niveau">Niv. 1</span>
+            </div>
+            <ul class="vakken" id="az-vakken" aria-label="Uitrusting"></ul>
+          </div>
+          <div class="blad-naam">
+            <p class="label">Karakterblad</p>
+            <h3 class="rang-naam" id="az-blad-rang">Voorbijganger</h3>
+            <p class="titel-naam" id="az-blad-titel"></p>
+            <p class="rang-uitleg" id="az-blad-uitleg"></p>
+            <dl class="feiten" id="az-blad-feiten"></dl>
+          </div>
+        </section>
+
+        <section class="paneel" aria-labelledby="az-skills-kop">
+          <h3 id="az-skills-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-chart-pie"/></svg> Skills</h3>
+          <div class="radar-vak" id="az-radar-skills"></div>
+          <ul class="waarden" id="az-eigenschappen"></ul>
+        </section>
+
+        <section class="paneel" aria-labelledby="az-kringen-kop">
+          <h3 id="az-kringen-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-scale-balanced"/></svg> Aanzien per kring</h3>
+          <div class="radar-vak" id="az-radar-kringen"></div>
+          <ul class="waarden" id="az-kringen"></ul>
+        </section>
+
+        <section class="paneel meters" aria-labelledby="az-meters-kop">
+          <h3 id="az-meters-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-heart"/></svg> Gunfactor en energie</h3>
+          <div class="meter-vak">
+            <div class="grafiek-midden" id="az-gun"></div>
+            <h4>Gunfactor: <span id="az-gun-waarde"></span></h4>
+            <p class="zacht" id="az-gun-uitleg"></p>
+          </div>
+          <div class="meter-vak" id="az-energie-blok">
+            <div class="grafiek-midden" id="az-energie"></div>
+            <h4>Energie: <span id="az-energie-waarde"></span></h4>
+            <p class="zacht" id="az-energie-uitleg"></p>
+          </div>
+        </section>
+
+        <section class="paneel" aria-labelledby="az-kapitaal-kop">
+          <h3 id="az-kapitaal-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-coins"/></svg> Kapitaal, naar Bourdieu</h3>
+          <dl class="kapitaal" id="az-kapitaal"></dl>
+        </section>
+
+        <section class="paneel" aria-labelledby="az-behaald-kop">
+          <h3 id="az-behaald-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-medal"/></svg> Verworven statussymbolen</h3>
+          <ul class="trofeeen" id="az-symbolen-behaald"></ul>
+        </section>
+
+        <section class="paneel" aria-labelledby="az-pijlers-kop">
+          <h3 id="az-pijlers-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-globe"/></svg> Verkende terreinen</h3>
+          <p class="zacht">Per terrein: hoeveel verschillende activiteiten je al deed.</p>
+          <ul class="terreinen" id="az-pijlers"></ul>
+        </section>
+      </div>
+    </section>
+
+    <section class="weergave" id="az-dorp" aria-labelledby="az-dorp-kop" hidden>
+      <h2 class="verborgen" id="az-dorp-kop" tabindex="-1">Het dorp</h2>
+      <section class="paneel kaart-paneel" aria-labelledby="az-wassenaar-kop">
+        <h3 id="az-wassenaar-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-map"/></svg> Wassenaar <span class="kop-extra" id="az-kaart-teller"></span></h3>
+        <div class="kaart-raster">
+          <div class="kaart" id="az-kaart"></div>
+          <div class="kaart-info" id="az-kaart-info" tabindex="-1" aria-live="polite"></div>
+        </div>
+        <p class="legenda" id="az-kaart-legenda"></p>
+        <p class="zacht">Schematisch en niet op schaal: de ligging van buurten en plekken is bij benadering.</p>
+      </section>
+
+      <section class="paneel" aria-labelledby="az-kaart-kop">
+        <h3 id="az-kaart-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-location-dot"/></svg> Plekken <span class="kop-extra" id="az-plekken-teller"></span></h3>
+        <p class="zacht">Dezelfde plekken als op de kaart, als lijst. Ontdek ze allemaal en word Kenner van het dorp.</p>
+        <ul class="plekken" id="az-plekken"></ul>
+        <h4>Buurten</h4>
+        <p class="zacht">Kies bij het loggen de buurt. In een dorp ben je gevestigd per buurt, niet per dorp.</p>
+        <ul class="buurten" id="az-buurten"></ul>
+      </section>
+
+      <section class="paneel" aria-labelledby="az-dossiers-kop">
+        <h3 id="az-dossiers-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-folder-open"/></svg> Lokale dossiers</h3>
+        <p class="zacht">Volg een dossier in vier stappen: informatieavond, zienswijze, inspreken, en de uitkomst met een blog. Log de stappen onder Lokale noodzaken en dossiers. Een afgerond dossier geeft 250 PR.</p>
+        <ul class="dossiers" id="az-dossiers"></ul>
       </section>
     </section>
 
@@ -346,20 +405,7 @@
         <p class="zacht" id="az-ontbrekend"></p>
       </section>
 
-      <section class="paneel" aria-labelledby="az-kaart-kop">
-        <h3 id="az-kaart-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-map"/></svg> Dorpskaart <span class="kop-extra" id="az-plekken-teller"></span></h3>
-        <p class="zacht">Elke plek die je voor het eerst bezoekt, geeft ×2. Ontdek ze allemaal en word Kenner van het dorp.</p>
-        <ul class="plekken" id="az-plekken"></ul>
-        <h4>Buurten</h4>
-        <p class="zacht">Kies bij het loggen de buurt. In een dorp ben je gevestigd per buurt, niet per dorp.</p>
-        <ul class="buurten" id="az-buurten"></ul>
-      </section>
 
-      <section class="paneel" aria-labelledby="az-dossiers-kop">
-        <h3 id="az-dossiers-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-folder-open"/></svg> Lokale dossiers</h3>
-        <p class="zacht">Volg een dossier in vier stappen: informatieavond, zienswijze, inspreken, en de uitkomst met een blog. Log de stappen onder Lokale noodzaken en dossiers. Een afgerond dossier geeft 250 PR.</p>
-        <ul class="dossiers" id="az-dossiers"></ul>
-      </section>
 
       <section class="paneel" aria-labelledby="az-titels-kop">
         <h3 id="az-titels-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-medal"/></svg> Titels</h3>
