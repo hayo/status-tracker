@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wassenaar Prestige Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        wassenaar: {
+                            green: '#2A4D3E',
+                            gold: '#D4AF37',
+                            cream: '#F9F6F0',
+                            navy: '#1B263B',
+                            slate: '#4A5568'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F9F6F0; }
+        .progress-bar-animated { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-panel { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-wassenaar-green text-white px-6 py-4 rounded-lg shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3">
+        <i id="toast-icon" class="fa-solid fa-circle-check"></i>
+        <div>
+            <p id="toast-title" class="font-bold text-sm">Succes</p>
+            <p id="toast-msg" class="text-xs text-green-100">Activiteit vastgelegd</p>
+        </div>
+    </div>
+
+    <!-- Level Up Modal -->
+    <div id="level-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 backdrop-blur-sm transition-opacity">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-sm mx-4 transform scale-95 transition-transform duration-300" id="level-modal-content">
+            <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-wassenaar-gold">
+                <i class="fa-solid fa-crown text-3xl text-wassenaar-gold"></i>
+            </div>
+            <h2 class="text-2xl font-serif font-bold text-wassenaar-navy mb-2">Nieuw Niveau Bereikt!</h2>
+            <p class="text-gray-600 mb-6" id="level-modal-text">Je wordt nu gezien als een <span class="font-bold text-wassenaar-gold">Patroon</span>.</p>
+            <button onclick="closeModal()" class="bg-wassenaar-navy text-white px-6 py-2 rounded-full font-bold hover:bg-blue-900 transition-colors">Verder</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-wassenaar-green text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-shield-halved text-wassenaar-gold text-2xl"></i>
+                <h1 class="font-serif font-bold text-xl tracking-wide hidden sm:block">Wassenaar Aanzien</h1>
+            </div>
+            <div class="flex gap-1 sm:gap-4 text-sm font-semibold">
+                <button onclick="showView('dashboard')" class="px-3 py-2 rounded hover:bg-white/10 transition"><i class="fa-solid fa-chart-pie sm:mr-2"></i><span class="hidden sm:inline">Status</span></button>
+                <button onclick="showView('log')" class="px-3 py-2 rounded hover:bg-white/10 transition text-wassenaar-gold"><i class="fa-solid fa-plus sm:mr-2"></i><span class="hidden sm:inline">Log Activiteit</span></button>
+                <button onclick="showView('playbook')" class="px-3 py-2 rounded hover:bg-white/10 transition"><i class="fa-solid fa-book-open sm:mr-2"></i><span class="hidden sm:inline">Strategie</span></button>
+                <button onclick="resetData()" id="reset-btn" class="px-3 py-2 rounded hover:bg-red-500/80 transition text-gray-300 border border-transparent"><i class="fa-solid fa-rotate-right sm:mr-2"></i><span class="hidden sm:inline">Reset</span></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow p-4 md:p-8 max-w-5xl mx-auto w-full">
+
+        <!-- VIEW: ONBOARDING -->
+        <div id="view-onboarding" class="hidden">
+            <div class="glass-panel p-8 rounded-2xl shadow-xl border border-gray-100 max-w-2xl mx-auto text-center mt-10">
+                <i class="fa-solid fa-gem text-5xl text-wassenaar-gold mb-6"></i>
+                <h2 class="text-3xl font-serif font-bold text-wassenaar-navy mb-4">De Eerste Inschatting</h2>
+                <p class="text-gray-600 mb-8">Voordat we je rang in de Wassenaarse samenleving kunnen bepalen, moeten we je huidige sociale kapitaal berekenen.</p>
+                
+                <form id="onboarding-form" class="space-y-6 text-left">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-gray-700">1. Woonsituatie</label>
+                        <select id="q-residency" class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-wassenaar-gold outline-none bg-white">
+                            <option value="0">Ik woon niet in Wassenaar (Bezoeker)</option>
+                            <option value="100">Huurwoning (Centrum e.o.)</option>
+                            <option value="250">Koophuis in Oostdorp of Kerkehout (Lokaal geworteld)</option>
+                            <option value="800">Vrijstaande villa (De Kieviet, Rijksdorp)</option>
+                            <option value="2000">Eigenaar van een Rijksmonument</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-gray-700">2. Professioneel Netwerk</label>
+                        <select id="q-network" class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-wassenaar-gold outline-none bg-white">
+                            <option value="0">Private sector (buiten de regio)</option>
+                            <option value="150">Lokale ondernemer / Zelfstandige</option>
+                            <option value="400">Ambtenaar / Adviseur Rijksoverheid / Academicus</option>
+                            <option value="800">Top-diplomaat / Executive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-gray-700">3. Maatschappelijke Voetafdruk</label>
+                        <select id="q-civic" class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-wassenaar-gold outline-none bg-white">
+                            <option value="0">Onzichtbaar (Ik hou me op de achtergrond)</option>
+                            <option value="200">Actief online / IndieWeb / Open Source (Civic Tech)</option>
+                            <option value="500">Bestuurslid van een lokale stichting of vereniging</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="completeOnboarding()" class="w-full bg-wassenaar-navy hover:bg-blue-900 text-white font-bold py-3 px-4 rounded-lg transition-colors mt-4 shadow-md">
+                        Bereken Mijn Startpositie
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- VIEW: DASHBOARD -->
+        <div id="view-dashboard" class="hidden space-y-6">
+            <!-- Top Stats Card -->
+            <div class="glass-panel p-6 md:p-8 rounded-2xl shadow-xl border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-wassenaar-gold opacity-10 rounded-bl-full"></div>
+                
+                <div class="flex items-center gap-6 z-10">
+                    <div class="w-24 h-24 bg-wassenaar-navy rounded-full flex items-center justify-center shadow-inner border-4 border-white">
+                        <i id="rank-icon" class="fa-solid fa-person-walking text-4xl text-wassenaar-gold"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Huidige Status</p>
+                        <h2 id="rank-name" class="text-3xl md:text-4xl font-serif font-bold text-wassenaar-navy">Voorbijganger</h2>
+                        <p id="rank-desc" class="text-sm text-gray-600 mt-1 italic">Een simpele passant in de groene lanen van Wassenaar.</p>
+                    </div>
+                </div>
+                
+                <div class="text-center md:text-right z-10 w-full md:w-auto bg-white/50 p-4 rounded-xl">
+                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Prestige Punten (PR)</p>
+                    <p id="total-pr" class="text-4xl font-bold text-wassenaar-green">0</p>
+                </div>
+            </div>
+
+            <!-- Progress to Next Level -->
+            <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                <div class="flex justify-between text-sm font-bold text-gray-700 mb-2">
+                    <span>Voortgang naar <span id="next-rank-name" class="text-wassenaar-gold">Nieuwkomer</span></span>
+                    <span id="pr-needed">500 PR nodig</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-4 shadow-inner overflow-hidden">
+                    <div id="progress-bar" class="bg-gradient-to-r from-wassenaar-gold to-yellow-600 h-4 rounded-full progress-bar-animated" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- GTA Style Skills Bar -->
+            <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                <h3 class="text-lg font-serif font-bold text-wassenaar-navy mb-4 border-b pb-2"><i class="fa-solid fa-chart-column text-wassenaar-gold mr-2"></i> Karaktereigenschappen (Skills)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4" id="skills-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Status Symbols (Milestones) -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                    <h3 class="text-lg font-serif font-bold text-wassenaar-navy mb-4 border-b pb-2"><i class="fa-solid fa-medal text-wassenaar-gold mr-2"></i> Verworven Statussymbolen</h3>
+                    <div id="milestones-list" class="space-y-3">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Recent History -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                    <h3 class="text-lg font-serif font-bold text-wassenaar-navy mb-4 border-b pb-2"><i class="fa-solid fa-clock-rotate-left text-gray-400 mr-2"></i> Recente Activiteiten</h3>
+                    <div id="history-list" class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: LOG ACTIVITY -->
+        <div id="view-log" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Action Logger -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
+                        <h3 class="text-xl font-serif font-bold text-wassenaar-navy mb-4 border-b border-gray-200 pb-2">1. Sociale Acties Loggen</h3>
+                        <form id="log-form" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-gray-700">Kies een activiteit</label>
+                                
+                                <div class="h-[500px] overflow-y-auto pr-3 space-y-6 rounded-lg border border-gray-100 bg-gray-50/50 p-2" id="activity-selector">
+                                    
+                                    <!-- Category: Sociaal & Oostdorp -->
+                                    <div>
+                                        <h4 class="text-xs font-bold text-teal-800 mb-2 uppercase tracking-widest bg-teal-100 p-2 rounded">Sociaal & Oostdorp (Lokaal Geworteld)</h4>
+                                        <div class="space-y-2">
+                                            <button type="button" onclick="selectActivity(this, 20, 'Praatje gemaakt met bewoners in de supermarkt', 'civic')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Praatje gemaakt met bewoners in de supermarkt</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+20</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 30, 'Koffie of borrel bij Pops in het centrum', 'stealth')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Koffie of borrel bij Pops in het centrum</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+30</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 50, 'Bezocht een lokale voorstelling in De Warenar', 'cultural')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Bezocht een lokale voorstelling in De Warenar</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+50</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 60, 'Actief deelgenomen aan Buurtvereniging Oostdorp', 'civic')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700 font-medium">Actief in Buurtvereniging Oostdorp</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+60</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 100, 'Geholpen als vrijwilliger bij de Oranjevereniging', 'civic')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm border-l-4 border-l-teal-500">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700 font-bold">Vrijwilliger bij de Oranjevereniging</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+100</span></div>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Category: Heritage & Advocacy -->
+                                    <div>
+                                        <h4 class="text-xs font-bold text-red-800 mb-2 uppercase tracking-widest bg-red-100 p-2 rounded">Erfgoed & Lokale Belangen</h4>
+                                        <div class="space-y-2">
+                                            <button type="button" onclick="selectActivity(this, 60, 'Zienswijze ingediend over Landgoed De Paauw', 'civic')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Zienswijze ingediend over Landgoed De Paauw</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+60</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 75, 'Dorpsmuseum geadviseerd over digitale strategie', 'cultural')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Dorpsmuseum geadviseerd over digitale strategie</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+75</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 90, 'Opiniestuk gepubliceerd over fatbike-overlast', 'civic')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700 font-medium">Opiniestuk over fatbikes gepubliceerd</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+90</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 120, 'Gecampagneerd voor 30 km/u zones', 'civic')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Gecampagneerd voor 30 km/u zones</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+120</span></div>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Category: The Civil Servant & Strategist -->
+                                    <div>
+                                        <h4 class="text-xs font-bold text-wassenaar-navy mb-2 uppercase tracking-widest bg-blue-100 p-2 rounded">Ministerie & Civic Tech Aura</h4>
+                                        <div class="space-y-2">
+                                            <button type="button" onclick="selectActivity(this, 30, 'Op afstand gewerkt (Ministerie-pasje zichtbaar op tafel)', 'stealth')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Op afstand gewerkt (Ministerie-pasje zichtbaar)</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+30</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 50, 'Nieuwe update gepubliceerd voor de Gemeenteraad Tracker', 'civic')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700 font-medium">Gemeenteraad Tracker geüpdatet</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+50</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 150, 'Civic data gedeeld met lokale journalist', 'civic')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm border-l-4 border-l-green-500">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700 font-bold">Civic data gedeeld met journalist</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+150</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 250, 'Lokale gemeenteraad informeel verbonden met Ministerie-contacten', 'stealth')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm border-l-4 border-l-blue-500">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700 font-bold">Brugfunctie: Gemeenteraad - Ministerie</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+250</span></div>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Category: Diplomatic & Expat -->
+                                    <div>
+                                        <h4 class="text-xs font-bold text-purple-800 mb-2 uppercase tracking-widest bg-purple-100 p-2 rounded">Diplomatieke & Expat Kringen</h4>
+                                        <div class="space-y-2">
+                                            <button type="button" onclick="selectActivity(this, 50, 'Expat WhatsApp buurtpreventie georganiseerd', 'stealth')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Expat WhatsApp buurtpreventie georganiseerd</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+50</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 100, 'ASH International Festival bezocht', 'cultural')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">ASH International Festival bezocht</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+100</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 250, 'Lezing Diplomat Club Wassenaar bijgewoond', 'stealth')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm border-l-4 border-l-purple-500">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700 font-bold">Lezing Diplomat Club Wassenaar bijgewoond</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+250</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 400, 'Uitgenodigd voor handelsdiner op De Wittenburg', 'stealth')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm border-l-4 border-l-purple-700">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700 font-bold">Handelsdiner op Kasteel De Wittenburg</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+400</span></div>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Category: Naturalist & Outdoors -->
+                                    <div>
+                                        <h4 class="text-xs font-bold text-green-800 mb-2 uppercase tracking-widest bg-green-200 p-2 rounded">Natuur & Buitenleven</h4>
+                                        <div class="space-y-2">
+                                            <button type="button" onclick="selectActivity(this, 30, 'Zeldzame vogels gespot en gefotografeerd in Meijendel', 'physical')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Vogels gefotografeerd in Meijendel</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+30</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 80, 'Gedoneerd aan Stichting Duivenvoorde', 'cultural')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Gedoneerd aan Stichting Duivenvoorde</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+80</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 150, 'Vrijwilliger bij Wassenaarse Reddingsbrigade', 'physical')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700 font-medium">Vrijwilliger bij Wassenaarse Reddingsbrigade</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+150</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 200, 'Deelgenomen aan de Zwemloop Wassenaar', 'physical')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Deelgenomen aan de Zwemloop Wassenaar</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+200</span></div>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Category: Local Commerce & Old Money Quirks -->
+                                    <div>
+                                        <h4 class="text-xs font-bold text-orange-800 mb-2 uppercase tracking-widest bg-orange-100 p-2 rounded">Lokale Handel & 'Oud-Geld'</h4>
+                                        <div class="space-y-2">
+                                            <button type="button" onclick="selectActivity(this, 20, 'Kwaliteitsvlees gehaald bij Slagerij Groeneveld', 'financial')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Kwaliteitsvlees bij Slagerij Groeneveld</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+20</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 40, 'Spullen gedoneerd aan de Kinderkringloop', 'civic')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700">Spullen gedoneerd aan de Kinderkringloop</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+40</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 100, 'Centrummanagement geadviseerd over winkelleegstand', 'financial')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700 font-medium">Centrummanagement geadviseerd</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+100</span></div>
+                                            </button>
+                                            <button type="button" onclick="selectActivity(this, 300, 'Lokale jeugdsport (SV Wassenaar of Blauw-Zwart) gesponsord', 'financial')" class="activity-btn w-full text-left p-3 rounded-lg border border-gray-200 bg-white hover:border-wassenaar-gold transition-all shadow-sm">
+                                                <div class="flex justify-between items-center"><span class="text-sm text-gray-700 font-bold">Lokale jeugdsport gesponsord</span><span class="text-xs font-bold text-wassenaar-gold bg-yellow-50 px-2 py-1 rounded">+300</span></div>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-gray-700">Extra Context (Optioneel)</label>
+                                <input type="text" id="log-note" placeholder="Bijv., Heb de nieuwe ruimtelijke ordening besproken..." class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-wassenaar-gold outline-none text-sm shadow-inner">
+                            </div>
+
+                            <button type="button" onclick="submitLog()" class="w-full bg-wassenaar-green hover:bg-emerald-900 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-md flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-arrow-up-right-dots"></i> Geselecteerde Actie Loggen
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- MILESTONES (Status Symbols) -->
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 lg:col-span-1 h-fit">
+                    <h3 class="text-xl font-serif font-bold text-wassenaar-navy mb-4 border-b border-gray-200 pb-2">2. Statussymbool Claimen</h3>
+                    <p class="text-xs text-gray-500 mb-4">Grote, eenmalige prestaties die je sociale status permanent verhogen.</p>
+                    
+                    <div id="available-milestones" class="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- VIEW: PLAYBOOK -->
+        <div id="view-playbook" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 max-w-4xl mx-auto prose prose-blue">
+                <h2 class="text-3xl font-serif font-bold text-wassenaar-navy mb-6"><i class="fa-solid fa-book-journal-whills text-wassenaar-gold mr-3"></i>Het Integratie Strategieboek</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <div class="border-l-4 border-teal-600 pl-4">
+                        <h3 class="text-xl font-bold text-gray-800">1. De Kracht van Oostdorp</h3>
+                        <p class="text-sm text-gray-600 mt-2">Wonen in Oostdorp geeft je 'street cred'. Je bent verbonden met de echte Wassenaarders. Meng je in de buurtvereniging, de Oranjevereniging en drink af en toe koffie bij Pops. Dit is je sociale fundament.</p>
+                    </div>
+
+                    <div class="border-l-4 border-wassenaar-gold pl-4">
+                        <h3 class="text-xl font-bold text-gray-800">2. Civic Tech & Objectieve Waarde</h3>
+                        <p class="text-sm text-gray-600 mt-2">Projecten zoals je Gemeenteraad Tracker omzeilen traditionele elitaire poortwachters. Lever objectieve data aan journalisten en politici. Uiteindelijk komen zij naar jou toe voor inzichten.</p>
+                    </div>
+
+                    <div class="border-l-4 border-wassenaar-green pl-4">
+                        <h3 class="text-xl font-bold text-gray-800">3. De "Rijksoverheid" Aura</h3>
+                        <p class="text-sm text-gray-600 mt-2">Zet je rol bij het Ministerie van Algemene Zaken subtiel in. Word de informele brug tussen de lokale gemeente, lokale stichtingen en de landelijke (digitale) overheid.</p>
+                    </div>
+
+                    <div class="border-l-4 border-blue-800 pl-4">
+                        <h3 class="text-xl font-bold text-gray-800">4. Hyper-Lokaal Erfgoed</h3>
+                        <p class="text-sm text-gray-600 mt-2">Meng je in actuele debatten. Dien zienswijzen in over Landgoed De Paauw of adviseer het Dorpsmuseum. Hiermee laat je zien dat je het dorpsgezicht en de historie serieus neemt.</p>
+                    </div>
+
+                    <div class="border-l-4 border-purple-800 pl-4">
+                        <h3 class="text-xl font-bold text-gray-800">5. Diplomatieke & Expat Kringen</h3>
+                        <p class="text-sm text-gray-600 mt-2">Maak contact met de internationale gemeenschap via de American School (ASH) of de Diplomat Club Wassenaar. Kruisbestuif je overheidskennis in deze netwerken.</p>
+                    </div>
+
+                    <div class="border-l-4 border-red-800 pl-4">
+                        <h3 class="text-xl font-bold text-gray-800">6. Lokale Noodzaken</h3>
+                        <p class="text-sm text-gray-600 mt-2">Niets verbroedert woningeigenaren zo snel als gedeelde overlast. Neem het voortouw in discussies over fatbikes of debatteer mee over de 30 km/u zones om snelle allianties te smeden.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- DATA STRUCTURES ---
+        const LEVELS = [
+            { min: 0, name: "Voorbijganger", desc: "Een simpele passant in de groene lanen van Wassenaar.", icon: "fa-person-walking" },
+            { min: 500, name: "Nieuwkomer", desc: "Recent geland. Je observeert de ongeschreven regels.", icon: "fa-box-open" },
+            { min: 1500, name: "Geïntroduceerde", desc: "Er wordt voor je ingestaan. Je bezoekt besloten bijeenkomsten.", icon: "fa-handshake" },
+            { min: 3500, name: "Lid", desc: "Een actief en gerespecteerd lid van de lokale gemeenschap.", icon: "fa-id-card" },
+            { min: 7500, name: "Patroon", desc: "Een sponsor van het dorp, je dwingt respect af.", icon: "fa-building-columns" },
+            { min: 15000, name: "Wassenaarder", desc: "Niet te onderscheiden van oud-geld. Het dorp is van jou.", icon: "fa-chess-knight" },
+            { min: 30000, name: "Ereburger", desc: "Het absolute toppunt van de lokale samenleving.", icon: "fa-crown" }
+        ];
+
+        const STATUS_MILESTONES = [
+            { id: "m_news", points: 400, name: "Vermeld in 'De Wassenaarse Krant'", icon: "fa-newspaper", skill: "civic" },
+            { id: "m_heritage_map", points: 600, name: "Beschermer van Wassenaars Erfgoed", icon: "fa-landmark-dome", skill: "cultural" },
+            { id: "m_art", points: 600, name: "Schilderij van de Haagse School bemachtigd", icon: "fa-image", skill: "cultural" },
+            { id: "m_car", points: 700, name: "Klassieke Porsche of Land Rover gekocht", icon: "fa-car", skill: "financial" },
+            { id: "m_rotary", points: 700, name: "Bestuurslid Rotary of Lions Club", icon: "fa-handshake-angle", skill: "civic" },
+            { id: "m_civic_tool", points: 1000, name: "Civic Tool officieel omarmd door Gemeente", icon: "fa-code-branch", skill: "civic" },
+            { id: "m_haring", points: 1200, name: "Jaarlijkse Haringparty georganiseerd", icon: "fa-fish-fins", skill: "stealth" },
+            { id: "m_mayor_consult", points: 1200, name: "Geconsulteerd door burgemeester over tech", icon: "fa-lightbulb", skill: "civic" },
+            { id: "m_council", points: 1500, name: "Verkozen in de Gemeenteraad Wassenaar", icon: "fa-landmark", skill: "civic" },
+            { id: "m_strand", points: 1800, name: "Strandhuisje bemachtigd bij Wassenaarse Slag", icon: "fa-umbrella-beach", skill: "cultural" },
+            { id: "m_haagsche", points: 2000, name: "Ballotage doorstaan bij Kon. Haagsche Golf", icon: "fa-golf-ball-tee", skill: "physical" },
+            { id: "m_house", points: 2500, name: "Rijksmonument gekocht", icon: "fa-house-flag", skill: "financial" },
+            { id: "m_mayor", points: 3000, name: "Op voornaam-basis met de Burgemeester", icon: "fa-handshake-simple", skill: "stealth" },
+            { id: "m_knight", points: 5000, name: "Ridder in de Orde van Oranje-Nassau", icon: "fa-medal", skill: "civic" },
+            { id: "m_royal", points: 8000, name: "Inner circle van het Koninklijk Huis", icon: "fa-chess-king", skill: "stealth" }
+        ];
+
+        let userData = {
+            points: 0,
+            history: [],
+            milestones: [],
+            skills: { civic: 0, cultural: 0, stealth: 0, physical: 0, financial: 0 }
+        };
+
+        let resetConfirm = false;
+        let currentSelectedActivity = null;
+
+        function initApp() {
+            try {
+                // Safeguard voor localstorage errors (bv iframe security policies)
+                let saved = null;
+                try {
+                    saved = localStorage.getItem('wassenaar_renown');
+                } catch(lsError) {
+                    console.warn("LocalStorage niet beschikbaar, gebruikt memory mode.");
+                }
+
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && typeof parsed === 'object') {
+                        userData.points = typeof parsed.points === 'number' ? parsed.points : 0;
+                        userData.history = Array.isArray(parsed.history) ? parsed.history : [];
+                        userData.milestones = Array.isArray(parsed.milestones) ? parsed.milestones : [];
+                        userData.skills = parsed.skills || { civic: 0, cultural: 0, stealth: 0, physical: 0, financial: 0 };
+                    }
+                    showView('dashboard');
+                    updateUI();
+                } else {
+                    showView('onboarding');
+                }
+            } catch (e) {
+                console.error("Fout bij het initialiseren:", e);
+                // Hard reset fallback op fouten
+                userData = { points: 0, history: [], milestones: [], skills: { civic: 0, cultural: 0, stealth: 0, physical: 0, financial: 0 } };
+                showView('onboarding');
+            }
+        }
+
+        // Voer de initialisatie direct uit i.p.v. te wachten op window.onload
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+
+        function getLevelInfo(points) {
+            let currentLevel = LEVELS[0];
+            let nextLevel = null;
+            for (let i = 0; i < LEVELS.length; i++) {
+                if (points >= LEVELS[i].min) {
+                    currentLevel = LEVELS[i];
+                    nextLevel = LEVELS[i+1] || null;
+                } else { break; }
+            }
+            return { currentLevel, nextLevel };
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('wassenaar_renown', JSON.stringify(userData));
+            } catch(e) {
+                console.warn("Kon data niet opslaan in localStorage.");
+            }
+        }
+
+        function completeOnboarding() {
+            const q1 = parseInt(document.getElementById('q-residency').value);
+            const q2 = parseInt(document.getElementById('q-network').value);
+            const q3 = parseInt(document.getElementById('q-civic').value);
+            
+            userData.points = q1 + q2 + q3;
+            userData.skills.financial += (q1 > 0 ? q1 / 2 : 0);
+            userData.skills.stealth += (q2 > 0 ? q2 / 2 : 0);
+            userData.skills.civic += (q3 > 0 ? q3 : 0);
+
+            userData.history.push({
+                date: new Date().toISOString(),
+                desc: "Eerste Inschatting Voltooid",
+                points: userData.points
+            });
+            
+            saveData();
+            showView('dashboard');
+            updateUI();
+            
+            const levelInfo = getLevelInfo(userData.points);
+            showToast("Welkom in Wassenaar", `Je begint je reis als ${levelInfo.currentLevel.name}`);
+        }
+
+        function selectActivity(btnElement, points, desc, skill = 'civic') {
+            document.querySelectorAll('.activity-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-wassenaar-gold', 'bg-yellow-50', 'border-wassenaar-gold');
+                btn.classList.add('bg-white', 'border-gray-200');
+            });
+            btnElement.classList.remove('bg-white', 'border-gray-200');
+            btnElement.classList.add('ring-2', 'ring-wassenaar-gold', 'bg-yellow-50', 'border-wassenaar-gold');
+            currentSelectedActivity = { points, desc, skill };
+        }
+
+        function addPR(points, desc, skill = null) {
+            const oldLevel = getLevelInfo(userData.points).currentLevel;
+            userData.points += points;
+            
+            if (skill && userData.skills && userData.skills[skill] !== undefined) {
+                userData.skills[skill] += points;
+            }
+
+            if (!userData.history) userData.history = [];
+            
+            userData.history.unshift({
+                date: new Date().toISOString(),
+                desc: desc,
+                points: points
+            });
+            if (userData.history.length > 50) userData.history.pop();
+            
+            const newLevel = getLevelInfo(userData.points).currentLevel;
+            saveData();
+            updateUI();
+            
+            if (newLevel.name !== oldLevel.name) {
+                triggerLevelUp(newLevel.name);
+            }
+        }
+
+        function submitLog() {
+            if (!currentSelectedActivity) {
+                showToast("Fout", "Selecteer eerst een activiteit uit de lijst.", true);
+                return;
+            }
+            const points = currentSelectedActivity.points;
+            const descText = currentSelectedActivity.desc;
+            const skill = currentSelectedActivity.skill;
+            const note = document.getElementById('log-note').value;
+            const finalDesc = note ? `${descText} - "${note}"` : descText;
+
+            addPR(points, finalDesc, skill);
+            
+            document.querySelectorAll('.activity-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-wassenaar-gold', 'bg-yellow-50', 'border-wassenaar-gold');
+                btn.classList.add('bg-white', 'border-gray-200');
+            });
+            currentSelectedActivity = null;
+            document.getElementById('log-note').value = '';
+            
+            showToast("Activiteit Gelogd", `+${points} PR & XP Verdiend!`);
+            setTimeout(() => { showView('dashboard'); }, 800);
+        }
+
+        function claimMilestone(id, points, name, skill) {
+            if (!userData.milestones) userData.milestones = [];
+            if (userData.milestones.includes(id)) return;
+            
+            userData.milestones.push(id);
+            addPR(points, `Statussymbool verworven: ${name}`, skill);
+            showToast("Status Verhoogd", `${name} Geclaimd!`);
+        }
+
+        function claimMilestoneById(id) {
+            const m = STATUS_MILESTONES.find(x => x.id === id);
+            if (m) claimMilestone(m.id, m.points, m.name, m.skill);
+        }
+
+        function resetData() {
+            const btn = document.getElementById('reset-btn');
+            if (!resetConfirm) {
+                resetConfirm = true;
+                btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation sm:mr-2"></i><span class="hidden sm:inline">Zeker?</span>`;
+                btn.classList.add('bg-red-600', 'text-white');
+                btn.classList.remove('text-gray-300', 'hover:bg-red-500/80');
+                
+                setTimeout(() => {
+                    resetConfirm = false;
+                    btn.innerHTML = `<i class="fa-solid fa-rotate-right sm:mr-2"></i><span class="hidden sm:inline">Reset</span>`;
+                    btn.classList.remove('bg-red-600', 'text-white');
+                    btn.classList.add('text-gray-300', 'hover:bg-red-500/80');
+                }, 3000);
+                return;
+            }
+            try {
+                localStorage.removeItem('wassenaar_renown');
+            } catch(e) {}
+            location.reload();
+        }
+
+        function showView(viewId) {
+            ['onboarding', 'dashboard', 'log', 'playbook'].forEach(id => {
+                const el = document.getElementById(`view-${id}`);
+                if(el) el.classList.add('hidden');
+            });
+            const targetEl = document.getElementById(`view-${viewId}`);
+            if(targetEl) targetEl.classList.remove('hidden');
+            if(viewId === 'dashboard') updateUI(); 
+        }
+
+        function showToast(title, message, isError = false) {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            if (isError) {
+                toast.classList.replace('bg-wassenaar-green', 'bg-red-500');
+                icon.className = "fa-solid fa-circle-exclamation";
+            } else {
+                toast.classList.replace('bg-red-500', 'bg-wassenaar-green');
+                icon.className = "fa-solid fa-circle-check";
+            }
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
+        }
+
+        function triggerLevelUp(levelName) {
+            const textEl = document.getElementById('level-modal-text');
+            if(textEl) textEl.innerHTML = `Je wordt nu erkend als <span class="font-bold text-wassenaar-gold">${levelName}</span>.`;
+            const modal = document.getElementById('level-modal');
+            const content = document.getElementById('level-modal-content');
+            if(modal && content) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    content.classList.remove('scale-95');
+                    content.classList.add('scale-100');
+                }, 50);
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('level-modal');
+            if(modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function updateUI() {
+            if(!userData) return;
+            const { currentLevel, nextLevel } = getLevelInfo(userData.points);
+            
+            const prEl = document.getElementById('total-pr');
+            if(prEl) prEl.innerText = userData.points.toLocaleString();
+            
+            const rNameEl = document.getElementById('rank-name');
+            if(rNameEl) rNameEl.innerText = currentLevel.name;
+            
+            const rDescEl = document.getElementById('rank-desc');
+            if(rDescEl) rDescEl.innerText = currentLevel.desc;
+            
+            const rIconEl = document.getElementById('rank-icon');
+            if(rIconEl) rIconEl.className = `fa-solid ${currentLevel.icon} text-4xl text-wassenaar-gold`;
+            
+            const bar = document.getElementById('progress-bar');
+            if (bar) {
+                if (nextLevel) {
+                    const range = nextLevel.min - currentLevel.min;
+                    const earned = userData.points - currentLevel.min;
+                    const percent = Math.min(100, Math.max(0, (earned / range) * 100));
+                    
+                    const nextREl = document.getElementById('next-rank-name');
+                    if(nextREl) nextREl.innerText = nextLevel.name;
+                    
+                    const neededEl = document.getElementById('pr-needed');
+                    if(neededEl) neededEl.innerText = `${(nextLevel.min - userData.points).toLocaleString()} PR nodig`;
+                    
+                    setTimeout(() => { bar.style.width = `${percent}%`; }, 100);
+                } else {
+                    const nextREl = document.getElementById('next-rank-name');
+                    if(nextREl) nextREl.innerText = "Maximale Rang Bereikt";
+                    
+                    const neededEl = document.getElementById('pr-needed');
+                    if(neededEl) neededEl.innerText = "";
+                    
+                    setTimeout(() => { bar.style.width = `100%`; }, 100);
+                }
+            }
+
+            // --- Draw GTA Skills Bars ---
+            const skillsContainer = document.getElementById('skills-list');
+            if (skillsContainer && userData.skills) {
+                const maxSkillXP = 4000;
+                const skillNames = {
+                    civic: "Maatschappelijke Invloed",
+                    cultural: "Cultureel Besef",
+                    stealth: "Sociale Discretie",
+                    physical: "Fysiek & Natuur",
+                    financial: "Financiële Slagkracht"
+                };
+                const skillColors = {
+                    civic: "bg-blue-600",
+                    cultural: "bg-purple-600",
+                    stealth: "bg-gray-800",
+                    physical: "bg-green-600",
+                    financial: "bg-orange-500"
+                };
+                
+                let skillsHTML = '';
+                for (const [key, val] of Object.entries(userData.skills)) {
+                    const percent = Math.min(100, (val / maxSkillXP) * 100);
+                    skillsHTML += `
+                        <div class="mb-2">
+                            <div class="flex justify-between text-[11px] font-bold text-gray-500 mb-1">
+                                <span class="uppercase tracking-wider">${skillNames[key]}</span>
+                                <span>${Math.floor(percent)} / 100</span>
+                            </div>
+                            <div class="w-full bg-gray-200 h-3 rounded-sm shadow-inner overflow-hidden flex">
+                                <div class="${skillColors[key]} h-full transition-all duration-1000" style="width: ${percent}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+                skillsContainer.innerHTML = skillsHTML;
+            }
+
+            const historyContainer = document.getElementById('history-list');
+            if (historyContainer) {
+                if (!userData.history || userData.history.length === 0) {
+                    historyContainer.innerHTML = '<p class="text-sm text-gray-500 italic">Nog geen activiteiten gelogd.</p>';
+                } else {
+                    historyContainer.innerHTML = userData.history.slice(0, 10).map(item => `
+                        <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                            <div class="truncate pr-4">
+                                <p class="text-sm font-semibold text-gray-800 truncate">${item.desc}</p>
+                                <p class="text-xs text-gray-400">${new Date(item.date).toLocaleDateString()}</p>
+                            </div>
+                            <span class="text-sm font-bold text-wassenaar-green whitespace-nowrap">+${item.points}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            const claimedContainer = document.getElementById('milestones-list');
+            const availableContainer = document.getElementById('available-milestones');
+            
+            if(claimedContainer && availableContainer) {
+                claimedContainer.innerHTML = '';
+                availableContainer.innerHTML = '';
+                
+                if (!userData.milestones || userData.milestones.length === 0) {
+                    claimedContainer.innerHTML = '<p class="text-sm text-gray-500 italic">Nog geen statussymbolen geclaimd.</p>';
+                }
+
+                STATUS_MILESTONES.forEach(m => {
+                    const isClaimed = userData.milestones && userData.milestones.includes(m.id);
+                    if (isClaimed) {
+                        claimedContainer.innerHTML += `
+                            <div class="flex items-center gap-3 bg-yellow-50 p-3 rounded-lg border border-yellow-100">
+                                <i class="fa-solid ${m.icon} text-wassenaar-gold text-xl w-6 text-center"></i>
+                                <span class="text-sm font-bold text-gray-800">${m.name}</span>
+                            </div>
+                        `;
+                    } else {
+                        availableContainer.innerHTML += `
+                            <button onclick="claimMilestoneById('${m.id}')" class="w-full flex justify-between items-center bg-white p-4 rounded-lg border border-gray-200 hover:border-wassenaar-gold hover:shadow-md transition-all text-left group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-yellow-50 transition-colors">
+                                        <i class="fa-solid ${m.icon} text-gray-400 group-hover:text-wassenaar-gold"></i>
+                                    </div>
+                                    <span class="text-sm font-semibold text-gray-700">${m.name}</span>
+                                </div>
+                                <span class="text-xs font-bold text-white bg-wassenaar-navy px-2 py-1 rounded shadow">+${m.points}</span>
+                            </button>
+                        `;
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
