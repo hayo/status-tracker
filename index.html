@@ -2,248 +2,250 @@
 <html lang="nl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
-  <meta name="robots" content="noindex, nofollow">
+  <meta name="robots" content="noindex">
   <meta name="description" content="Houd bij hoe je aanzien in Wassenaar groeit.">
   <meta name="theme-color" content="#2a4d3e">
-  <meta name="apple-mobile-web-app-title" content="Aanzien">
   <title>Wassenaar Aanzien</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="iconen/kroon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="iconen/icoon-180.png">
   <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="standalone.css">
   <script type="module" src="app.js"></script>
 </head>
 <body>
+<main>
+<!-- begin inhoud: index.php geeft binnen een site alleen dit artikel door -->
+<article id="aanzien" lang="nl">
   <svg class="sprite" aria-hidden="true" focusable="false">
-    <symbol id="i-kroon" viewBox="0 0 24 24"><path d="M3.5 8.5 7.5 12 12 5.5l4.5 6.5 4-3.5-1.8 9H5.3z"/><rect x="5" y="18.5" width="14" height="2.5" rx="1"/><circle cx="3.5" cy="7.5" r="1.6"/><circle cx="12" cy="4.2" r="1.6"/><circle cx="20.5" cy="7.5" r="1.6"/></symbol>
-    <symbol id="i-status" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
-    <symbol id="i-plus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 7v10M7 12h10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
-    <symbol id="i-medaille" viewBox="0 0 24 24"><path d="M8 2h3l2 6h-3zM16 2h-3l-2 6h3z"/><circle cx="12" cy="15" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="m12 11.8 1 2 2.2.3-1.6 1.5.4 2.2-2-1-2 1 .4-2.2-1.6-1.5 2.2-.3z"/></symbol>
-    <symbol id="i-boek" viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.5 3 5v13c4-.5 7 0 9 1.5 2-1.5 5-2 9-1.5V5c-4-.5-7 0-9 1.5zM12 6.5v13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></symbol>
-    <symbol id="i-gegevens" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></symbol>
-    <symbol id="i-weg" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="az-i-kroon" viewBox="0 0 24 24"><path d="M3.5 8.5 7.5 12 12 5.5l4.5 6.5 4-3.5-1.8 9H5.3z"/><rect x="5" y="18.5" width="14" height="2.5" rx="1"/><circle cx="3.5" cy="7.5" r="1.6"/><circle cx="12" cy="4.2" r="1.6"/><circle cx="20.5" cy="7.5" r="1.6"/></symbol>
+    <symbol id="az-i-status" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20v-8M12 20V5M19 20v-5M3 20h18"/></symbol>
+    <symbol id="az-i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+    <symbol id="az-i-medaille" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h3l1.5 5M16 3h-3"/><circle cx="12" cy="15" r="6"/><path d="m12 12 1 2 2 .3-1.5 1.4.4 2-1.9-1-1.9 1 .4-2L9 14.3l2-.3z"/></symbol>
+    <symbol id="az-i-boek" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.5 3 5v13c4-.5 7 0 9 1.5 2-1.5 5-2 9-1.5V5c-4-.5-7 0-9 1.5zM12 6.5v13"/></symbol>
+    <symbol id="az-i-gegevens" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+    <symbol id="az-i-weg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
   </svg>
 
-  <a class="sla-over" href="#inhoud">Naar de inhoud</a>
-
   <header class="kop">
-    <h1 class="merk-kop">
-      <a class="merk" href="#status">
-        <svg class="icoon icoon-merk" aria-hidden="true" focusable="false"><use href="#i-kroon"/></svg>
-        <span>Wassenaar Aanzien</span>
-      </a>
-    </h1>
-    <nav class="menu" id="menu" aria-label="Hoofdmenu" hidden>
+    <h1><svg class="icoon icoon-kroon" aria-hidden="true" focusable="false"><use href="#az-i-kroon"/></svg> Wassenaar Aanzien</h1>
+    <nav class="menu" id="az-menu" aria-label="Wassenaar Aanzien" hidden>
       <ul>
-        <li><a href="#status"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#i-status"/></svg>Status</a></li>
-        <li><a href="#loggen"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg>Loggen</a></li>
-        <li><a href="#symbolen"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#i-medaille"/></svg>Symbolen</a></li>
-        <li><a href="#strategie"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#i-boek"/></svg>Strategie</a></li>
-        <li><a href="#gegevens"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#i-gegevens"/></svg>Gegevens</a></li>
+        <li><a href="#status"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-status"/></svg>Status</a></li>
+        <li><a href="#loggen"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-plus"/></svg>Loggen</a></li>
+        <li><a href="#symbolen"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-medaille"/></svg>Symbolen</a></li>
+        <li><a href="#strategie"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-boek"/></svg>Strategie</a></li>
+        <li><a href="#gegevens"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-gegevens"/></svg>Gegevens</a></li>
       </ul>
     </nav>
   </header>
 
-  <main id="inhoud" tabindex="-1">
-    <section class="weergave" id="start" aria-labelledby="start-kop" hidden>
-      <div class="kaart start">
-        <svg class="icoon icoon-groot" aria-hidden="true" focusable="false"><use href="#i-kroon"/></svg>
-        <h2 id="start-kop" tabindex="-1">Waar begin je?</h2>
-        <p>Beantwoord drie vragen. Dan weet de app met hoeveel punten je begint.</p>
-        <form id="start-formulier" class="start-vragen">
-          <button type="submit" class="knop knop-breed">Bereken mijn startpunt</button>
-        </form>
+  <noscript><p>Deze app werkt alleen met JavaScript. Je gegevens blijven in je eigen browser.</p></noscript>
+
+  <section class="weergave" id="az-start" aria-labelledby="az-start-kop" hidden>
+    <div class="kaart start">
+      <h2 id="az-start-kop" tabindex="-1">Waar begin je?</h2>
+      <p>Beantwoord drie vragen. Dan weet de app met hoeveel punten je begint.</p>
+      <form id="az-start-formulier" class="start-vragen">
+        <button type="submit" class="knop knop-breed">Bereken mijn startpunt</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="weergave" id="az-status" aria-labelledby="az-status-kop" hidden>
+    <h2 id="az-status-kop" tabindex="-1">Jouw status</h2>
+
+    <div class="kaart rang">
+      <svg class="icoon icoon-rang" aria-hidden="true" focusable="false"><use href="#az-i-kroon"/></svg>
+      <div>
+        <p class="label">Huidige rang</p>
+        <p class="rang-naam" id="az-rang-naam">Voorbijganger</p>
+        <p class="rang-uitleg" id="az-rang-uitleg"></p>
       </div>
-    </section>
-
-    <section class="weergave" id="status" aria-labelledby="status-kop" hidden>
-      <h2 class="titel" id="status-kop" tabindex="-1">Jouw status</h2>
-
-      <article class="kaart rang" aria-labelledby="rang-naam">
-        <svg class="icoon icoon-rang" aria-hidden="true" focusable="false"><use href="#i-kroon"/></svg>
-        <div class="rang-tekst">
-          <p class="label">Huidige rang</p>
-          <h3 class="rang-naam" id="rang-naam">Voorbijganger</h3>
-          <p class="rang-uitleg" id="rang-uitleg"></p>
-        </div>
-        <p class="punten"><span id="punten">0</span> <abbr title="Prestigepunten">PR</abbr></p>
-        <div class="rang-voortgang">
-          <label for="voortgang" id="voortgang-tekst">Op weg naar Nieuwkomer</label>
-          <progress id="voortgang" max="100" value="0"></progress>
-        </div>
-        <ol class="ladder" id="ladder" aria-label="Alle rangen"></ol>
-      </article>
-
-      <dl class="cijfers" id="cijfers"></dl>
-
-      <div class="raster">
-        <article class="kaart breed" aria-labelledby="kalender-kop">
-          <h3 id="kalender-kop">Actief in de afgelopen 17 weken</h3>
-          <figure class="figuur">
-            <div class="kalender" id="kalender"></div>
-            <figcaption class="legenda" id="kalender-legenda"></figcaption>
-          </figure>
-          <h3 id="weken-kop">Punten per week</h3>
-          <figure class="figuur">
-            <div class="weken" id="weken"></div>
-          </figure>
-          <details class="tabel-uitklap">
-            <summary>Toon als tabel</summary>
-            <table class="tabel" id="weken-tabel">
-              <caption class="verborgen">Activiteiten en punten per week</caption>
-              <thead><tr><th scope="col">Week van</th><th scope="col">Activiteiten</th><th scope="col">PR</th></tr></thead>
-              <tbody></tbody>
-            </table>
-          </details>
-        </article>
-
-        <article class="kaart" aria-labelledby="eigenschappen-kop">
-          <h3 id="eigenschappen-kop">Eigenschappen</h3>
-          <ul class="balken" id="eigenschappen"></ul>
-        </article>
-
-        <article class="kaart" aria-labelledby="pijlers-kop">
-          <h3 id="pijlers-kop">Wat heb je al gedaan?</h3>
-          <p class="klein">Per groep: hoeveel verschillende activiteiten je al deed.</p>
-          <ul class="balken" id="pijlers"></ul>
-        </article>
-
-        <article class="kaart breed" aria-labelledby="logboek-kop">
-          <h3 id="logboek-kop">Logboek</h3>
-          <ul class="logboek" id="logboek"></ul>
-        </article>
+      <p class="punten"><span id="az-punten">0</span> <abbr title="Prestigepunten">PR</abbr></p>
+      <div class="rang-voortgang">
+        <label for="az-voortgang" id="az-voortgang-tekst">Op weg naar Nieuwkomer</label>
+        <progress id="az-voortgang" max="100" value="0"></progress>
       </div>
-    </section>
+      <ol class="ladder" id="az-ladder" aria-label="Alle rangen"></ol>
+    </div>
 
-    <section class="weergave" id="loggen" aria-labelledby="loggen-kop" hidden>
-      <h2 class="titel" id="loggen-kop" tabindex="-1">Activiteit loggen</h2>
-      <p>Tik op wat je gedaan hebt. Daarna kies je de datum.</p>
-      <div class="zoek">
-        <label for="zoek">Zoek een activiteit</label>
-        <input type="search" id="zoek" autocomplete="off">
-      </div>
-      <section class="kaart" id="vaak-blok" aria-labelledby="vaak-kop" hidden>
-        <h3 id="vaak-kop">Vaak gedaan</h3>
-        <ul class="acties" id="vaak"></ul>
+    <dl class="cijfers" id="az-cijfers"></dl>
+
+    <div class="raster">
+      <section class="kaart breed" aria-labelledby="az-kalender-kop">
+        <h3 id="az-kalender-kop">Actief in de afgelopen 17 weken</h3>
+        <figure>
+          <div class="grafiek" id="az-kalender"></div>
+          <figcaption class="legenda" id="az-kalender-legenda"></figcaption>
+        </figure>
+        <h3>Punten per week</h3>
+        <figure>
+          <div class="grafiek" id="az-weken"></div>
+        </figure>
+        <details>
+          <summary>Toon als tabel</summary>
+          <table class="tabel" id="az-weken-tabel">
+            <caption class="verborgen">Activiteiten en punten per week</caption>
+            <thead><tr><th scope="col">Week van</th><th scope="col">Activiteiten</th><th scope="col">PR</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </details>
       </section>
-      <div id="activiteiten"></div>
-      <p class="leeg" id="niets-gevonden" hidden>Geen activiteit gevonden. Probeer een ander woord.</p>
+
+      <section class="kaart" aria-labelledby="az-eigenschappen-kop">
+        <h3 id="az-eigenschappen-kop">Eigenschappen</h3>
+        <ul class="balken" id="az-eigenschappen"></ul>
+      </section>
+
+      <section class="kaart" aria-labelledby="az-pijlers-kop">
+        <h3 id="az-pijlers-kop">Wat heb je al gedaan?</h3>
+        <p class="zacht">Per groep: hoeveel verschillende activiteiten je al deed.</p>
+        <ul class="balken" id="az-pijlers"></ul>
+      </section>
+
+      <section class="kaart breed" aria-labelledby="az-logboek-kop">
+        <h3 id="az-logboek-kop">Logboek</h3>
+        <ul class="logboek" id="az-logboek"></ul>
+      </section>
+    </div>
+  </section>
+
+  <section class="weergave" id="az-loggen" aria-labelledby="az-loggen-kop" hidden>
+    <h2 id="az-loggen-kop" tabindex="-1">Activiteit loggen</h2>
+    <p>Tik op wat je gedaan hebt. Daarna kies je de datum.</p>
+    <p class="zoek">
+      <label for="az-zoek">Zoek een activiteit</label>
+      <input type="search" id="az-zoek" autocomplete="off">
+    </p>
+    <section class="kaart" id="az-vaak-blok" aria-labelledby="az-vaak-kop" hidden>
+      <h3 id="az-vaak-kop">Vaak gedaan</h3>
+      <ul class="acties" id="az-vaak"></ul>
     </section>
+    <div id="az-activiteiten"></div>
+    <p class="zacht" id="az-niets-gevonden" hidden>Geen activiteit gevonden. Probeer een ander woord.</p>
+  </section>
 
-    <section class="weergave" id="symbolen" aria-labelledby="symbolen-kop" hidden>
-      <h2 class="titel" id="symbolen-kop" tabindex="-1">Statussymbolen</h2>
-      <p>Grote dingen die je één keer bereikt. Ze geven veel punten.</p>
-      <div class="raster">
-        <section class="kaart" aria-labelledby="behaald-kop">
-          <h3 id="behaald-kop">Behaald</h3>
-          <ul class="acties" id="symbolen-behaald"></ul>
-        </section>
-        <section class="kaart" aria-labelledby="open-kop">
-          <h3 id="open-kop">Nog te behalen</h3>
-          <ul class="acties" id="symbolen-open"></ul>
-        </section>
-      </div>
-    </section>
+  <section class="weergave" id="az-symbolen" aria-labelledby="az-symbolen-kop" hidden>
+    <h2 id="az-symbolen-kop" tabindex="-1">Statussymbolen</h2>
+    <p>Grote dingen die je één keer bereikt. Ze geven veel punten.</p>
+    <div class="raster">
+      <section class="kaart" aria-labelledby="az-behaald-kop">
+        <h3 id="az-behaald-kop">Behaald</h3>
+        <ul class="acties" id="az-symbolen-behaald"></ul>
+      </section>
+      <section class="kaart" aria-labelledby="az-open-kop">
+        <h3 id="az-open-kop">Nog te behalen</h3>
+        <ul class="acties" id="az-symbolen-open"></ul>
+      </section>
+    </div>
+  </section>
 
-    <section class="weergave" id="strategie" aria-labelledby="strategie-kop" hidden>
-      <h2 class="titel" id="strategie-kop" tabindex="-1">Het strategieboek</h2>
-      <div class="kaart tekst">
-        <p>Wassenaar heeft veel groepen die elkaar overlappen. Oud geld in De Kieviet. Diplomaten rond de American School. Politici die Den Haag even ontvluchten. En de echte dorpelingen.</p>
-        <p>Hard netwerken werkt hier averechts. Werk liever zo: <strong>wees nuttig, blijf bescheiden, sluit aan bij bestaande clubs en doe mee in je eigen buurt.</strong></p>
+  <section class="weergave" id="az-strategie" aria-labelledby="az-strategie-kop" hidden>
+    <h2 id="az-strategie-kop" tabindex="-1">Het strategieboek</h2>
+    <p>Wassenaar heeft veel groepen die elkaar overlappen. Oud geld in De Kieviet. Diplomaten rond de American School. Politici die Den Haag even ontvluchten. En de echte dorpelingen.</p>
+    <p>Hard netwerken werkt hier averechts. Werk liever zo: wees nuttig, blijf bescheiden, sluit aan bij bestaande clubs en doe mee in je eigen buurt.</p>
 
-        <h3>De vier pijlers</h3>
-        <ol class="pijler-lijst">
-          <li class="pijler"><h4>De kracht van Oostdorp</h4><p>In Oostdorp woon je in het echte Wassenaar. Doe mee met de buurtvereniging en de Oranjevereniging. Drink koffie bij Pops en maak een praatje in de supermarkt. Zo bouw je vertrouwen op.</p></li>
-          <li class="pijler"><h4>Civic tech en data</h4><p>Je Gemeenteraad Tracker is goud waard. Host de tool niet alleen, maar vertel ook wat erin staat. Stuur elke maand een kort overzicht van het stemgedrag naar De Wassenaarse Krant of Sleutelstad. Dan komen politici vanzelf naar jou.</p></li>
-          <li class="pijler"><h4>Erfgoed en actuele debatten</h4><p>Laat zien dat je om het dorp geeft. Schrijf over Landgoed De Paauw, Princess Garden en de Tuin van Ruys, of dien een zienswijze in. Help het Dorpsmuseum met digitaliseren. Zo kom je bij de historische kern van het dorp.</p></li>
-          <li class="pijler"><h4>De Rijksoverheid-aura</h4><p>Werken voor het ministerie van Algemene Zaken geeft aanzien. Gebruik dat heel subtiel. Help stichtingen en politici met landelijke digitale regels. Dan word je de onmisbare bruggenbouwer.</p></li>
-        </ol>
+    <h3>De vier pijlers</h3>
+    <ol class="pijlers">
+      <li><h4>De kracht van Oostdorp</h4><p>In Oostdorp woon je in het echte Wassenaar. Doe mee met de buurtvereniging en de Oranjevereniging. Drink koffie bij Pops en maak een praatje in de supermarkt. Zo bouw je vertrouwen op.</p></li>
+      <li><h4>Civic tech en data</h4><p>Je Gemeenteraad Tracker is goud waard. Host de tool niet alleen, maar vertel ook wat erin staat. Stuur elke maand een kort overzicht van het stemgedrag naar De Wassenaarse Krant of Sleutelstad. Dan komen politici vanzelf naar jou.</p></li>
+      <li><h4>Erfgoed en actuele debatten</h4><p>Laat zien dat je om het dorp geeft. Schrijf over Landgoed De Paauw, Princess Garden en de Tuin van Ruys, of dien een zienswijze in. Help het Dorpsmuseum met digitaliseren. Zo kom je bij de historische kern van het dorp.</p></li>
+      <li><h4>De Rijksoverheid-aura</h4><p>Werken voor het ministerie van Algemene Zaken geeft aanzien. Gebruik dat heel subtiel. Help stichtingen en politici met landelijke digitale regels. Dan word je de onmisbare bruggenbouwer.</p></li>
+    </ol>
 
-        <h3>Meer terreinen</h3>
-        <dl class="terreinen">
-          <dt>Diplomaten en expats</dt>
-          <dd>Ga naar lezingen van de Diplomat Club Wassenaar en het International Festival van de American School. Help expat-buren met taal en een WhatsApp-buurtpreventie.</dd>
-          <dt>Natuur en sport</dt>
-          <dd>Spot vogels in Meijendel. Steun Kasteel Duivenvoorde en de Reddingsbrigade. Zwem mee met de Zwemloop Wassenaar van het WZK Tri-Team.</dd>
-          <dt>Lokale handel en goede doelen</dt>
-          <dd>De Langstraat heeft last van leegstand. Koop lokaal, help het centrummanagement en de Kinderkringloop, en sponsor een jeugdteam.</dd>
-          <dt>Verkeer, overlast en ruimte</dt>
-          <dd>Niets verbindt huiseigenaren zo snel als gedeelde ergernis. Schrijf met data over fatbikes, praat mee over 30 km per uur en de Noordrand.</dd>
-          <dt>Oud-geldgewoonten</dt>
-          <dd>Een strandhuisje bij de Wassenaarse Slag. Een haringparty in je tuin aan het begin van het seizoen. Gezien worden bij Slagerij Groeneveld.</dd>
-        </dl>
-      </div>
-    </section>
+    <h3>Meer terreinen</h3>
+    <dl class="terreinen">
+      <dt>Diplomaten en expats</dt>
+      <dd>Ga naar lezingen van de Diplomat Club Wassenaar en het International Festival van de American School. Help expat-buren met taal en een WhatsApp-buurtpreventie.</dd>
+      <dt>Natuur en sport</dt>
+      <dd>Spot vogels in Meijendel. Steun Kasteel Duivenvoorde en de Reddingsbrigade. Zwem mee met de Zwemloop Wassenaar van het WZK Tri-Team.</dd>
+      <dt>Lokale handel en goede doelen</dt>
+      <dd>De Langstraat heeft last van leegstand. Koop lokaal, help het centrummanagement en de Kinderkringloop, en sponsor een jeugdteam.</dd>
+      <dt>Verkeer, overlast en ruimte</dt>
+      <dd>Niets verbindt huiseigenaren zo snel als gedeelde ergernis. Schrijf met data over fatbikes, praat mee over 30 km per uur en de Noordrand.</dd>
+      <dt>Oud-geldgewoonten</dt>
+      <dd>Een strandhuisje bij de Wassenaarse Slag. Een haringparty in je tuin aan het begin van het seizoen. Gezien worden bij Slagerij Groeneveld.</dd>
+    </dl>
+  </section>
 
-    <section class="weergave" id="gegevens" aria-labelledby="gegevens-kop" hidden>
-      <h2 class="titel" id="gegevens-kop" tabindex="-1">Je gegevens</h2>
-      <div class="raster">
-        <section class="kaart" aria-labelledby="bewaren-kop">
-          <h3 id="bewaren-kop">Bewaren en terugzetten</h3>
-          <p>Je gegevens staan alleen in deze browser. Ze gaan nooit online. Bewaar ze af en toe als bestand. Dan raak je niets kwijt als je de browser leegmaakt of een nieuwe telefoon neemt.</p>
-          <div class="knoppen">
-            <button type="button" class="knop" id="bewaar-knop">Bewaar als bestand</button>
-            <label class="knop knop-licht" for="terugzet-bestand">Zet een bestand terug</label>
-            <input class="verborgen" type="file" id="terugzet-bestand" accept="application/json,.json">
-          </div>
-        </section>
-        <section class="kaart" aria-labelledby="wissen-kop">
-          <h3 id="wissen-kop">Opnieuw beginnen</h3>
-          <p>Wis alles en begin met de drie startvragen. Dit kun je niet ongedaan maken.</p>
-          <div class="knoppen">
-            <button type="button" class="knop knop-gevaar" id="wis-knop">Wis alles</button>
-          </div>
-        </section>
-      </div>
-    </section>
+  <section class="weergave" id="az-gegevens" aria-labelledby="az-gegevens-kop" hidden>
+    <h2 id="az-gegevens-kop" tabindex="-1">Je gegevens</h2>
+    <div class="raster">
+      <section class="kaart" aria-labelledby="az-bewaren-kop">
+        <h3 id="az-bewaren-kop">Bewaren en terugzetten</h3>
+        <p>Je gegevens staan alleen in deze browser. Ze gaan nooit online. Bewaar ze af en toe als bestand. Dan raak je niets kwijt als je de browser leegmaakt of een nieuwe telefoon neemt.</p>
+        <p class="knoppen">
+          <button type="button" class="knop" id="az-bewaar-knop">Bewaar als bestand</button>
+          <label class="knop knop-licht" for="az-terugzet-bestand">Zet een bestand terug</label>
+          <input class="verborgen" type="file" id="az-terugzet-bestand" accept="application/json,.json">
+        </p>
+      </section>
+      <section class="kaart" aria-labelledby="az-wissen-kop">
+        <h3 id="az-wissen-kop">Opnieuw beginnen</h3>
+        <p>Wis alles en begin met de drie startvragen. Dit kun je niet ongedaan maken.</p>
+        <p class="knoppen">
+          <button type="button" class="knop knop-gevaar" id="az-wis-knop">Wis alles</button>
+        </p>
+      </section>
+    </div>
+  </section>
 
-    <section class="weergave" id="wijzigingen" aria-labelledby="wijzigingen-kop" hidden>
-      <h2 class="titel" id="wijzigingen-kop" tabindex="-1">Wat is er veranderd?</h2>
-      <div class="kaart tekst" id="versies"></div>
-    </section>
-  </main>
+  <section class="weergave" id="az-wijzigingen" aria-labelledby="az-wijzigingen-kop" hidden>
+    <h2 id="az-wijzigingen-kop" tabindex="-1">Wat is er veranderd</h2>
+    <p>Dit is versie <span id="az-versie-nu"></span>. De nieuwste wijzigingen staan bovenaan.</p>
+    <p>Het eerste cijfer gaat omhoog bij een compleet nieuw ontwerp. Het tweede cijfer gaat omhoog bij een groot nieuw onderdeel. Het derde cijfer gaat omhoog bij alle andere wijzigingen.</p>
+    <div id="az-versies"></div>
+  </section>
 
   <footer class="voet">
-    <p>Versie <a href="#wijzigingen" id="versie">2.0</a>. Je gegevens blijven in deze browser.</p>
+    <p>Versie <span id="az-versie"></span> · <a href="#wijzigingen">Wat is er veranderd</a> · Je gegevens blijven in deze browser.</p>
   </footer>
 
-  <dialog class="venster" id="log-venster" aria-labelledby="log-titel">
-    <form method="dialog" id="log-formulier">
-      <h2 id="log-titel">Activiteit</h2>
-      <p class="venster-info" id="log-info"></p>
-      <label for="log-datum">Datum</label>
-      <input type="date" id="log-datum" required>
-      <label for="log-notitie">Notitie <span class="klein">(mag leeg blijven)</span></label>
-      <input type="text" id="log-notitie" maxlength="200" autocomplete="off">
-      <div class="knoppen">
+  <dialog class="venster" id="az-log-venster" aria-labelledby="az-log-titel">
+    <form method="dialog">
+      <h2 id="az-log-titel">Activiteit</h2>
+      <p class="venster-info" id="az-log-info"></p>
+      <p>
+        <label for="az-log-datum">Datum</label>
+        <input type="date" id="az-log-datum" required>
+      </p>
+      <p>
+        <label for="az-log-notitie">Notitie <span class="zacht">(mag leeg blijven)</span></label>
+        <input type="text" id="az-log-notitie" maxlength="200" autocomplete="off">
+      </p>
+      <p class="knoppen">
         <button type="submit" class="knop knop-licht" value="nee" formnovalidate>Annuleren</button>
         <button type="submit" class="knop" value="ja">Opslaan</button>
-      </div>
+      </p>
     </form>
   </dialog>
 
-  <dialog class="venster" id="vraag-venster" aria-labelledby="vraag-titel">
+  <dialog class="venster" id="az-vraag-venster" aria-labelledby="az-vraag-titel">
     <form method="dialog">
-      <h2 id="vraag-titel">Weet je het zeker?</h2>
-      <p id="vraag-tekst"></p>
-      <div class="knoppen">
+      <h2 id="az-vraag-titel">Weet je het zeker?</h2>
+      <p id="az-vraag-tekst"></p>
+      <p class="knoppen">
         <button type="submit" class="knop knop-licht" value="nee">Annuleren</button>
-        <button type="submit" class="knop knop-gevaar" value="ja" id="vraag-ja">Ja</button>
-      </div>
+        <button type="submit" class="knop knop-gevaar" value="ja" id="az-vraag-ja">Ja</button>
+      </p>
     </form>
   </dialog>
 
-  <dialog class="venster venster-rang" id="rang-venster" aria-labelledby="nieuwe-rang-titel">
+  <dialog class="venster venster-rang" id="az-rang-venster" aria-labelledby="az-rang-titel">
     <form method="dialog">
-      <svg class="icoon icoon-groot" aria-hidden="true" focusable="false"><use href="#i-kroon"/></svg>
-      <h2 id="nieuwe-rang-titel">Nieuwe rang!</h2>
-      <p>Je bent nu <strong id="nieuwe-rang"></strong>.</p>
-      <div class="knoppen"><button type="submit" class="knop" value="ok">Verder</button></div>
+      <svg class="icoon icoon-rang" aria-hidden="true" focusable="false"><use href="#az-i-kroon"/></svg>
+      <h2 id="az-rang-titel">Nieuwe rang!</h2>
+      <p>Je bent nu <strong id="az-nieuwe-rang"></strong>.</p>
+      <p class="knoppen"><button type="submit" class="knop" value="ok">Verder</button></p>
     </form>
   </dialog>
 
-  <p class="melding" id="melding" role="status"></p>
+  <p class="melding" id="az-melding" role="status"></p>
+</article>
+<!-- einde inhoud -->
+</main>
 </body>
 </html>

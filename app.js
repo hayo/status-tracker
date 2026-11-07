@@ -2,10 +2,13 @@
  * Wassenaar Aanzien: houd bij hoe je aanzien in Wassenaar groeit.
  * Alles staat in localStorage van deze browser. Punten en eigenschappen worden steeds
  * opnieuw uitgerekend uit het logboek, zodat een verwijderde regel ook echt meetelt.
- * Verhoog bij elke wijziging de versie in gegevens.js én VERSIE in sw.js.
+ * Na elke wijziging een nieuwe versie bovenaan wijzigingen/versies.js.
+ *
+ * Alles hangt onder #aanzien, en elk id begint met az-. Binnen een site botst dan niets.
  */
 
-import { VERSIES, RANGEN, EIGENSCHAPPEN, EIGENSCHAP_MAX, CATEGORIEEN, SYMBOLEN, STARTVRAGEN } from './gegevens.js';
+import { VERSIES } from './wijzigingen/versies.js';
+import { RANGEN, EIGENSCHAPPEN, EIGENSCHAP_MAX, CATEGORIEEN, SYMBOLEN, STARTVRAGEN } from './gegevens.js';
 
 const SLEUTEL = 'wassenaar_renown';
 const WEERGAVEN = ['start', 'status', 'loggen', 'symbolen', 'strategie', 'gegevens', 'wijzigingen'];
@@ -14,8 +17,10 @@ const STAAF_WEKEN = 8;
 const KALENDER_STAPPEN = [1, 30, 80, 200]; // ondergrens in PR per dag voor stap 1 tot 4
 const ACTIVITEITEN = new Map(CATEGORIEEN.flatMap((c) => c.activiteiten.map((a) => [a.id, { ...a, categorie: c.naam }])));
 
+// Elk element met een id, bijvoorbeeld #az-log-datum als el.logDatum.
+const app = document.getElementById('aanzien');
 const el = {};
-for (const e of document.querySelectorAll('[id]')) el[e.id.replace(/-(\w)/g, (_, c) => c.toUpperCase())] = e;
+for (const e of app.querySelectorAll('[id]')) el[e.id.slice(3).replace(/-(\w)/g, (_, c) => c.toUpperCase())] = e;
 
 const getal = (n) => Math.round(n).toLocaleString('nl');
 const datumKort = new Intl.DateTimeFormat('nl', { day: 'numeric', month: 'short' });
@@ -40,7 +45,7 @@ function maak(tag, eigen = {}, ...kinderen) {
   e.append(...kinderen.filter((k) => k !== null && k !== undefined));
   return e;
 }
-const icoon = (naam, klasse = 'icoon') => maak('svg:svg', { class: klasse, 'aria-hidden': 'true', focusable: 'false' }, maak('svg:use', { href: `#i-${naam}` }));
+const icoon = (naam, klasse = 'icoon') => maak('svg:svg', { class: klasse, 'aria-hidden': 'true', focusable: 'false' }, maak('svg:use', { href: `#az-i-${naam}` }));
 
 /* ---------- Opslag ---------- */
 
@@ -126,7 +131,7 @@ function toonStatus() {
   el.ladder.replaceChildren(...RANGEN.map((r, j) => maak('li', {
     class: j < i ? 'gehaald' : j === i ? 'nu' : undefined,
     'aria-current': j === i ? 'step' : undefined,
-  }, maak('span', { class: 'ladder-naam', tekst: r.naam }), maak('span', { class: 'ladder-min', tekst: getal(r.min) }))));
+  }, maak('span', { tekst: r.naam }), maak('span', { class: 'ladder-min', tekst: getal(r.min) }))));
 
   const weken = perWeek(KALENDER_WEKEN);
   const nu = weken.at(-1);
@@ -135,7 +140,7 @@ function toonStatus() {
     ['Weken op rij actief', getal(reeks())],
     ['Activiteiten gelogd', getal(logboek.filter((r) => telt(r) && !r.symbolen).length)],
     ['Statussymbolen', `${behaald().size} van ${SYMBOLEN.length}`],
-  ].map(([dt, dd]) => maak('div', { class: 'cijfer' }, maak('dt', { tekst: dt }), maak('dd', { tekst: dd }))));
+  ].map(([dt, dd]) => maak('div', {}, maak('dt', { tekst: dt }), maak('dd', { tekst: dd }))));
 
   toonKalender();
   toonWeken(weken.slice(-STAAF_WEKEN));
@@ -144,12 +149,12 @@ function toonStatus() {
 
   const eig = eigenschappen();
   el.eigenschappen.replaceChildren(...Object.entries(EIGENSCHAPPEN).map(([k, naam]) =>
-    balk(`eig-${k}`, naam, `${getal(eig[k])} PR`, eig[k] / EIGENSCHAP_MAX)));
+    balk(`az-eig-${k}`, naam, `${getal(eig[k])} PR`, eig[k] / EIGENSCHAP_MAX)));
 
   const gedaan = new Set(logboek.map((r) => r.activiteit));
   el.pijlers.replaceChildren(...CATEGORIEEN.map((c) => {
     const n = c.activiteiten.filter((a) => gedaan.has(a.id)).length;
-    return balk(`pijler-${c.id}`, c.naam, `${n} van ${c.activiteiten.length}`, n / c.activiteiten.length);
+    return balk(`az-pijler-${c.id}`, c.naam, `${n} van ${c.activiteiten.length}`, n / c.activiteiten.length);
   }));
 
   const regels = gesorteerd().slice(0, 12);
@@ -158,7 +163,7 @@ function toonStatus() {
 
 function balk(id, naam, waarde, deel) {
   return maak('li', { class: 'balk' },
-    maak('label', { class: 'balk-naam', for: id, tekst: naam }), maak('span', { class: 'balk-waarde', tekst: waarde }),
+    maak('label', { for: id, tekst: naam }), maak('span', { class: 'balk-waarde', tekst: waarde }),
     maak('meter', { id, min: 0, max: 1, value: Math.min(1, Math.max(0, deel)) }));
 }
 
@@ -173,7 +178,7 @@ function logRegel(r) {
 }
 
 function toonKalender() {
-  const cel = 14, gat = 3, links = 26, boven = 18;
+  const cel = 18, gat = 4, links = 30, boven = 20;
   const vandaag = new Date();
   const eerste = maandag(plusDagen(vandaag, -7 * (KALENDER_WEKEN - 1)));
   const perDag = new Map();
@@ -184,16 +189,16 @@ function toonKalender() {
     perDag.set(r.datum, d);
   }
   const breedte = links + KALENDER_WEKEN * (cel + gat), hoogte = boven + 7 * (cel + gat);
-  const svg = maak('svg:svg', { class: 'kalender-svg', viewBox: `0 0 ${breedte} ${hoogte}`, role: 'img', 'aria-labelledby': 'kalender-titel' },
-    maak('svg:title', { id: 'kalender-titel', tekst: `Kalender: op ${perDag.size} dagen iets gelogd. De cijfers per week staan in de tabel.` }));
-  ['ma', 'wo', 'vr'].forEach((t, i) => svg.append(maak('svg:text', { class: 'as-tekst', x: 0, y: boven + (i * 2) * (cel + gat) + 11, tekst: t })));
+  const svg = maak('svg:svg', { viewBox: `0 0 ${breedte} ${hoogte}`, width: breedte, height: hoogte, role: 'img', 'aria-labelledby': 'az-kalender-titel' },
+    maak('svg:title', { id: 'az-kalender-titel', tekst: `Kalender: op ${perDag.size} dagen iets gelogd. De cijfers per week staan in de tabel.` }));
+  ['ma', 'wo', 'vr'].forEach((t, i) => svg.append(maak('svg:text', { class: 'as-tekst', x: 0, y: boven + (i * 2) * (cel + gat) + 13, tekst: t })));
   let maand = -1;
   for (let w = 0; w < KALENDER_WEKEN; w++) {
     const x = links + w * (cel + gat);
     const start = plusDagen(eerste, 7 * w);
     if (start.getMonth() !== maand) {
       maand = start.getMonth();
-      if (w < KALENDER_WEKEN - 1) svg.append(maak('svg:text', { class: 'as-tekst', x, y: 11, tekst: datumKort.formatToParts(start).find((p) => p.type === 'month').value }));
+      if (w < KALENDER_WEKEN - 1) svg.append(maak('svg:text', { class: 'as-tekst', x, y: 13, tekst: datumKort.formatToParts(start).find((p) => p.type === 'month').value }));
     }
     for (let d = 0; d < 7; d++) {
       const dag = plusDagen(start, d);
@@ -206,15 +211,15 @@ function toonKalender() {
   }
   el.kalender.replaceChildren(svg);
   const vakjes = ['0', ...KALENDER_STAPPEN.map((g, i) => (KALENDER_STAPPEN[i + 1] ? `${g}–${KALENDER_STAPPEN[i + 1] - 1}` : `${g}+`))];
-  el.kalenderLegenda.replaceChildren('PR per dag:', ...vakjes.map((t, i) => maak('span', { class: 'legenda-stap' }, maak('span', { class: `legenda-vak stap-${i}`, 'aria-hidden': 'true' }), t)));
+  el.kalenderLegenda.replaceChildren('PR per dag:', ...vakjes.map((t, i) => maak('span', {}, maak('span', { class: `legenda-vak stap-${i}`, 'aria-hidden': 'true' }), t)));
 }
 
 function toonWeken(weken) {
-  const breedte = 320, hoogte = 140, boven = 16, onder = 18, vak = breedte / weken.length, staaf = Math.min(28, vak - 8);
+  const breedte = 400, hoogte = 160, boven = 18, onder = 20, vak = breedte / weken.length, staaf = Math.min(28, vak - 12);
   const max = Math.max(...weken.map((w) => w.punten), 1);
   const hoogste = weken.findIndex((w) => w.punten === max);
-  const svg = maak('svg:svg', { class: 'weken-svg', viewBox: `0 0 ${breedte} ${hoogte}`, role: 'img', 'aria-labelledby': 'weken-titel' },
-    maak('svg:title', { id: 'weken-titel', tekst: `Punten per week, de laatste ${weken.length} weken. De cijfers staan in de tabel.` }),
+  const svg = maak('svg:svg', { viewBox: `0 0 ${breedte} ${hoogte}`, width: breedte, height: hoogte, role: 'img', 'aria-labelledby': 'az-weken-titel' },
+    maak('svg:title', { id: 'az-weken-titel', tekst: `Punten per week, de laatste ${weken.length} weken. De cijfers staan in de tabel.` }),
     maak('svg:line', { class: 'as-lijn', x1: 0, x2: breedte, y1: hoogte - onder, y2: hoogte - onder }));
   weken.forEach((w, i) => {
     const h = Math.max(w.punten ? 2 : 0, ((hoogte - boven - onder) * w.punten) / max);
@@ -238,8 +243,8 @@ function actieKnop(a, info, bij) {
 }
 
 function bouwActiviteiten() {
-  el.activiteiten.replaceChildren(...CATEGORIEEN.map((c) => maak('section', { class: 'kaart categorie', 'aria-labelledby': `cat-${c.id}` },
-    maak('h3', { id: `cat-${c.id}`, tekst: c.naam }),
+  el.activiteiten.replaceChildren(...CATEGORIEEN.map((c) => maak('section', { class: 'kaart categorie', 'aria-labelledby': `az-cat-${c.id}` },
+    maak('h3', { id: `az-cat-${c.id}`, tekst: c.naam }),
     maak('ul', { class: 'acties' }, ...c.activiteiten.map((a) => actieKnop(a, EIGENSCHAPPEN[a.eigenschap], () => vraagLog(a)))))));
 }
 
@@ -281,17 +286,17 @@ function toonSymbolen() {
 }
 
 function toonVersies() {
-  el.versie.textContent = VERSIES[0].versie;
-  el.versies.replaceChildren(...VERSIES.flatMap((v) => [
-    maak('h3', {}, `Versie ${v.versie}, `, maak('time', { datetime: v.datum, tekst: datumLang.format(alsDatum(v.datum)) })),
-    maak('ul', {}, ...v.wijzigingen.map((w) => maak('li', { tekst: w }))),
-  ]));
+  el.versie.textContent = el.versieNu.textContent = VERSIES[0].versie;
+  el.versies.replaceChildren(...VERSIES.map((v) => maak('section', {},
+    maak('h3', { tekst: `Versie ${v.versie}` }),
+    maak('p', {}, maak('time', { datetime: v.datum, tekst: datumLang.format(alsDatum(v.datum)) })),
+    maak('ul', {}, ...v.wijzigingen.map((w) => maak('li', { tekst: w }))))));
 }
 
 function bouwStart() {
-  el.startFormulier.prepend(...STARTVRAGEN.map((v, i) => maak('fieldset', { class: 'keuze' },
+  el.startFormulier.prepend(...STARTVRAGEN.map((v, i) => maak('fieldset', {},
     maak('legend', { tekst: `${i + 1}. ${v.vraag}` }),
-    ...v.antwoorden.map(([tekst, punten], j) => maak('label', { class: 'keuze-optie' },
+    ...v.antwoorden.map(([tekst, punten], j) => maak('label', { class: 'keuze' },
       maak('input', { type: 'radio', name: v.id, value: punten, required: true, checked: j === 0 }), maak('span', { tekst: tekst }))))));
 }
 
@@ -428,8 +433,7 @@ function toon(verplaatsFocus = false) {
     if (a.hash === `#${id}`) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
   }
-  if (verplaatsFocus) document.getElementById(`${id}-kop`).focus();
-  window.scrollTo(0, 0);
+  if (verplaatsFocus) el[`${id}Kop`].focus();
 }
 
 window.addEventListener('hashchange', () => toon(true));
@@ -441,4 +445,7 @@ toonVersies();
 if (logboek) verwerk();
 toon();
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+// Alleen als losse pagina. Binnen een site gaat de site over het offline werken.
+if (document.querySelector('link[rel="manifest"]') && 'serviceWorker' in navigator) {
+  navigator.serviceWorker.register(new URL('sw.js', import.meta.url)).catch(() => {});
+}

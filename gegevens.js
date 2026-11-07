@@ -1,27 +1,7 @@
 /*
- * Alle inhoud van de app: versies, rangen, eigenschappen, activiteiten en statussymbolen.
+ * Alle inhoud van de app: rangen, eigenschappen, activiteiten en statussymbolen.
  * Alleen gegevens, geen code. Een id mag je nooit veranderen: het logboek verwijst ernaar.
  */
-
-export const VERSIES = [
-  {
-    versie: '2.0',
-    datum: '2026-11-07',
-    wijzigingen: [
-      'Nieuw ontwerp met een kroon als logo. De app werkt ook zonder internet en op je telefoon.',
-      'Bijna tachtig activiteiten, in negen groepen. Je kunt zoeken en ziet bovenaan wat je vaak doet.',
-      'Je kiest zelf de datum van een activiteit en kunt een notitie toevoegen.',
-      'Nieuw overzicht van je voortgang: de rangladder, een kalender, punten per week, je reeks en per groep wat je al gedaan hebt.',
-      'Meer statussymbolen. Je kunt een activiteit of symbool uit het logboek halen.',
-      'Je kunt je gegevens bewaren als bestand en weer terugzetten.',
-    ],
-  },
-  {
-    versie: '1.0',
-    datum: '2026-11-07',
-    wijzigingen: ['De eerste versie van de app.'],
-  },
-];
 
 export const RANGEN = [
   { min: 0, naam: 'Voorbijganger', uitleg: 'Je loopt nog als bezoeker door de groene lanen.' },

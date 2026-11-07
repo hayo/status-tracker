@@ -1,0 +1,80 @@
+/*
+ * Een hele pagina om de app heen, voor als er geen site omheen zit.
+ *
+ * Komt na app.css. Geeft de kale pagina een basis, en levert de kleuren en maten waarop app.css
+ * draait: dezelfde namen als in de Cisomatic. Binnen een site levert de site die. Een eigen
+ * huisstijl vraagt dus alleen om een aangepast standalone.css.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  --page: #f9f6f0;
+  --panel: #fff;
+  --text: #1d2430;
+  --muted: #525a66;
+  --muted-soft: #707782;
+  --line: #e3ddd0;
+  --line-soft: #efebe3;
+  --ink: #2a4d3e;
+  --ink-hover: #1f3a2f;
+  --on-ink: #fff;
+  --link: #2a4d3e;
+  --pill-bg: #e6eee9;
+  --pill-bg-hover: #d6e4dc;
+  --pill-ink: #2a4d3e;
+  --radius: 0.6em;
+  --font-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", roboto, sans-serif;
+  --font-kop: "Iowan Old Style", "Palatino Linotype", palatino, "Book Antiqua", georgia, serif;
+  --ui-lg: 90%;
+  --ui-md: 80%;
+  --ui-sm: 70%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #151917;
+    --panel: #1e2321;
+    --text: #ebe8e1;
+    --muted: #a7aaa4;
+    --muted-soft: #8e918b;
+    --line: #343b37;
+    --line-soft: #29302c;
+    --ink: #7cc4a0;
+    --ink-hover: #98d3b5;
+    --on-ink: #10201a;
+    --link: #7cc4a0;
+    --pill-bg: #223129;
+    --pill-bg-hover: #2b4035;
+    --pill-ink: #a6dcc1;
+  }
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background: var(--page);
+  font-family: var(--font-ui);
+}
+
+a {
+  color: var(--link);
+}
+
+main {
+  max-width: 64em;
+  margin: 0 auto;
+  padding: 1.5em 1em 3em;
+}
+
+@media print {
+  body {
+    background: none;
+    color: #000;
+  }
+
+  main {
+    max-width: none;
+    padding: 0;
+  }
+}
