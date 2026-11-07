@@ -1,35 +1,38 @@
 # Wassenaar Aanzien
 
-Een kleine web-app om bij te houden hoe je aanzien in Wassenaar groeit. Je logt
-wat je doet, en ziet je rang stijgen van Voorbijganger tot Ereburger.
+Een kleine game: je levelt je karakter op in de Wassenaarse samenleving. Je logt
+wat je doet, verdient prestigepunten (PR) en XP, en stijgt van Voorbijganger tot
+Ereburger.
 
 Demo: https://hayobethlehem.nl/forge/status-tracker en
 https://hayo.github.io/status-tracker/
 
-- **Status**: je rang, de rangladder, je punten (PR), een kalender van 17 weken,
-  punten per week, je eigenschappen, en per groep hoeveel activiteiten je al
-  deed. Met het logboek eronder.
-- **Loggen**: bijna tachtig activiteiten in negen groepen. Je zoekt, kiest de
-  datum en schrijft er een notitie bij.
-- **Symbolen**: grote dingen die je één keer bereikt.
-- **Strategie**: waarom deze activiteiten helpen.
-- **Gegevens**: bewaren als bestand, terugzetten en opnieuw beginnen.
+- **Status**: je karakter met rang en niveau, de XP-balk naar de volgende rang,
+  de rangladder, je skills met elk een eigen niveau, je statussymbolen als
+  trofeeën, recente activiteiten, een kalender van 17 weken, punten per week en
+  de terreinen die je al verkend hebt.
+- **Log activiteit**: bijna tachtig activiteiten in negen terreinen. Je zoekt,
+  kiest de datum en geeft extra context. Ernaast claim je statussymbolen.
+- **Strategie**: het strategieboek, waarom deze activiteiten helpen.
+- **Gegevens**: je savegame bewaren, laden, of een nieuw spel beginnen.
 
-HTML, CSS en JavaScript. Geen build, geen afhankelijkheden, niets van buiten.
+HTML, CSS en JavaScript. Geen build, geen afhankelijkheden, niets van buiten:
+de letters en iconen staan in de repo.
 
 ## Opbouw
 
 ```
 index.html                de app, en de losse pagina eromheen
 index.php                 binnen een site: geeft alleen het artikel uit index.html door
-app.css                   de opmaak, alleen op tokens, alles onder #aanzien
-standalone.css            de tokens voor licht en donker, en een basis voor de losse pagina
+app.css                   de opmaak, alles onder #aanzien
+standalone.css            de achtergrond en de groene balk van de losse pagina
 app.js                    de app: rekenen, tonen, loggen, bewaren
 gegevens.js               rangen, eigenschappen, activiteiten, statussymbolen en startvragen
 wijzigingen/versies.js    de versies, de nieuwste bovenaan; de bovenste is de versie die draait
 sw.js                     laat de losse pagina ook zonder internet werken
 manifest.webmanifest      voor op het beginscherm
 iconen/                   de kroon, als svg en als png
+letters/                  Inter en Playfair Display, met hun licentie
 .github/                  de Action en het script die de app naar Codeberg zetten
 ```
 
@@ -97,15 +100,26 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 
 | Wat | Velden |
 | --- | --- |
-| `RANGEN` | `min` (punten vanaf), `naam`, `uitleg` |
-| `EIGENSCHAPPEN` | sleutel => naam. `EIGENSCHAP_MAX` is het aantal punten waarbij de balk vol is |
-| `CATEGORIEEN` | `id`, `naam`, en `activiteiten` als `[id, naam, punten, eigenschap]` |
-| `SYMBOLEN` | `id`, `punten`, `naam`, `eigenschap` |
+| `RANGEN` | `min` (punten vanaf), `naam`, `uitleg`, `icoon` |
+| `EIGENSCHAPPEN` | sleutel => `naam` en `icoon`. `EIGENSCHAP_MAX` is het aantal punten waarbij de balk vol is |
+| `CATEGORIEEN` | `id`, `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap]` |
+| `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `eigenschap` |
 | `STARTVRAGEN` | `id`, `vraag`, `eigenschap`, `deel` (welk deel van de punten naar de eigenschap gaat), en `antwoorden` als `[tekst, punten]` |
 
 Een nieuwe activiteit krijgt een nieuw id, zoals `a12`. Verander nooit een
-bestaand id: het logboek verwijst ernaar. Een nieuwe groep verschijnt vanzelf,
-ook op de statuspagina.
+bestaand id: het logboek verwijst ernaar. Een nieuw terrein verschijnt vanzelf,
+ook op de statuspagina. Een activiteit van 100 PR of meer krijgt een gekleurde
+rand.
+
+Een `icoon` is de naam van een icoon uit Font Awesome Free (solid), zoals
+`mug-hot`. Het moet in de sprite boven in `index.html` staan, als
+`<symbol id="az-i-mug-hot">`. Een nieuw icoon neem je over uit
+`svgs/solid/<naam>.svg` van het npm-pakket `@fortawesome/fontawesome-free`: de
+`viewBox` en het pad. Een `kleur` is een van `teal`, `blauw`, `rood`, `navy`,
+`paars`, `groen`, `oranje`, `amber` of `goud`.
+
+Een skill telt tot `EIGENSCHAP_MAX` punten: dat is 100 / 100. Elke 10 is een
+niveau. De rang van je karakter is ook zijn niveau: Voorbijganger is niveau 1.
 
 ## Je gegevens
 
@@ -126,26 +140,29 @@ Notities en namen komen altijd als tekst op de pagina, nooit als HTML.
 
 ## Opmaak
 
-`app.css` gebruikt alleen tokens, met dezelfde namen als de Cisomatic: `--ink`,
-`--ink-hover`, `--on-ink`, `--pill-bg`, `--pill-bg-hover`, `--pill-ink`,
-`--line`, `--line-soft`, `--panel`, `--page`, `--text`, `--muted`,
-`--muted-soft`, `--link`, `--radius`, `--font-ui` en `--ui-lg`, `--ui-md`,
-`--ui-sm`. Daarbij `--font-kop` voor de koppen; zonder die token erven ze de
-letter van de site. Los definieert `standalone.css` ze, voor licht en donker, in
-de kleuren van Wassenaar: groen, goud en crème. Binnen een site doet de site
-dat.
-
-Het goud, het rood en de stappen van de kalender mengt `app.css` met
-`color-mix()` uit die tokens. Zo kloppen ze in licht en donker, en met elke
-site.
+Een karakterblad in de kleuren van Wassenaar: groen `#2a4d3e`, goud `#d4af37`,
+navy `#1b263b` en crème `#f9f6f0`. Koppen in Playfair Display, de rest in
+Inter. De kleuren staan als custom properties op `#aanzien` in `app.css`. Elk
+terrein heeft een kleur (`cat-teal` en zo) en elke skill ook (`skill-civic` en
+zo); die zetten `--cat` en `--cat-licht`.
 
 Alles hangt onder `#aanzien`, en elk id begint met `az-`. Binnen een site botst
-dan niets. De iconen zijn een lijn van gelijke dikte met ronde uiteinden en één
-kleur, in een sprite boven in het artikel. Alleen de kroon is gevuld.
+dan niets. De app neemt zijn eigen kleuren en letters mee, ook binnen een site.
+`standalone.css` geeft alleen de losse pagina een achtergrond, en zet de groene
+balk over de hele breedte bovenaan vast.
 
 De pagina heeft een Content Security Policy die geen inline script of stijl
 toestaat. Daarom staat er geen `onclick` of `style` in de opmaak, ook niet vanuit
 het script: balken zijn `<meter>` en `<progress>`, grafieken SVG.
+
+Animaties (de glans op de XP-balk, het niveauvenster) staan uit bij
+`prefers-reduced-motion`.
+
+### Licenties
+
+- Iconen: [Font Awesome Free](https://fontawesome.com) 7.3.1, CC BY 4.0.
+- Letters: Inter en Playfair Display, SIL Open Font License 1.1. De licenties
+  staan in `letters/`.
 
 ## Toegankelijkheid
 
@@ -159,5 +176,5 @@ als tabel". Vensters zijn een `<dialog>`.
 
 Elke wijziging gaat zonder fouten door de W3C Nu HTML Checker (`vnu`, ook met
 `--css`), `html-validate` (recommended), `stylelint-config-standard`, ESLint
-(recommended, met `eqeqeq`) en axe-core (WCAG 2.2 AA, in licht en donker). `vnu`
+(recommended, met `eqeqeq`) en axe-core (WCAG 2.2 AA). `vnu`
 op `file:` geeft meldingen over de CSP; die horen bij `file:`.

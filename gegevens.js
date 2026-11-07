@@ -4,30 +4,33 @@
  */
 
 export const RANGEN = [
-  { min: 0, naam: 'Voorbijganger', uitleg: 'Je loopt nog als bezoeker door de groene lanen.' },
-  { min: 500, naam: 'Nieuwkomer', uitleg: 'Je bent net binnen. Je leert de ongeschreven regels.' },
-  { min: 1500, naam: 'Geïntroduceerde', uitleg: 'Iemand staat voor je in. Je komt op besloten bijeenkomsten.' },
-  { min: 3500, naam: 'Lid', uitleg: 'Je hoort erbij. Mensen kennen en respecteren je.' },
-  { min: 7500, naam: 'Patroon', uitleg: 'Je steunt het dorp. Mensen vragen je om raad.' },
-  { min: 15000, naam: 'Wassenaarder', uitleg: 'Niemand ziet nog verschil met oud geld.' },
-  { min: 30000, naam: 'Ereburger', uitleg: 'Hoger kan niet in Wassenaar.' },
+  { min: 0, naam: 'Voorbijganger', uitleg: 'Een simpele passant in de groene lanen van Wassenaar.', icoon: 'person-walking' },
+  { min: 500, naam: 'Nieuwkomer', uitleg: 'Recent geland. Je observeert de ongeschreven regels.', icoon: 'box-open' },
+  { min: 1500, naam: 'Geïntroduceerde', uitleg: 'Er wordt voor je ingestaan. Je bezoekt besloten bijeenkomsten.', icoon: 'handshake' },
+  { min: 3500, naam: 'Lid', uitleg: 'Een actief en gerespecteerd lid van de lokale gemeenschap.', icoon: 'id-card' },
+  { min: 7500, naam: 'Patroon', uitleg: 'Een sponsor van het dorp. Je dwingt respect af.', icoon: 'building-columns' },
+  { min: 15000, naam: 'Wassenaarder', uitleg: 'Niet te onderscheiden van oud geld. Het dorp is van jou.', icoon: 'chess-knight' },
+  { min: 30000, naam: 'Ereburger', uitleg: 'Het absolute toppunt van de lokale samenleving.', icoon: 'crown' },
 ];
 
+// De vaardigheden van je karakter. Kleur is een klasse in app.css.
 export const EIGENSCHAPPEN = {
-  civic: 'Maatschappelijke invloed',
-  cultural: 'Cultureel besef',
-  stealth: 'Sociale discretie',
-  physical: 'Natuur en sport',
-  financial: 'Financiële slagkracht',
+  civic: { naam: 'Maatschappelijke invloed', icoon: 'bullhorn' },
+  cultural: { naam: 'Cultureel besef', icoon: 'palette' },
+  stealth: { naam: 'Sociale discretie', icoon: 'user-secret' },
+  physical: { naam: 'Fysiek en natuur', icoon: 'person-swimming' },
+  financial: { naam: 'Financiële slagkracht', icoon: 'coins' },
 };
 
-// Punten per eigenschap waarbij de balk vol is.
+// Punten per eigenschap waarbij de balk vol is (100 / 100).
 export const EIGENSCHAP_MAX = 4000;
 
 export const CATEGORIEEN = [
   {
     id: 'dorp',
-    naam: 'Oostdorp en dorpsleven',
+    naam: 'Sociaal en Oostdorp',
+    icoon: 'house-chimney',
+    kleur: 'teal',
     activiteiten: [
       ['a01', 'Buren gegroet en bij hun naam genoemd', 10, 'civic'],
       ['a02', 'Praatje gemaakt in de supermarkt', 20, 'civic'],
@@ -45,6 +48,8 @@ export const CATEGORIEEN = [
   {
     id: 'civic',
     naam: 'Civic tech en data',
+    icoon: 'code',
+    kleur: 'blauw',
     activiteiten: [
       ['b01', 'Raadsvergadering gevolgd, live of teruggekeken', 30, 'civic'],
       ['b02', 'Open data van de gemeente opgevraagd of gebruikt', 40, 'civic'],
@@ -60,7 +65,9 @@ export const CATEGORIEEN = [
   },
   {
     id: 'erfgoed',
-    naam: 'Erfgoed en actuele debatten',
+    naam: 'Erfgoed en lokale belangen',
+    icoon: 'landmark-dome',
+    kleur: 'rood',
     activiteiten: [
       ['c01', 'Dorpsmuseum Wassenaar bezocht', 30, 'cultural'],
       ['c02', 'Kasteel Duivenvoorde bezocht', 40, 'cultural'],
@@ -74,7 +81,9 @@ export const CATEGORIEEN = [
   },
   {
     id: 'rijk',
-    naam: 'De Rijksoverheid-aura',
+    naam: 'Ministerie en Rijksoverheid-aura',
+    icoon: 'shield-halved',
+    kleur: 'navy',
     activiteiten: [
       ['d01', 'In een lokaal café gewerkt, pasje van het ministerie zichtbaar', 30, 'stealth'],
       ['d02', 'Over Den Haag verteld zonder namen te noemen', 40, 'stealth'],
@@ -86,7 +95,9 @@ export const CATEGORIEEN = [
   },
   {
     id: 'diplomatiek',
-    naam: 'Diplomaten en expats',
+    naam: 'Diplomatieke en expat-kringen',
+    icoon: 'globe',
+    kleur: 'paars',
     activiteiten: [
       ['e01', 'Internationale buren geholpen met taal of regels', 40, 'civic'],
       ['e02', 'WhatsApp-buurtpreventie voor expats beheerd', 50, 'stealth'],
@@ -99,7 +110,9 @@ export const CATEGORIEEN = [
   },
   {
     id: 'buiten',
-    naam: 'Natuur en sport',
+    naam: 'Natuur en buitenleven',
+    icoon: 'tree',
+    kleur: 'groen',
     activiteiten: [
       ['f01', 'Strandwandeling bij de Wassenaarse Slag', 20, 'physical'],
       ['f02', 'Gewandeld of gefietst in Meijendel of Berkheide', 25, 'physical'],
@@ -115,7 +128,9 @@ export const CATEGORIEEN = [
   },
   {
     id: 'handel',
-    naam: 'Lokale handel en goede doelen',
+    naam: 'Lokale handel en filantropie',
+    icoon: 'store',
+    kleur: 'oranje',
     activiteiten: [
       ['g01', 'Bloemen gekocht bij een lokale bloemist', 15, 'financial'],
       ['g02', 'Kwaliteitsvlees gehaald bij Slagerij Groeneveld', 20, 'financial'],
@@ -132,7 +147,9 @@ export const CATEGORIEEN = [
   },
   {
     id: 'overlast',
-    naam: 'Verkeer, overlast en ruimte',
+    naam: 'Lokale noodzaken',
+    icoon: 'bicycle',
+    kleur: 'amber',
     activiteiten: [
       ['h01', 'Melding gedaan over de openbare ruimte', 15, 'civic'],
       ['h02', 'Bewonersavond over verkeer bijgewoond', 40, 'civic'],
@@ -147,6 +164,8 @@ export const CATEGORIEEN = [
   {
     id: 'oudgeld',
     naam: 'Oud-geldgewoonten',
+    icoon: 'champagne-glasses',
+    kleur: 'goud',
     activiteiten: [
       ['i01', 'Zondagse wandeling door De Kieviet', 20, 'stealth'],
       ['i02', 'Bedankkaart met de hand geschreven', 30, 'stealth'],
@@ -158,29 +177,29 @@ export const CATEGORIEEN = [
 ].map((c) => ({ ...c, activiteiten: c.activiteiten.map(([id, naam, punten, eigenschap]) => ({ id, naam, punten, eigenschap })) }));
 
 export const SYMBOLEN = [
-  { id: 'm_lid_oostdorp', punten: 300, naam: 'Lid van Buurtvereniging Oostdorp', eigenschap: 'civic' },
-  { id: 'm_slager', punten: 300, naam: 'Bij naam begroet bij Slagerij Groeneveld', eigenschap: 'financial' },
-  { id: 'm_pops', punten: 300, naam: 'Bij Pops weten ze wat je drinkt', eigenschap: 'stealth' },
-  { id: 'm_news', punten: 400, naam: 'Genoemd in De Wassenaarse Krant', eigenschap: 'civic' },
-  { id: 'm_heritage_map', punten: 600, naam: 'Beschermer van Wassenaars erfgoed', eigenschap: 'cultural' },
-  { id: 'm_art', punten: 600, naam: 'Schilderij van de Haagse School gekocht', eigenschap: 'cultural' },
-  { id: 'm_car', punten: 700, naam: 'Klassieke Porsche of Land Rover gekocht', eigenschap: 'financial' },
-  { id: 'm_rotary', punten: 700, naam: 'Bestuurslid van de Rotary of Lions Club', eigenschap: 'civic' },
-  { id: 'm_bestuur', punten: 700, naam: 'Bestuurslid van een lokale stichting of vereniging', eigenschap: 'civic' },
-  { id: 'm_paauw', punten: 800, naam: 'Je zienswijze over De Paauw werd genoemd in de raad', eigenschap: 'cultural' },
-  { id: 'm_brigade', punten: 800, naam: 'Vaste vrijwilliger bij de Reddingsbrigade', eigenschap: 'physical' },
-  { id: 'm_museum', punten: 900, naam: 'Nieuwe website van het Dorpsmuseum live, met jouw hulp', eigenschap: 'cultural' },
-  { id: 'm_civic_tool', punten: 1000, naam: 'Je civic tool wordt gebruikt door de gemeente', eigenschap: 'civic' },
-  { id: 'm_haring', punten: 1200, naam: 'Jaarlijkse haringparty georganiseerd', eigenschap: 'stealth' },
-  { id: 'm_mayor_consult', punten: 1200, naam: 'De burgemeester vroeg je om advies over tech', eigenschap: 'civic' },
-  { id: 'm_council', punten: 1500, naam: 'Gekozen in de gemeenteraad van Wassenaar', eigenschap: 'civic' },
-  { id: 'm_spreker', punten: 1500, naam: 'Spreker bij de Diplomat Club Wassenaar', eigenschap: 'stealth' },
-  { id: 'm_strand', punten: 1800, naam: 'Strandhuisje bij de Wassenaarse Slag', eigenschap: 'cultural' },
-  { id: 'm_haagsche', punten: 2000, naam: 'Ballotage gehaald bij de Koninklijke Haagsche Golf', eigenschap: 'physical' },
-  { id: 'm_house', punten: 2500, naam: 'Rijksmonument gekocht', eigenschap: 'financial' },
-  { id: 'm_mayor', punten: 3000, naam: 'Je tutoyeert de burgemeester', eigenschap: 'stealth' },
-  { id: 'm_knight', punten: 5000, naam: 'Ridder in de Orde van Oranje-Nassau', eigenschap: 'civic' },
-  { id: 'm_royal', punten: 8000, naam: 'In de inner circle van het Koninklijk Huis', eigenschap: 'stealth' },
+  { id: 'm_lid_oostdorp', punten: 300, naam: 'Lid van Buurtvereniging Oostdorp', icoon: 'house-chimney', eigenschap: 'civic' },
+  { id: 'm_slager', punten: 300, naam: 'Bij naam begroet bij Slagerij Groeneveld', icoon: 'drumstick-bite', eigenschap: 'financial' },
+  { id: 'm_pops', punten: 300, naam: 'Bij Pops weten ze wat je drinkt', icoon: 'mug-hot', eigenschap: 'stealth' },
+  { id: 'm_news', punten: 400, naam: 'Genoemd in De Wassenaarse Krant', icoon: 'newspaper', eigenschap: 'civic' },
+  { id: 'm_heritage_map', punten: 600, naam: 'Beschermer van Wassenaars erfgoed', icoon: 'landmark-dome', eigenschap: 'cultural' },
+  { id: 'm_art', punten: 600, naam: 'Schilderij van de Haagse School gekocht', icoon: 'image', eigenschap: 'cultural' },
+  { id: 'm_car', punten: 700, naam: 'Klassieke Porsche of Land Rover gekocht', icoon: 'car', eigenschap: 'financial' },
+  { id: 'm_rotary', punten: 700, naam: 'Bestuurslid van de Rotary of Lions Club', icoon: 'handshake-angle', eigenschap: 'civic' },
+  { id: 'm_bestuur', punten: 700, naam: 'Bestuurslid van een lokale stichting of vereniging', icoon: 'users', eigenschap: 'civic' },
+  { id: 'm_paauw', punten: 800, naam: 'Je zienswijze over De Paauw werd genoemd in de raad', icoon: 'tree', eigenschap: 'cultural' },
+  { id: 'm_brigade', punten: 800, naam: 'Vaste vrijwilliger bij de Reddingsbrigade', icoon: 'life-ring', eigenschap: 'physical' },
+  { id: 'm_museum', punten: 900, naam: 'Nieuwe website van het Dorpsmuseum live, met jouw hulp', icoon: 'landmark', eigenschap: 'cultural' },
+  { id: 'm_civic_tool', punten: 1000, naam: 'Je civic tool wordt gebruikt door de gemeente', icoon: 'code-branch', eigenschap: 'civic' },
+  { id: 'm_haring', punten: 1200, naam: 'Jaarlijkse haringparty georganiseerd', icoon: 'fish-fins', eigenschap: 'stealth' },
+  { id: 'm_mayor_consult', punten: 1200, naam: 'De burgemeester vroeg je om advies over tech', icoon: 'lightbulb', eigenschap: 'civic' },
+  { id: 'm_council', punten: 1500, naam: 'Gekozen in de gemeenteraad van Wassenaar', icoon: 'landmark', eigenschap: 'civic' },
+  { id: 'm_spreker', punten: 1500, naam: 'Spreker bij de Diplomat Club Wassenaar', icoon: 'microphone', eigenschap: 'stealth' },
+  { id: 'm_strand', punten: 1800, naam: 'Strandhuisje bij de Wassenaarse Slag', icoon: 'umbrella-beach', eigenschap: 'cultural' },
+  { id: 'm_haagsche', punten: 2000, naam: 'Ballotage gehaald bij de Koninklijke Haagsche Golf', icoon: 'golf-ball-tee', eigenschap: 'physical' },
+  { id: 'm_house', punten: 2500, naam: 'Rijksmonument gekocht', icoon: 'house-flag', eigenschap: 'financial' },
+  { id: 'm_mayor', punten: 3000, naam: 'Je tutoyeert de burgemeester', icoon: 'handshake-simple', eigenschap: 'stealth' },
+  { id: 'm_knight', punten: 5000, naam: 'Ridder in de Orde van Oranje-Nassau', icoon: 'medal', eigenschap: 'civic' },
+  { id: 'm_royal', punten: 8000, naam: 'In de inner circle van het Koninklijk Huis', icoon: 'chess-king', eigenschap: 'stealth' },
 ];
 
 // Startvragen: per antwoord de punten. De eigenschap krijgt punten × deel.

@@ -11,7 +11,7 @@ import { VERSIES } from './wijzigingen/versies.js';
 import { RANGEN, EIGENSCHAPPEN, EIGENSCHAP_MAX, CATEGORIEEN, SYMBOLEN, STARTVRAGEN } from './gegevens.js';
 
 const SLEUTEL = 'wassenaar_renown';
-const WEERGAVEN = ['start', 'status', 'loggen', 'symbolen', 'strategie', 'gegevens', 'wijzigingen'];
+const WEERGAVEN = ['start', 'status', 'loggen', 'strategie', 'gegevens', 'wijzigingen'];
 const KALENDER_WEKEN = 17;
 const STAAF_WEKEN = 8;
 const KALENDER_STAPPEN = [1, 30, 80, 200]; // ondergrens in PR per dag voor stap 1 tot 4
@@ -80,7 +80,7 @@ function leesIn(ruw) {
 }
 
 function bewaar() {
-  try { localStorage.setItem(SLEUTEL, JSON.stringify({ versie: 2, logboek })); } catch { meld('Opslaan lukte niet. Bewaar je gegevens als bestand.'); }
+  try { localStorage.setItem(SLEUTEL, JSON.stringify({ versie: 2, logboek })); } catch { meld('Niet opgeslagen', 'Bewaar je savegame als bestand.', true); }
 }
 
 /* ---------- Rekenen ---------- */
@@ -126,21 +126,24 @@ function toonStatus() {
   el.punten.textContent = getal(p);
   el.rangNaam.textContent = rang.naam;
   el.rangUitleg.textContent = rang.uitleg;
+  el.rangIcoon.setAttribute('href', `#az-i-${rang.icoon}`);
+  el.niveau.textContent = `Niv. ${i + 1}`;
   el.voortgang.value = volgende ? Math.min(100, ((p - rang.min) / (volgende.min - rang.min)) * 100) : 100;
-  el.voortgangTekst.textContent = volgende ? `Nog ${getal(volgende.min - p)} PR tot ${volgende.naam}` : 'Je hebt de hoogste rang';
+  el.volgende.textContent = volgende ? volgende.naam : 'maximale rang bereikt';
+  el.nodig.textContent = volgende ? `${getal(volgende.min - p)} PR nodig` : '';
   el.ladder.replaceChildren(...RANGEN.map((r, j) => maak('li', {
     class: j < i ? 'gehaald' : j === i ? 'nu' : undefined,
     'aria-current': j === i ? 'step' : undefined,
-  }, maak('span', { tekst: r.naam }), maak('span', { class: 'ladder-min', tekst: getal(r.min) }))));
+  }, icoon(j <= i ? r.icoon : 'lock'), maak('span', { class: 'ladder-naam', tekst: r.naam }), maak('span', { class: 'ladder-min', tekst: `${getal(r.min)} PR` }))));
 
   const weken = perWeek(KALENDER_WEKEN);
-  const nu = weken.at(-1);
   el.cijfers.replaceChildren(...[
-    ['Deze week', `${getal(nu.punten)} PR`],
-    ['Weken op rij actief', getal(reeks())],
-    ['Activiteiten gelogd', getal(logboek.filter((r) => telt(r) && !r.symbolen).length)],
-    ['Statussymbolen', `${behaald().size} van ${SYMBOLEN.length}`],
-  ].map(([dt, dd]) => maak('div', {}, maak('dt', { tekst: dt }), maak('dd', { tekst: dd }))));
+    ['bolt', 'cat-goud', 'Deze week', `+${getal(weken.at(-1).punten)} PR`],
+    ['fire', 'cat-oranje', 'Weken op rij actief', getal(reeks())],
+    ['list-check', 'cat-groen', 'Acties gelogd', getal(logboek.filter((r) => telt(r) && !r.symbolen).length)],
+    ['trophy', 'cat-paars', 'Statussymbolen', `${behaald().size} / ${SYMBOLEN.length}`],
+  ].map(([ic, kleur, dt, dd]) => maak('div', { class: kleur },
+    maak('dt', {}, maak('span', { class: 'cijfer-icoon', 'aria-hidden': 'true' }, icoon(ic)), maak('span', { class: 'cijfer-tekst', tekst: dt })), maak('dd', { tekst: dd }))));
 
   toonKalender();
   toonWeken(weken.slice(-STAAF_WEKEN));
@@ -148,33 +151,41 @@ function toonStatus() {
     maak('th', { scope: 'row', tekst: datumKort.format(w.van) }), maak('td', { tekst: getal(w.aantal) }), maak('td', { tekst: getal(w.punten) }))));
 
   const eig = eigenschappen();
-  el.eigenschappen.replaceChildren(...Object.entries(EIGENSCHAPPEN).map(([k, naam]) =>
-    balk(`az-eig-${k}`, naam, `${getal(eig[k])} PR`, eig[k] / EIGENSCHAP_MAX)));
+  el.eigenschappen.replaceChildren(...Object.entries(EIGENSCHAPPEN).map(([k, e]) => {
+    const deel = Math.min(1, eig[k] / EIGENSCHAP_MAX);
+    return maak('li', { class: `skill-${k}` },
+      maak('div', { class: 'skill-kop' }, icoon(e.icoon), maak('label', { for: `az-eig-${k}`, tekst: e.naam }),
+        maak('span', { class: 'skill-waarde', tekst: `${Math.floor(deel * 100)} / 100` }),
+        maak('span', { class: 'skill-niveau', tekst: `Niv. ${Math.floor(deel * 10)}` })),
+      meter(`az-eig-${k}`, deel));
+  }));
 
   const gedaan = new Set(logboek.map((r) => r.activiteit));
   el.pijlers.replaceChildren(...CATEGORIEEN.map((c) => {
     const n = c.activiteiten.filter((a) => gedaan.has(a.id)).length;
-    return balk(`az-pijler-${c.id}`, c.naam, `${n} van ${c.activiteiten.length}`, n / c.activiteiten.length);
+    return maak('li', { class: `terrein cat-${c.kleur}` }, icoon(c.icoon), maak('label', { for: `az-pijler-${c.id}`, tekst: c.naam }),
+      maak('span', { class: 'terrein-waarde', tekst: `${n} / ${c.activiteiten.length}` }), meter(`az-pijler-${c.id}`, n / c.activiteiten.length));
   }));
 
-  const regels = gesorteerd().slice(0, 12);
-  el.logboek.replaceChildren(...(regels.length ? regels.map(logRegel) : [maak('li', { class: 'leeg', tekst: 'Nog niets gelogd.' })]));
+  const ja = behaald();
+  el.symbolenBehaald.replaceChildren(...(ja.size
+    ? SYMBOLEN.filter((s) => ja.has(s.id)).map((s) => maak('li', { class: 'trofee' }, icoon(s.icoon), maak('span', { tekst: s.naam })))
+    : [maak('li', { class: 'leeg', tekst: 'Nog geen statussymbolen geclaimd.' })]));
+
+  const regels = gesorteerd().slice(0, 20);
+  el.logboek.replaceChildren(...(regels.length ? regels.map(logRegel) : [maak('li', { class: 'leeg', tekst: 'Nog geen activiteiten gelogd.' })]));
 }
 
-function balk(id, naam, waarde, deel) {
-  return maak('li', { class: 'balk' },
-    maak('label', { for: id, tekst: naam }), maak('span', { class: 'balk-waarde', tekst: waarde }),
-    maak('meter', { id, min: 0, max: 1, value: Math.min(1, Math.max(0, deel)) }));
-}
+const meter = (id, deel) => maak('span', { class: 'spoor' }, maak('meter', { id, min: 0, max: 1, value: Math.min(1, Math.max(0, deel)) }));
 
 function logRegel(r) {
   return maak('li', {},
     maak('div', { class: 'log-tekst' },
       maak('p', { class: 'log-naam', tekst: r.naam }),
       r.notitie ? maak('p', { class: 'log-notitie', tekst: r.notitie }) : null,
-      maak('time', { class: 'klein', datetime: r.datum, tekst: datumLang.format(alsDatum(r.datum)) })),
+      maak('time', { datetime: r.datum, tekst: datumLang.format(alsDatum(r.datum)) })),
     maak('span', { class: 'log-punten', tekst: `${r.punten < 0 ? '' : '+'}${getal(r.punten)}` }),
-    maak('button', { type: 'button', class: 'knop-icoon', 'aria-label': `Haal uit logboek: ${r.naam}`, bij: () => haalWeg(r) }, icoon('weg')));
+    maak('button', { type: 'button', class: 'knop-icoon', 'aria-label': `Haal uit logboek: ${r.naam}`, bij: () => haalWeg(r) }, icoon('trash-can')));
 }
 
 function toonKalender() {
@@ -225,7 +236,7 @@ function toonWeken(weken) {
     const h = Math.max(w.punten ? 2 : 0, ((hoogte - boven - onder) * w.punten) / max);
     const x = i * vak + (vak - staaf) / 2, y = hoogte - onder - h, r = Math.min(4, h);
     const midden = i * vak + vak / 2;
-    svg.append(maak('svg:path', { class: 'week-staaf', d: `M${x} ${hoogte - onder}V${y + r}q0 -${r} ${r} -${r}h${staaf - 2 * r}q${r} 0 ${r} ${r}V${hoogte - onder}z` },
+    svg.append(maak('svg:path', { class: i === weken.length - 1 ? 'week-staaf nu' : 'week-staaf', d: `M${x} ${hoogte - onder}V${y + r}q0 -${r} ${r} -${r}h${staaf - 2 * r}q${r} 0 ${r} ${r}V${hoogte - onder}z` },
       maak('svg:title', { tekst: `Week van ${datumKort.format(w.van)}: ${getal(w.punten)} PR` })));
     svg.append(maak('svg:text', { class: 'as-tekst', x: midden, y: hoogte - 4, 'text-anchor': 'middle', tekst: datumKort.format(w.van) }));
     if ((i === weken.length - 1 || i === hoogste) && w.punten > 0) {
@@ -235,17 +246,16 @@ function toonWeken(weken) {
   el.weken.replaceChildren(svg);
 }
 
-function actieKnop(a, info, bij) {
-  return maak('li', {}, maak('button', { type: 'button', class: 'actie', bij },
-    maak('span', { class: 'actie-naam', tekst: a.naam }),
-    maak('span', { class: 'actie-info', tekst: info }),
+function actieKnop(a, bij, info, voor = null) {
+  return maak('li', {}, maak('button', { type: 'button', class: a.punten >= 100 ? 'actie groot' : 'actie', bij }, voor,
+    maak('span', { class: 'actie-naam' }, a.naam, info ? maak('span', { class: 'actie-info', tekst: info }) : null),
     maak('span', { class: 'actie-punten', tekst: `+${getal(a.punten)}` })));
 }
 
 function bouwActiviteiten() {
-  el.activiteiten.replaceChildren(...CATEGORIEEN.map((c) => maak('section', { class: 'kaart categorie', 'aria-labelledby': `az-cat-${c.id}` },
-    maak('h3', { id: `az-cat-${c.id}`, tekst: c.naam }),
-    maak('ul', { class: 'acties' }, ...c.activiteiten.map((a) => actieKnop(a, EIGENSCHAPPEN[a.eigenschap], () => vraagLog(a)))))));
+  el.activiteiten.replaceChildren(...CATEGORIEEN.map((c) => maak('section', { class: `categorie cat-${c.kleur}`, 'aria-labelledby': `az-cat-${c.id}` },
+    maak('h4', { class: 'categorie-kop', id: `az-cat-${c.id}` }, icoon(c.icoon), c.naam),
+    maak('ul', { class: 'acties' }, ...c.activiteiten.map((a) => actieKnop(a, () => vraagLog(a)))))));
 }
 
 function toonVaak() {
@@ -255,7 +265,7 @@ function toonVaak() {
   el.vaakBlok.hidden = !top.length;
   el.vaak.replaceChildren(...top.map(([id, n]) => {
     const a = ACTIVITEITEN.get(id);
-    return actieKnop(a, `${n} keer gedaan`, () => vraagLog(a));
+    return actieKnop(a, () => vraagLog(a), `${n} keer gedaan`);
   }));
 }
 
@@ -265,7 +275,7 @@ function filter() {
   for (const sectie of el.activiteiten.children) {
     let hier = false;
     for (const li of sectie.querySelectorAll('li')) {
-      const tekst = li.textContent.toLocaleLowerCase('nl') + sectie.querySelector('h3').textContent.toLocaleLowerCase('nl');
+      const tekst = li.textContent.toLocaleLowerCase('nl') + sectie.querySelector('h4').textContent.toLocaleLowerCase('nl');
       li.hidden = !woorden.every((w) => tekst.includes(w));
       hier ||= !li.hidden;
     }
@@ -278,11 +288,11 @@ function filter() {
 
 function toonSymbolen() {
   const ja = behaald();
-  const regel = (s) => actieKnop(s, EIGENSCHAPPEN[s.eigenschap], () => vraagLog(s, true));
-  el.symbolenBehaald.replaceChildren(...(ja.size
-    ? SYMBOLEN.filter((s) => ja.has(s.id)).map((s) => maak('li', { class: 'symbool' }, icoon('medaille'), maak('span', { tekst: s.naam })))
-    : [maak('li', { class: 'leeg', tekst: 'Nog geen statussymbolen. Kies er een als je hem bereikt hebt.' })]));
-  el.symbolenOpen.replaceChildren(...SYMBOLEN.filter((s) => !ja.has(s.id)).map(regel));
+  el.symbolenOpen.replaceChildren(...SYMBOLEN.filter((s) => !ja.has(s.id)).map((s) => {
+    const li = actieKnop(s, () => vraagLog(s, true), EIGENSCHAPPEN[s.eigenschap].naam, maak('span', { class: 'actie-icoon', 'aria-hidden': 'true' }, icoon(s.icoon)));
+    li.firstChild.classList.add('symbool');
+    return li;
+  }));
 }
 
 function toonVersies() {
@@ -314,7 +324,7 @@ let teLoggen = null;
 function vraagLog(item, symbool = false) {
   teLoggen = { item, symbool };
   el.logTitel.textContent = item.naam;
-  el.logInfo.textContent = `+${getal(item.punten)} PR · ${EIGENSCHAPPEN[item.eigenschap]}${symbool ? ' · statussymbool' : ''}`;
+  el.logInfo.textContent = `+${getal(item.punten)} PR & XP · ${EIGENSCHAPPEN[item.eigenschap].naam}${symbool ? ' · statussymbool' : ''}`;
   el.logDatum.value = dagSleutel(new Date());
   el.logDatum.max = el.logDatum.value;
   el.logNotitie.value = '';
@@ -346,7 +356,8 @@ el.logVenster.addEventListener('close', () => {
     ...(symbool ? { symbolen: [item.id] } : { activiteit: item.id }),
     ...(notitie ? { notitie } : {}),
   });
-  meld(`+${getal(item.punten)} PR. Opgeslagen.`);
+  if (symbool) meld('Status verhoogd', `${item.naam}: geclaimd!`);
+  else meld('Activiteit gelogd', `+${getal(item.punten)} PR & XP verdiend!`);
 });
 
 function vraag(titel, tekst, knop, ja) {
@@ -363,7 +374,7 @@ function haalWeg(r) {
     logboek = logboek.filter((x) => x.id !== r.id);
     bewaar();
     verwerk();
-    meld('Uit het logboek gehaald.');
+    meld('Uit het logboek', `-${getal(r.punten)} PR`);
   });
 }
 
@@ -380,7 +391,7 @@ el.startFormulier.addEventListener('submit', (e) => {
   logboek = [];
   voegToe({ datum: dagSleutel(new Date()), naam: 'Startpunt berekend', punten, eigenschappen: eig, start: true });
   location.hash = '#status';
-  meld(`Welkom in Wassenaar. Je begint als ${RANGEN[rangIndex(punten)].naam}.`);
+  meld('Welkom in Wassenaar', `Je begint je reis als ${RANGEN[rangIndex(punten)].naam}.`);
 });
 
 el.bewaarKnop.addEventListener('click', () => {
@@ -394,13 +405,13 @@ el.terugzetBestand.addEventListener('change', async () => {
   el.terugzetBestand.value = '';
   if (!bestand) return;
   let nieuw;
-  try { nieuw = leesIn(JSON.parse(await bestand.text())); } catch { meld('Dit bestand kan de app niet lezen.'); return; }
+  try { nieuw = leesIn(JSON.parse(await bestand.text())); } catch { meld('Fout', 'Dit bestand kan de app niet lezen.', true); return; }
   vraag('Bestand terugzetten?', `Je huidige gegevens worden vervangen door ${nieuw.length} regels uit "${bestand.name}".`, 'Zet terug', () => {
     logboek = nieuw;
     bewaar();
     verwerk();
     location.hash = '#status';
-    meld('Je gegevens zijn teruggezet.');
+    meld('Savegame geladen', 'Je voortgang is teruggezet.');
   });
 });
 
@@ -414,11 +425,14 @@ el.wisKnop.addEventListener('click', () => vraag('Alles wissen?', 'Al je punten,
 el.zoek.addEventListener('input', filter);
 
 let meldKlok;
-function meld(tekst) {
-  el.melding.textContent = tekst;
+function meld(titel, tekst, fout = false) {
+  el.meldingTitel.textContent = titel;
+  el.meldingTekst.textContent = tekst;
+  el.meldingIcoon.setAttribute('href', `#az-i-${fout ? 'circle-exclamation' : 'circle-check'}`);
+  el.melding.classList.toggle('fout', fout);
   el.melding.classList.add('zichtbaar');
   clearTimeout(meldKlok);
-  meldKlok = setTimeout(() => el.melding.classList.remove('zichtbaar'), 4000);
+  meldKlok = setTimeout(() => el.melding.classList.remove('zichtbaar'), 3500);
 }
 
 /* ---------- Navigatie ---------- */
