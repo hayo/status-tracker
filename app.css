@@ -1578,6 +1578,78 @@
   text-transform: none;
 }
 
+/* ---------- Opslag op de server ---------- */
+
+#aanzien .koppel {
+  margin-top: 1em;
+}
+
+#aanzien .koppel label {
+  display: block;
+  margin-bottom: 0.3em;
+  font-size: 0.9em;
+}
+
+#aanzien .koppel-rij {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+#aanzien .koppel-rij input {
+  flex: 1 1 16em;
+  width: auto;
+  font-family: ui-monospace, "SF Mono", menlo, consolas, monospace;
+  letter-spacing: 0.05em;
+}
+
+#aanzien .start-koppel {
+  margin-top: 2em;
+  padding-top: 1.5em;
+  border-top: 1px solid var(--lijn);
+  text-align: left;
+}
+
+#aanzien .synccode {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.75em 1em;
+  border: 1px solid var(--goud-rand);
+  border-radius: 0.6em;
+  background: var(--goud-licht);
+}
+
+#aanzien .synccode > .icoon {
+  color: var(--goud-donker);
+}
+
+#aanzien .synccode code {
+  flex: 1;
+  color: var(--navy);
+  font-family: ui-monospace, "SF Mono", menlo, consolas, monospace;
+  font-size: 1.05em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  overflow-wrap: anywhere;
+}
+
+#aanzien .sync-status {
+  color: #15803d;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+#aanzien .sync-status.fout {
+  color: var(--rood);
+}
+
+#aanzien .uitleg {
+  color: var(--zacht);
+  font-size: 0.9em;
+}
+
 /* ---------- Knoppen ---------- */
 
 #aanzien .knoppen {
@@ -1784,9 +1856,10 @@
   color: #fff;
   box-shadow: 0 25px 50px rgb(0 0 0 / 25%);
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
   transform: translateY(1.25em);
-  transition: opacity 300ms, transform 300ms;
+  transition: opacity 300ms, transform 300ms, visibility 0s 300ms;
 }
 
 #aanzien .melding.fout {
@@ -1795,7 +1868,9 @@
 
 #aanzien .melding.zichtbaar {
   opacity: 1;
+  visibility: visible;
   transform: none;
+  transition-delay: 0s;
 }
 
 #aanzien .melding p {

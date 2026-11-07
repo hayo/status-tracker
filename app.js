@@ -14,10 +14,12 @@ import {
 import {
   dagSleutel, alsDatum, plusDagen, maandag, dagenTussen, ACTIVITEITEN, telt, rangIndex, stand, verval,
   behaald, perWeek, reeks, event, volgendEvent, pad, bonussen, statistiek, voortgang, ontgrendeld,
-  missies, jaren, jaaroverzicht,
+  missies, jaren, jaaroverzicht, samenvoegen,
 } from './spel.js';
+import * as opslag from './opslag.js';
 
 const SLEUTEL = 'wassenaar_renown';
+const SYNC_SLEUTEL = 'wassenaar_renown_sync'; // { code, revisie, open }: apart, zodat de code niet in een savegame komt
 const WEERGAVEN = ['start', 'status', 'loggen', 'erelijst', 'strategie', 'gegevens', 'wijzigingen'];
 const KALENDER_WEKEN = 17;
 const STAAF_WEKEN = 8;
@@ -67,7 +69,7 @@ function laad() {
 // Zet opgeslagen gegevens om naar een spel. Kent ook de formaten van versie 1 en 2.
 function leesIn(ruw) {
   if (!ruw || typeof ruw !== 'object') throw new Error('Geen geldig bestand.');
-  const nieuw = { versie: 3, logboek: [], ronde: 0, titel: null, pad: null, vergeten: false };
+  const nieuw = { versie: 3, logboek: [], ronde: 0, titel: null, pad: null, vergeten: false, generatie: nieuwId(), bijgewerkt: '', verwijderd: [] };
   if (ruw.versie >= 2 && Array.isArray(ruw.logboek)) {
     const geldig = ruw.logboek.filter((r) => r && typeof r.datum === 'string' && Number.isFinite(r.punten));
     return {
@@ -77,6 +79,9 @@ function leesIn(ruw) {
       titel: typeof ruw.titel === 'string' ? ruw.titel : null,
       pad: typeof ruw.pad === 'string' ? ruw.pad : null,
       vergeten: ruw.vergeten === true,
+      generatie: typeof ruw.generatie === 'string' ? ruw.generatie : nieuw.generatie,
+      bijgewerkt: typeof ruw.bijgewerkt === 'string' ? ruw.bijgewerkt : '',
+      verwijderd: Array.isArray(ruw.verwijderd) ? ruw.verwijderd.filter((id) => typeof id === 'string') : [],
     };
   }
   if (!Number.isFinite(ruw.points)) throw new Error('Geen geldig bestand.');
@@ -100,8 +105,128 @@ function leesIn(ruw) {
   };
 }
 
-function bewaar() {
+function bewaarLokaal() {
   try { localStorage.setItem(SLEUTEL, JSON.stringify(spel)); } catch { meld('Niet opgeslagen', 'Bewaar je savegame als bestand.', true); }
+}
+
+function bewaar() {
+  spel.bijgewerkt = new Date().toISOString();
+  bewaarLokaal();
+  if (sync) {
+    sync.open = true;
+    bewaarSync();
+    planSync();
+  }
+}
+
+/* ---------- Opslag op de server ---------- */
+
+let sync = null; // null als dit apparaat niet op de server bewaart
+let syncKlok, syncBezig = false, syncNogEens = false;
+
+function laadSync() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SYNC_SLEUTEL));
+    return s && opslag.leesCode(s.code) ? { code: s.code, revisie: Number(s.revisie) || 0, open: s.open === true } : null;
+  } catch { return null; }
+}
+
+function bewaarSync() {
+  try {
+    if (sync) localStorage.setItem(SYNC_SLEUTEL, JSON.stringify(sync));
+    else localStorage.removeItem(SYNC_SLEUTEL);
+  } catch { /* zonder opslag geen sync */ }
+}
+
+function syncStatus(tekst, fout = false) {
+  el.syncStatus.textContent = tekst;
+  el.syncStatus.classList.toggle('fout', fout);
+}
+
+function planSync() {
+  clearTimeout(syncKlok);
+  syncKlok = setTimeout(synchroniseer, 1500);
+}
+
+// Haalt op wat er op de server staat en voegt het samen met dit apparaat. Stuurt daarna wat hier nog open stond.
+async function haalOp() {
+  if (!sync) return;
+  try {
+    syncStatus('Bezig met ophalen…');
+    const r = await opslag.lees(sync.code);
+    if (r.spel && r.revisie !== sync.revisie) {
+      const server = leesIn(r.spel);
+      spel = spel ? samenvoegen(spel, server) : server;
+      sync.revisie = r.revisie;
+      bewaarLokaal();
+      bewaarSync();
+      verwerk();
+      toon();
+    }
+    if (sync.open || !r.spel) await synchroniseer();
+    else syncStatus(`Bijgewerkt om ${tijd()}.`);
+  } catch {
+    syncStatus('De server is niet bereikbaar. Je voortgang staat veilig op dit apparaat; de app probeert het later opnieuw.', true);
+  }
+}
+
+async function synchroniseer() {
+  if (!sync || !spel) return;
+  if (syncBezig) { syncNogEens = true; return; }
+  syncBezig = true;
+  try {
+    syncStatus('Bezig met bewaren…');
+    for (let poging = 0; poging < 3; poging++) {
+      const r = await opslag.schrijf(sync.code, sync.revisie, spel);
+      if (!r.conflict) {
+        sync = { ...sync, revisie: r.revisie, open: false };
+        break;
+      }
+      // Een ander apparaat was eerder: samenvoegen en opnieuw proberen.
+      if (r.spel) spel = samenvoegen(spel, leesIn(r.spel));
+      sync.revisie = r.revisie;
+      bewaarLokaal();
+      verwerk();
+    }
+    bewaarSync();
+    syncStatus(sync.open ? 'Bewaren lukte niet. De app probeert het later opnieuw.' : `Bewaard op de server om ${tijd()}.`, sync.open);
+  } catch {
+    syncStatus('De server is niet bereikbaar. Je voortgang staat veilig op dit apparaat; de app probeert het later opnieuw.', true);
+  } finally {
+    syncBezig = false;
+    if (syncNogEens) { syncNogEens = false; planSync(); }
+  }
+}
+
+const tijd = () => new Date().toLocaleTimeString('nl', { hour: '2-digit', minute: '2-digit' });
+
+function toonSync() {
+  el.syncUit.hidden = Boolean(sync);
+  el.syncAan.hidden = !sync;
+  if (sync) el.syncCode.textContent = opslag.toonCode(sync.code);
+}
+
+// Koppelt dit apparaat aan een bestaande code en neemt de voortgang van de server over.
+async function koppel(invoer) {
+  const code = opslag.leesCode(invoer);
+  if (!code) { meld('Onbekende code', 'Een synccode heeft 26 letters en cijfers.', true); return; }
+  let r;
+  try { r = await opslag.lees(code); } catch { meld('Geen verbinding', 'De server is niet bereikbaar. Probeer het later opnieuw.', true); return; }
+  if (!r.spel) { meld('Niets gevonden', 'Bij deze code staat geen voortgang op de server.', true); return; }
+  const neemOver = () => {
+    spel = leesIn(r.spel);
+    sync = { code, revisie: r.revisie, open: false };
+    bewaarLokaal();
+    bewaarSync();
+    toonSync();
+    syncStatus(`Opgehaald om ${tijd()}.`);
+    verwerk();
+    location.hash = '#status';
+    toon();
+    meld('Gekoppeld', 'Je voortgang van de server staat nu ook op dit apparaat.');
+  };
+  if (spel) vraag('Voortgang van de server gebruiken?', 'Je voortgang op dit apparaat wordt vervangen door die van de server. Bewaar hem eerst als bestand als je hem wilt houden.', 'Gebruik de server', neemOver);
+  else neemOver();
 }
 
 const gesorteerd = () => [...spel.logboek].sort((a, b) => b.datum.localeCompare(a.datum) || (b.tijd ?? '').localeCompare(a.tijd ?? ''));
@@ -515,6 +640,7 @@ function vraag(titel, tekst, knop, ja) {
 function haalWeg(r) {
   vraag('Uit het logboek halen?', `"${r.naam}" gaat uit het logboek. Je verliest ${getal(r.punten)} PR.`, 'Haal weg', () => {
     spel.logboek = spel.logboek.filter((x) => x.id !== r.id);
+    spel.verwijderd.push(r.id);
     bewaar();
     verwerk();
     meld('Uit het logboek', `−${getal(r.punten)} PR`);
@@ -584,7 +710,7 @@ el.terugzetBestand.addEventListener('change', async () => {
   let nieuw;
   try { nieuw = leesIn(JSON.parse(await bestand.text())); } catch { meld('Fout', 'Dit bestand kan de app niet lezen.', true); return; }
   vraag('Savegame laden?', `Je huidige voortgang wordt vervangen door ${nieuw.logboek.length} regels uit "${bestand.name}".`, 'Laad', () => {
-    spel = nieuw;
+    spel = { ...nieuw, generatie: nieuwId() }; // vervangt ook wat op de server staat
     bewaar();
     verwerk();
     location.hash = '#status';
@@ -592,14 +718,71 @@ el.terugzetBestand.addEventListener('change', async () => {
   });
 });
 
-el.wisKnop.addEventListener('click', () => vraag('Alles wissen?', 'Al je punten, je logboek, je prestaties en je symbolen gaan weg.', 'Wis alles', () => {
-  try { localStorage.removeItem(SLEUTEL); } catch { /* niets te wissen */ }
-  spel = null;
-  location.hash = '#start';
-  toon();
-}));
+el.wisKnop.addEventListener('click', () => vraag('Alles wissen?',
+  `Al je punten, je logboek, je prestaties en je symbolen gaan weg${sync ? ', ook van de server' : ''}.`, 'Wis alles', async () => {
+    if (sync) {
+      try { await opslag.wis(sync.code); } catch { meld('Niet van de server gewist', 'De server is niet bereikbaar. Je voortgang staat daar nog.', true); }
+      sync = null;
+      bewaarSync();
+      toonSync();
+    }
+    try { localStorage.removeItem(SLEUTEL); } catch { /* niets te wissen */ }
+    spel = null;
+    location.hash = '#start';
+    toon();
+  }));
 
 el.zoek.addEventListener('input', filter);
+
+el.syncAanKnop.addEventListener('click', () => {
+  sync = { code: opslag.nieuweCode(), revisie: 0, open: true };
+  bewaarSync();
+  toonSync();
+  synchroniseer();
+  meld('Opslag op de server staat aan', 'Bewaar je synccode goed. Zonder code kun je er niet meer bij.');
+});
+
+for (const [formulier, veld] of [[el.koppelFormulier, el.koppelCode], [el.startKoppel, el.startCode]]) {
+  formulier.addEventListener('submit', (e) => {
+    e.preventDefault();
+    koppel(veld.value);
+  });
+}
+
+el.kopieerKnop.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(opslag.toonCode(sync.code));
+    meld('Gekopieerd', 'De synccode staat op je klembord.');
+  } catch {
+    meld('Kopiëren lukte niet', 'Schrijf de code over.', true);
+  }
+});
+
+el.syncNuKnop.addEventListener('click', haalOp);
+
+el.ontkoppelKnop.addEventListener('click', () => vraag('Dit apparaat ontkoppelen?',
+  'Je voortgang blijft op dit apparaat en op de server staan, maar ze worden niet meer samen bijgewerkt.', 'Ontkoppel', () => {
+    sync = null;
+    bewaarSync();
+    toonSync();
+    meld('Ontkoppeld', 'Dit apparaat bewaart alleen nog in de browser.');
+  }));
+
+el.serverWisKnop.addEventListener('click', () => vraag('Wissen van de server?',
+  'Je voortgang verdwijnt van de server. Op dit apparaat blijft hij staan. Andere apparaten met deze code bewaren dan niets meer op de server.', 'Wis van de server', async () => {
+    try {
+      await opslag.wis(sync.code);
+      sync = null;
+      bewaarSync();
+      toonSync();
+      meld('Gewist', 'Er staat niets meer van je op de server.');
+    } catch {
+      meld('Wissen lukte niet', 'De server is niet bereikbaar. Probeer het later opnieuw.', true);
+    }
+  }));
+
+window.addEventListener('online', () => sync && haalOp());
+document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && sync && haalOp());
 
 let meldKlok;
 function meld(titel, tekst, fout = false) {
@@ -653,11 +836,14 @@ function toon(verplaatsFocus = false) {
 window.addEventListener('hashchange', () => toon(true));
 
 try { spel = laad(); } catch { spel = null; }
+sync = laadSync();
 bouwStart();
 bouwActiviteiten();
 toonVersies();
+toonSync();
 if (spel) verwerk();
 toon();
+haalOp();
 
 // Alleen als losse pagina. Binnen een site gaat de site over het offline werken.
 if (document.querySelector('link[rel="manifest"]') && 'serviceWorker' in navigator) {

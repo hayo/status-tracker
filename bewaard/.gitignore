@@ -1,0 +1,4 @@
+# Hier komen de versleutelde bestanden van de spelers. Die horen niet in git.
+*
+!.htaccess
+!.gitignore

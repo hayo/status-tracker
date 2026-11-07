@@ -246,3 +246,24 @@ export function jaaroverzicht(spel, jaar) {
   };
 }
 
+
+/* ---------- Samenvoegen ---------- */
+
+// Twee versies van hetzelfde spel, bijvoorbeeld van twee apparaten. Is een van beide opnieuw begonnen
+// of teruggezet (een andere generatie), dan wint de nieuwste helemaal. Anders komen de logboeken
+// samen, zonder wat ergens is weggehaald en zonder een weekmissie twee keer.
+export function samenvoegen(a, b) {
+  const nieuwste = (a.bijgewerkt ?? '') >= (b.bijgewerkt ?? '') ? a : b;
+  if (a.generatie !== b.generatie) return nieuwste;
+  const verwijderd = [...new Set([...(a.verwijderd ?? []), ...(b.verwijderd ?? [])])];
+  const weg = new Set(verwijderd);
+  const ids = new Set(), missies = new Set();
+  const logboek = [];
+  for (const r of [...a.logboek, ...b.logboek]) {
+    if (weg.has(r.id) || ids.has(r.id) || (r.missie && missies.has(r.missie))) continue;
+    ids.add(r.id);
+    if (r.missie) missies.add(r.missie);
+    logboek.push(r);
+  }
+  return { ...nieuwste, logboek, verwijderd, ronde: Math.max(a.ronde, b.ronde) };
+}

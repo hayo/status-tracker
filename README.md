@@ -21,8 +21,9 @@ tool" opent de tool zelf (`app.html`).
 - **Strategie**: het strategieboek, waarom deze activiteiten helpen.
 - **Gegevens**: je savegame bewaren, laden, of een nieuw spel beginnen.
 
-HTML, CSS en JavaScript. Geen build, geen afhankelijkheden, niets van buiten:
-de letters en iconen staan in de repo.
+HTML, CSS en JavaScript, en één PHP-bestand voor de opslag op de server. Geen
+build, geen afhankelijkheden, niets van buiten: de letters en iconen staan in de
+repo.
 
 ## Opbouw
 
@@ -34,7 +35,10 @@ index.php                 binnen een site: geeft alleen het artikel uit app.html
 app.css                   de opmaak, alles onder #aanzien
 standalone.css            de achtergrond en de groene balk van de losse pagina
 app.js                    de app: tonen, loggen, bewaren
-spel.js                   de spelregels: rang, bonussen, prestaties, missies, verval, jaaroverzicht
+spel.js                   de spelregels: rang, bonussen, prestaties, missies, verval, jaaroverzicht, samenvoegen
+opslag.js                 de opslag op de server: synccode, versleutelen, lezen en schrijven
+opslag.php                de server: bewaart versleutelde voortgang per speler
+bewaard/                  de standaardmap voor opslag.php, buiten git
 gegevens.js               rangen, eigenschappen, activiteiten, statussymbolen en startvragen
 wijzigingen/versies.js    de versies, de nieuwste bovenaan; de bovenste is de versie die draait
 sw.js                     laat de losse pagina ook zonder internet werken
@@ -182,8 +186,9 @@ De data van de events zijn bij benadering. Pas ze aan in `EVENTS`.
 ## Je gegevens
 
 Alles staat in `localStorage` van de browser, onder `wassenaar_renown`, als
-`{ versie: 3, logboek: [...], ronde, titel, pad, vergeten }`. Er gaat niets naar
-een server. Gegevens van versie 1 en 2 zet de app vanzelf om.
+`{ versie: 3, logboek: [...], ronde, titel, pad, vergeten, generatie, bijgewerkt,
+verwijderd }`. Gegevens van versie 1 en 2 zet de app vanzelf om. Wie wil, bewaart
+het ook op de server; zie Opslag op de server.
 
 Punten, eigenschappen en behaalde symbolen rekent de app steeds uit het
 logboek. Haal je een regel weg, dan klopt alles meteen weer. Regels met
@@ -196,6 +201,51 @@ dat weer in, en ook de gegevens van versie 1 (`points`, `history`,
 past, komt in één regel "Eerdere stand overgenomen".
 
 Notities en namen komen altijd als tekst op de pagina, nooit als HTML.
+
+## Opslag op de server
+
+Wie op meer apparaten speelt, zet onder Gegevens "Bewaar op de server" aan. Dat
+staat standaard uit.
+
+- **Synccode.** De app maakt een code van 26 tekens (130 bits, zonder O, 0, I en
+  1). Op een ander apparaat vul je die in, onder Gegevens of meteen op het
+  startscherm. De code staat apart in `localStorage`, onder
+  `wassenaar_renown_sync`, en dus niet in een savegame.
+- **Versleuteld.** `opslag.js` maakt uit de code een id (SHA-256) en een sleutel
+  (HKDF). De voortgang gaat met AES-GCM versleuteld naar de server, onder dat id.
+  De server ziet de code en de voortgang nooit. Kwijt is dus ook echt kwijt.
+- **Bijwerken.** Na elke wijziging stuurt de app na anderhalve seconde de nieuwe
+  stand, met de revisie waarop hij voortbouwt. Had een ander apparaat intussen
+  iets bewaard, dan antwoordt de server met 409 en wat er nu staat. De app voegt
+  dan samen (`samenvoegen` in `spel.js`) en probeert het opnieuw. Bij openen, bij
+  terugkomen in de app en als het netwerk terug is, haalt de app op.
+- **Samenvoegen.** De logboeken komen samen. Wat ergens is weggehaald, staat in
+  `verwijderd` en blijft weg. Een weekmissie telt één keer. Na "Wis alles" of het
+  laden van een savegame heeft het spel een nieuwe `generatie`; dan wint de
+  nieuwste versie helemaal.
+- **Wissen.** "Wis van de server" haalt het bestand weg. "Wis alles" doet dat ook.
+
+### opslag.php
+
+Eén POST met JSON: `{ actie: "lees" | "schrijf" | "wis", id, revisie?, data? }`.
+Het bestand staat naast de app en komt via de Action ook op de site.
+
+- **Waar.** In de map uit de omgevingsvariabele `AANZIEN_OPSLAG`, anders in
+  `bewaard/` naast `opslag.php`. Zet `AANZIEN_OPSLAG` op een map buiten de map
+  die bij een update van de site wordt overschreven, en buiten de documentroot.
+  `bewaard/` heeft een `.htaccess` die alles weigert (Apache), en een
+  `.gitignore`, zodat de bestanden nooit in git komen.
+- **Wie.** De app op GitHub Pages praat met
+  `https://hayobethlehem.nl/forge/status-tracker/opslag.php` (bovenaan
+  `opslag.js`). Daarvoor staat CORS open voor de sites in `AANZIEN_HERKOMST`,
+  standaard `https://hayo.github.io` en `https://hayobethlehem.nl`. De CSP van
+  `app.html` staat `connect-src` naar hayobethlehem.nl toe.
+- **Grenzen.** Hoogstens 700.000 tekens per speler en 2.000 spelers, tegen
+  misbruik als gratis opslag. Een slot per speler voorkomt dat twee apparaten
+  tegelijk schrijven.
+- **Privacy.** De server bewaart alleen versleutelde data, een revisie en een
+  tijdstip. Zoals elke webserver logt hij wel IP-adressen. De beheerder is Hayo
+  Bethlehem; dat staat ook in de app, onder Gegevens.
 
 ## Opmaak
 

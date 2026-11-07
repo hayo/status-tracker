@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self' https://hayobethlehem.nl; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="robots" content="noindex">
   <meta name="description" content="Level je karakter op in de Wassenaarse samenleving.">
   <meta name="theme-color" content="#2a4d3e">
@@ -80,6 +80,11 @@
     <symbol id="az-i-upload" viewBox="0 0 448 512"><path d="M256 109.3L256 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-210.7-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l96-96c12.5-12.5 32.8-12.5 45.3 0l96 96c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 109.3zM224 400c44.2 0 80-35.8 80-80l80 0c35.3 0 64 28.7 64 64l0 32c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64l0-32c0-35.3 28.7-64 64-64l80 0c0 44.2 35.8 80 80 80zm144 24a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></symbol>
     <symbol id="az-i-user-secret" viewBox="0 0 448 512"><path d="M171-16c-36.4 0-57.8 58.3-68.3 112L72 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l24 0 0 32c0 17 3.3 33.2 9.3 48l-9.3 0 0 0-20.5 0c-15.2 0-27.5 12.3-27.5 27.5 0 3 .5 5.9 1.4 8.7l28.9 86.6C40.2 379.6 16 428.1 16 482.3 16 498.7 29.3 512 45.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-54.2-24.2-102.7-62.3-135.4l28.9-86.6c.9-2.8 1.4-5.7 1.4-8.7 0-15.2-12.3-27.5-27.5-27.5l-20.5 0 0 0-9.3 0c6-14.8 9.3-31 9.3-48l0-32 24 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-30.7 0c-10.4-53.7-31.9-112-68.3-112-9.6 0-19 3.9-27.5 8.2-8.2 4.1-18.4 7.8-25.5 7.8s-17.3-3.7-25.5-7.8C190-12.1 180.6-16 171-16zm93.7 484.4l-24.8-70.9 27.9-32.5c2.7-3.2 4.2-7.2 4.2-11.4 0-9.7-7.8-17.5-17.5-17.5l-61 0c-9.7 0-17.5 7.8-17.5 17.5 0 4.2 1.5 8.2 4.2 11.4l27.9 32.5-24.8 70.9-57-180.4 35.7 0c18.4 10.2 39.5 16 62 16s43.6-5.8 62-16l35.7 0-57 180.4zM224 256c-34.7 0-64.2-22.1-75.3-53 5.7 3.2 12.3 5 19.3 5l12.4 0c16.5 0 31.1-10.6 36.3-26.2 2.3-7 12.2-7 14.5 0 5.2 15.6 19.9 26.2 36.3 26.2l12.4 0c7 0 13.6-1.8 19.3-5-11.1 30.9-40.6 53-75.3 53z"/></symbol>
     <symbol id="az-i-users" viewBox="0 0 640 512"><path d="M320 16a104 104 0 1 1 0 208 104 104 0 1 1 0-208zM96 88a72 72 0 1 1 0 144 72 72 0 1 1 0-144zM0 416c0-70.7 57.3-128 128-128 12.8 0 25.2 1.9 36.9 5.4-32.9 36.8-52.9 85.4-52.9 138.6l0 16c0 11.4 2.4 22.2 6.7 32L32 480c-17.7 0-32-14.3-32-32l0-32zm521.3 64c4.3-9.8 6.7-20.6 6.7-32l0-16c0-53.2-20-101.8-52.9-138.6 11.7-3.5 24.1-5.4 36.9-5.4 70.7 0 128 57.3 128 128l0 32c0 17.7-14.3 32-32 32l-86.7 0zM472 160a72 72 0 1 1 144 0 72 72 0 1 1 -144 0zM160 432c0-88.4 71.6-160 160-160s160 71.6 160 160l0 16c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-16z"/></symbol>
+    <symbol id="az-i-cloud-arrow-up" viewBox="0 0 576 512"><path d="M144 480c-79.5 0-144-64.5-144-144 0-63.4 41-117.2 97.9-136.5-1.3-7.7-1.9-15.5-1.9-23.5 0-79.5 64.5-144 144-144 55.4 0 103.5 31.3 127.6 77.1 14.2-8.3 30.8-13.1 48.4-13.1 53 0 96 43 96 96 0 15.7-3.8 30.6-10.5 43.7 44 20.3 74.5 64.7 74.5 116.3 0 70.7-57.3 128-128 128l-304 0zM305 191c-9.4-9.4-24.6-9.4-33.9 0l-72 72c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l31-31 0 102.1c0 13.3 10.7 24 24 24s24-10.7 24-24l0-102.1 31 31c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-72-72z"/></symbol>
+    <symbol id="az-i-link" viewBox="0 0 576 512"><path d="M419.5 96c-16.6 0-32.7 4.5-46.8 12.7-15.8-16-34.2-29.4-54.5-39.5 28.2-24 64.1-37.2 101.3-37.2 86.4 0 156.5 70 156.5 156.5 0 41.5-16.5 81.3-45.8 110.6l-71.1 71.1c-29.3 29.3-69.1 45.8-110.6 45.8-86.4 0-156.5-70-156.5-156.5 0-1.5 0-3 .1-4.5 .5-17.7 15.2-31.6 32.9-31.1s31.6 15.2 31.1 32.9c0 .9 0 1.8 0 2.6 0 51.1 41.4 92.5 92.5 92.5 24.5 0 48-9.7 65.4-27.1l71.1-71.1c17.3-17.3 27.1-40.9 27.1-65.4 0-51.1-41.4-92.5-92.5-92.5zM275.2 173.3c-1.9-.8-3.8-1.9-5.5-3.1-12.6-6.5-27-10.2-42.1-10.2-24.5 0-48 9.7-65.4 27.1L91.1 258.2c-17.3 17.3-27.1 40.9-27.1 65.4 0 51.1 41.4 92.5 92.5 92.5 16.5 0 32.6-4.4 46.7-12.6 15.8 16 34.2 29.4 54.6 39.5-28.2 23.9-64 37.2-101.3 37.2-86.4 0-156.5-70-156.5-156.5 0-41.5 16.5-81.3 45.8-110.6l71.1-71.1c29.3-29.3 69.1-45.8 110.6-45.8 86.6 0 156.5 70.6 156.5 156.9 0 1.3 0 2.6 0 3.9-.4 17.7-15.1 31.6-32.8 31.2s-31.6-15.1-31.2-32.8c0-.8 0-1.5 0-2.3 0-33.7-18-63.3-44.8-79.6z"/></symbol>
+    <symbol id="az-i-key" viewBox="0 0 512 512"><path d="M336 352c97.2 0 176-78.8 176-176S433.2 0 336 0 160 78.8 160 176c0 18.7 2.9 36.8 8.3 53.7L7 391c-4.5 4.5-7 10.6-7 17l0 80c0 13.3 10.7 24 24 24l80 0c13.3 0 24-10.7 24-24l0-40 40 0c13.3 0 24-10.7 24-24l0-40 40 0c6.4 0 12.5-2.5 17-7l33.3-33.3c16.9 5.4 35 8.3 53.7 8.3zM376 96a40 40 0 1 1 0 80 40 40 0 1 1 0-80z"/></symbol>
+    <symbol id="az-i-copy" viewBox="0 0 448 512"><path d="M192 0c-35.3 0-64 28.7-64 64l0 256c0 35.3 28.7 64 64 64l192 0c35.3 0 64-28.7 64-64l0-200.6c0-17.4-7.1-34.1-19.7-46.2L370.6 17.8C358.7 6.4 342.8 0 326.3 0L192 0zM64 128c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l192 0c35.3 0 64-28.7 64-64l0-16-64 0 0 16-192 0 0-256 16 0 0-64-16 0z"/></symbol>
+    <symbol id="az-i-arrows-rotate" viewBox="0 0 512 512"><path d="M65.9 228.5c13.3-93 93.4-164.5 190.1-164.5 53 0 101 21.5 135.8 56.2 .2 .2 .4 .4 .6 .6l7.6 7.2-47.9 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 53.4-11.3-10.7C390.5 28.6 326.5 0 256 0 127 0 20.3 95.4 2.6 219.5 .1 237 12.2 253.2 29.7 255.7s33.7-9.7 36.2-27.1zm443.5 64c2.5-17.5-9.7-33.7-27.1-36.2s-33.7 9.7-36.2 27.1c-13.3 93-93.4 164.5-190.1 164.5-53 0-101-21.5-135.8-56.2-.2-.2-.4-.4-.6-.6l-7.6-7.2 47.9 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 320c-8.5 0-16.7 3.4-22.7 9.5S-.1 343.7 0 352.3l1 127c.1 17.7 14.6 31.9 32.3 31.7S65.2 496.4 65 478.7l-.4-51.5 10.7 10.1c46.3 46.1 110.2 74.7 180.7 74.7 129 0 235.7-95.4 253.4-219.5z"/></symbol>
   </svg>
 
   <header class="kop">
@@ -105,6 +110,14 @@
         <p class="zacht">Voordat we je rang in de Wassenaarse samenleving kunnen bepalen, moeten we je huidige sociale kapitaal berekenen.</p>
         <form id="az-start-formulier" class="start-vragen">
           <button type="submit" class="knop knop-navy knop-breed">Bereken mijn startpositie</button>
+        </form>
+        <form class="koppel start-koppel" id="az-start-koppel">
+          <p class="zacht">Speel je al op een ander apparaat? Vul je synccode in en haal je voortgang op.</p>
+          <label for="az-start-code">Synccode</label>
+          <span class="koppel-rij">
+            <input type="text" id="az-start-code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-X">
+            <button type="submit" class="knop knop-licht">Haal op</button>
+          </span>
         </form>
       </div>
     </section>
@@ -283,10 +296,45 @@
 
     <section class="weergave" id="az-gegevens" aria-labelledby="az-gegevens-kop" hidden>
       <h2 class="verborgen" id="az-gegevens-kop" tabindex="-1">Je gegevens</h2>
+      <section class="paneel" aria-labelledby="az-sync-kop">
+        <h3 id="az-sync-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-cloud-arrow-up"/></svg> Op de server bewaren</h3>
+        <div id="az-sync-uit">
+          <p>Speel je op meer apparaten? Bewaar je voortgang dan ook op de server van hayobethlehem.nl. De app versleutelt alles eerst met je eigen synccode. De server kan je voortgang dus niet lezen.</p>
+          <p class="knoppen"><button type="button" class="knop" id="az-sync-aan-knop"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-cloud-arrow-up"/></svg> Bewaar op de server</button></p>
+          <form class="koppel" id="az-koppel-formulier">
+            <label for="az-koppel-code">Heb je al een synccode van een ander apparaat?</label>
+            <span class="koppel-rij">
+              <input type="text" id="az-koppel-code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-X">
+              <button type="submit" class="knop knop-licht"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-link"/></svg> Koppel</button>
+            </span>
+          </form>
+        </div>
+        <div id="az-sync-aan" hidden>
+          <p>Je synccode. Vul hem in op je andere apparaten. Bewaar hem goed: zonder code kan niemand je voortgang terughalen, ook de beheerder niet.</p>
+          <p class="synccode"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-key"/></svg> <code id="az-sync-code"></code>
+            <button type="button" class="knop knop-licht knop-klein" id="az-kopieer-knop"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-copy"/></svg> Kopieer</button></p>
+          <p class="sync-status" id="az-sync-status" role="status"></p>
+          <p class="knoppen">
+            <button type="button" class="knop knop-licht" id="az-sync-nu-knop"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-arrows-rotate"/></svg> Nu bijwerken</button>
+            <button type="button" class="knop knop-licht" id="az-ontkoppel-knop">Ontkoppel dit apparaat</button>
+            <button type="button" class="knop knop-gevaar" id="az-server-wis-knop">Wis van de server</button>
+          </p>
+        </div>
+        <details>
+          <summary>Wat staat er op de server?</summary>
+          <ul class="uitleg">
+            <li>Alleen je voortgang, versleuteld met je synccode (AES-GCM). Zonder die code is het onleesbaar.</li>
+            <li>De server bewaart het onder een hash van je code. Je code zelf komt nooit op de server.</li>
+            <li>Zoals elke website ziet de server wel je IP-adres en wanneer je iets bewaart.</li>
+            <li>Met "Wis van de server" haal je alles weg. Dat kan altijd.</li>
+            <li>Beheerder van de server: Hayo Bethlehem, hayobethlehem.nl.</li>
+          </ul>
+        </details>
+      </section>
       <div class="raster">
         <section class="paneel" aria-labelledby="az-bewaren-kop">
           <h3 id="az-bewaren-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-floppy-disk"/></svg> Savegame</h3>
-          <p>Je voortgang staat alleen in deze browser. Er gaat niets online. Bewaar je savegame af en toe als bestand. Dan raak je niets kwijt als je de browser leegmaakt of een nieuwe telefoon neemt.</p>
+          <p>Je voortgang staat in deze browser. Bewaar je savegame af en toe als bestand, of zet de opslag op de server aan. Dan raak je niets kwijt als je de browser leegmaakt of een nieuwe telefoon neemt.</p>
           <p class="knoppen">
             <button type="button" class="knop" id="az-bewaar-knop"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-download"/></svg> Bewaar als bestand</button>
             <label class="knop knop-licht" for="az-terugzet-bestand"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-upload"/></svg> Laad een bestand</label>
@@ -321,7 +369,7 @@
     </section>
 
     <footer class="voet">
-      <p>Versie <span id="az-versie"></span> · <a href="#wijzigingen">Wat is er veranderd</a> · Je voortgang blijft in deze browser.</p>
+      <p>Versie <span id="az-versie"></span> · <a href="#wijzigingen">Wat is er veranderd</a> · Je voortgang is van jou.</p>
     </footer>
   </div>
 

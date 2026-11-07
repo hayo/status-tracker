@@ -9,6 +9,17 @@
 
 export const VERSIES = [
   {
+    versie: '2.2',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'Je kunt je voortgang nu ook op de server bewaren. Zo speel je verder op al je apparaten.',
+      'De app versleutelt alles eerst met je eigen synccode. De server kan je voortgang niet lezen.',
+      'Op een nieuw apparaat vul je je synccode in. Dat kan meteen op het startscherm.',
+      'Speel je op twee apparaten tegelijk, dan voegt de app het samen.',
+      'Wis je alles, dan gaat je voortgang ook van de server af.',
+    ],
+  },
+  {
     versie: '2.1',
     datum: '2026-11-07',
     wijzigingen: [
