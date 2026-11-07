@@ -1402,12 +1402,6 @@
   font-weight: 800;
 }
 
-#aanzien .knop-klein {
-  min-height: 2.5em;
-  padding: 0.35em 0.9em;
-  font-size: 0.85em;
-}
-
 #aanzien .titels {
   display: grid;
   gap: 0.25em;
@@ -1927,6 +1921,52 @@
   color: #15803d;
 }
 
+/* ---------- Bekendheid ---------- */
+
+#aanzien .bekendheid {
+  border-top: 4px solid var(--goud);
+}
+
+#aanzien .bekendheid-score {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25em 0.75em;
+  margin: 0 0 0.5em;
+}
+
+#aanzien #az-bekendheid {
+  color: var(--groen);
+  font-size: 2.2em;
+  font-weight: 800;
+  line-height: 1;
+}
+
+#aanzien #az-bekendheid-niveau {
+  color: var(--goud-tekst);
+  font-family: var(--serif);
+  font-size: 1.4em;
+  font-style: italic;
+  font-weight: 700;
+}
+
+#aanzien .bekendheid label {
+  display: block;
+  margin-bottom: 0.3em;
+  font-size: 0.9em;
+}
+
+#aanzien a.knop {
+  text-decoration: none;
+}
+
+#aanzien .karakter-bekend {
+  margin: 0.3em 0 0;
+  color: var(--goud-tekst);
+  font-size: 0.85em;
+  font-weight: 700;
+}
+
 /* ---------- Je positie: kringen, gunfactor, energie ---------- */
 
 #aanzien .positie {
@@ -2144,6 +2184,12 @@
 
 #aanzien .knop-breed {
   width: 100%;
+}
+
+#aanzien .knop-klein {
+  min-height: 2.5em;
+  padding: 0.35em 0.9em;
+  font-size: 0.85em;
 }
 
 #aanzien .knop:disabled {

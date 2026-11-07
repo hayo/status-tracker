@@ -9,6 +9,16 @@
 
 export const VERSIES = [
   {
+    versie: '2.6',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'Nieuw: erkenning. Noteer wat er naar jou toe komt: een groet bij naam, een uitnodiging die je niet vroeg, een vraag om advies.',
+      'Je bekendheid staat op je statuspagina: wat er de laatste 90 dagen naar jou toe kwam, en hoe dat zich verhoudt tot wat jij deed.',
+      'Elke rang vraagt nu ook erkenning. Bekend word je door anderen, niet alleen door zelf veel te doen.',
+      'Een nieuwe weekmissie, zes prestaties en de titels Bekende Wassenaarder en De vraagbaak.',
+    ],
+  },
+  {
     versie: '2.5',
     datum: '2026-11-07',
     wijzigingen: [

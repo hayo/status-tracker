@@ -9,7 +9,7 @@ import {
   REEKS_STAP, REEKS_MAX, EVENTS, VERGETEN_NA, VERGETEN_PER_WEEK, VERGETEN_MAX,
   WEDERKERIG_WEKEN, WEDERKERIG_BONUS, BEDANK_DAGEN, BEDANK_BONUS, VERZADIGD_NA, VERZADIGD_FACTOR,
   NIEUWE_BRUG, HECHT_VANAF, OPZICHTIG, INGETOGEN, RODDEL, NATIONALE_DAGEN, NATIONAAL_MARGE, NATIONAAL_BONUS,
-  PLEKKEN, ONTDEKKING_BONUS, DOSSIERS, KRINGEN, KRING_STANDEN, KRING_SYMBOOL, GUNFACTOR, ENERGIE, TYPEN,
+  PLEKKEN, ONTDEKKING_BONUS, DOSSIERS, KRINGEN, KRING_STANDEN, KRING_SYMBOOL, GUNFACTOR, ENERGIE, TYPEN, ERKENNING,
 } from './gegevens.js';
 
 /* ---------- Datums ---------- */
@@ -25,7 +25,7 @@ const weekVan = (datum) => dagSleutel(maandag(alsDatum(datum)));
 
 /* ---------- Basis ---------- */
 
-export const ACTIVITEITEN = new Map(CATEGORIEEN.flatMap((c) => c.activiteiten.map((a) => [a.id, { kringen: c.kringen, ...a, terrein: c.id }])));
+export const ACTIVITEITEN = new Map(CATEGORIEEN.flatMap((c) => c.activiteiten.map((a) => [a.id, { kringen: c.kringen, inkomend: c.inkomend, ...a, terrein: c.id }])));
 export const telt = (r) => !r.start; // startregels tellen niet mee in kalender, weken, reeks en jaaroverzicht
 export const rangIndex = (p) => RANGEN.findLastIndex((r) => p >= r.min);
 export const ronde = (r) => r.ronde ?? 0;
@@ -208,7 +208,7 @@ export const gunLabel = (g) => (g < GUNFACTOR.streber ? 'Streber' : g >= GUNFACT
 // Wat een activiteit aan energie kost. Negatief is opladen: door de activiteit zelf, of door je type.
 export function kosten(spel, item) {
   const a = ACTIVITEITEN.get(item.id);
-  if (!a) return 0;
+  if (!a || a.inkomend) return 0;
   const basis = a.energie ?? Math.min(ENERGIE.max, Math.max(ENERGIE.min, Math.round(a.punten / ENERGIE.deler)));
   const type = TYPEN.find((t) => t.id === spel.type);
   return basis > 0 && type?.terreinen.includes(a.terrein) ? -Math.round(basis / 2) : basis;
@@ -221,6 +221,29 @@ export function energie(spel, datum) {
     .filter((r) => r.activiteit && weekVan(r.datum) === week)
     .reduce((s, r) => s + (r.energie ?? kosten(spel, { id: r.activiteit })), 0);
   return { budget: ENERGIE.week, gebruikt, over: Math.min(ENERGIE.week, ENERGIE.week - gebruikt) };
+}
+
+/* ---------- Erkenning ---------- */
+
+// Wat er naar jou toe kwam, tegenover wat jij deed. Totaal is over al je tijd; recent de laatste dagen.
+export function erkenning(logboek, vandaag = new Date()) {
+  const grens = dagSleutel(plusDagen(vandaag, -ERKENNING.dagen));
+  const acties = logboek.filter((r) => ACTIVITEITEN.has(r.activiteit));
+  const binnen = acties.filter((r) => ACTIVITEITEN.get(r.activiteit).inkomend);
+  const recent = binnen.filter((r) => r.datum >= grens);
+  const uit = acties.filter((r) => !ACTIVITEITEN.get(r.activiteit).inkomend && r.datum >= grens).length;
+  const score = recent.reduce((s, r) => s + r.punten, 0);
+  const i = ERKENNING.niveaus.findLastIndex(([vanaf]) => score >= vanaf);
+  return {
+    totaal: binnen.reduce((s, r) => s + r.punten, 0),
+    score,
+    binnen: recent.length,
+    uit,
+    verhouding: recent.length >= ERKENNING.verhoudingVanaf ? Math.round((recent.length / Math.max(1, uit)) * 100) : 0,
+    niveau: ERKENNING.niveaus[i][1],
+    vanaf: ERKENNING.niveaus[i][0],
+    volgende: ERKENNING.niveaus[i + 1] ?? null,
+  };
 }
 
 // Per dossier: welke van de vier stappen je deed, en of het al is afgerond.
@@ -246,7 +269,7 @@ export function bonussen(spel, item, datum, extra = {}) {
     return { lijst, factor: lijst.reduce((f, [, x]) => f * x, 1) };
   }
   const a = ACTIVITEITEN.get(item.id);
-  if (a?.stil) return { lijst, factor: 1 };
+  if (a?.stil || a?.inkomend) return { lijst, factor: 1 };
   const r = reeksVoor(actieveWeken(spel.logboek.filter((x) => x.datum < datum)), maandag(alsDatum(datum)));
   if (r) lijst.push([`Reeks ${r} ${r === 1 ? 'week' : 'weken'}`, Math.min(REEKS_MAX, 1 + r * REEKS_STAP)]);
   const e = event(datum);
@@ -316,6 +339,7 @@ export function statistiek(spel) {
         kringen: kringen(spel.logboek),
         gunfactor: gunfactor(spel.logboek),
         perRol: tel(n.mensen.map((m) => m.rol).filter(Boolean)),
+        erkenning: erkenning(spel.logboek),
       };
     })(),
   };
@@ -356,6 +380,9 @@ export function voortgang(v, st) {
     kringen: () => Object.values(st.kringen).filter((n) => n >= v.vanaf).length,
     gunfactor: () => st.gunfactor,
     rol: () => st.perRol.get(v.id) ?? 0,
+    erkenning: () => st.erkenning.totaal,
+    bekendheid: () => st.erkenning.score,
+    verhouding: () => st.erkenning.verhouding,
   }[v.soort];
   if (v.soort === 'alle') {
     return { nu: v.lijst.filter((d) => gehaald(d, st)).length, doel: v.lijst.length };
@@ -391,6 +418,7 @@ export function rang(spel, st = statistiek(spel)) {
     dagen: dagen >= r.dagen,
     ritueel: !r.ritueel || gehaald(r.ritueel.voorwaarde, st),
     kringen: !r.kring || Object.values(st.kringen).filter((n) => n >= r.kring.vanaf).length >= r.kring.aantal,
+    erkenning: !r.erkenning || st.erkenning.totaal >= r.erkenning,
   });
   let index = 0;
   while (RANGEN[index + 1] && Object.values(eisen(RANGEN[index + 1])).every(Boolean)) index++;
@@ -458,6 +486,7 @@ export function missies(spel, vandaag = new Date()) {
       pr: () => deze.reduce((s, r) => s + r.punten, 0),
       dagen: () => new Set(deze.map((r) => r.datum)).size,
       onbekend: () => deze.filter((r) => !verkend.has(terreinVan(r))).length,
+      erkenning: () => deze.filter((r) => ACTIVITEITEN.get(r.activiteit).inkomend).length,
     }[m.soort]();
     const id = `${sleutel}-${m.soort}`;
     return {

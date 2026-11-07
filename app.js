@@ -274,6 +274,7 @@ function toonStatus() {
     [volgende.eisen.punten, `${getal(volgende.min)} PR`, `je hebt er ${getal(p)}`],
     [volgende.eisen.dagen, `${volgende.dagen} dagen in het dorp`, `je bent er ${nu.dagen} ${nu.dagen === 1 ? 'dag' : 'dagen'}`],
     ...(volgende.ritueel ? [[volgende.eisen.ritueel, volgende.ritueel.tekst, volgende.eisen.ritueel ? 'gedaan' : 'nog niet']] : []),
+    ...(volgende.erkenning ? [[volgende.eisen.erkenning, `${getal(volgende.erkenning)} erkenning: wat anderen naar jou toe deden`, `je hebt er ${getal(st.erkenning.totaal)}`]] : []),
     ...(volgende.kring ? [[volgende.eisen.kringen, `${kringStand(volgende.kring.vanaf)} in ${volgende.kring.aantal === KRINGEN.length ? 'alle' : volgende.kring.aantal} kringen`,
       `nu in ${Object.values(st.kringen).filter((n) => n >= volgende.kring.vanaf).length}`]] : []),
   ].map(([klaar, eis, stand]) => maak('li', { class: klaar ? 'eis klaar' : 'eis' },
@@ -289,6 +290,7 @@ function toonStatus() {
   toonMissies();
   toonVerplichtingen();
   toonPositie();
+  toonBekendheid(st.erkenning);
 
   const kap = kapitaal(spel, st);
   el.kapitaal.replaceChildren(...[
@@ -353,6 +355,18 @@ function toonMissies() {
     maak('span', { class: 'missie-beloning', tekst: m.klaar ? 'Voltooid' : `+${getal(m.beloning)} PR` }),
     maak('span', { class: 'missie-stand', tekst: `${getal(m.nu)} / ${getal(m.doel)}` }),
     meter(`az-missie-${n}`, m.nu / m.doel))));
+}
+
+// Bekendheid: wat er de laatste 90 dagen naar jou toe kwam.
+function toonBekendheid(e) {
+  el.bekendheid.textContent = getal(e.score);
+  el.bekendheidNiveau.textContent = e.niveau;
+  el.karakterBekend.textContent = `Bekendheid: ${e.niveau}`;
+  el.bekendheidMeter.value = e.volgende ? Math.min(100, ((e.score - e.vanaf) / (e.volgende[0] - e.vanaf)) * 100) : 100;
+  el.bekendheidVolgende.textContent = e.volgende ? `Nog ${getal(e.volgende[0] - e.score)} tot ${e.volgende[1]}` : 'Hoger kan niet: je bent een begrip in Wassenaar';
+  el.bekendheidVerhouding.textContent = e.binnen + e.uit === 0
+    ? 'Noteer wat er naar jou toe komt: een groet bij naam, een uitnodiging, een vraag om advies. Dat is de echte maat voor bekend zijn.'
+    : `De laatste 90 dagen kwam er ${e.binnen} keer iets naar jou toe, en ging jij ${e.uit} keer naar anderen. ${e.binnen >= e.uit && e.binnen >= 10 ? 'Het omslagpunt: er komt meer naar je toe dan je zelf zoekt.' : `Voor elke 10 keer dat jij iets doet, komt er ${(e.uit ? (e.binnen / e.uit) * 10 : 10).toLocaleString('nl', { maximumFractionDigits: 1 })} naar jou toe.`}`;
 }
 
 // Je positie: stand per kring, gunfactor en energie deze week.

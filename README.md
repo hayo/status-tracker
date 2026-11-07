@@ -112,11 +112,12 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 
 | Wat | Velden |
 | --- | --- |
-| `RANGEN` | `min` (punten vanaf), `dagen` (tijd in het spel), `ritueel` (`tekst` en `voorwaarde`), `kring?` (`aantal` kringen vanaf stand `vanaf`), `naam`, `uitleg`, `icoon` |
+| `RANGEN` | `min` (punten vanaf), `dagen` (tijd in het spel), `ritueel` (`tekst` en `voorwaarde`), `kring?` (`aantal` kringen vanaf stand `vanaf`), `erkenning?` (punten aan erkenning), `naam`, `uitleg`, `icoon` |
 | `EIGENSCHAPPEN` | sleutel => `naam` en `icoon`. `EIGENSCHAP_MAX` is het aantal punten waarbij de balk vol is |
 | `CATEGORIEEN` | `id`, `kringen` (gewicht per kring), `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |
 | `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `stijl?` (`opzichtig` of `ingetogen`), `kringen?`, `eigenschap` |
 | `KRINGEN` | de vier kringen; met `KRING_STANDEN` en `KRING_SYMBOOL` |
+| `ERKENNING` | `dagen` voor de bekendheid, de `niveaus`, en `verhoudingVanaf` |
 | `GUNFACTOR`, `ENERGIE`, `TYPEN` | de getallen voor gunfactor en energie, en de typen introvert en extravert |
 | `ROLLEN` | de rollen voor het netwerk |
 | `NATIONALE_DAGEN` | `[land, MM-DD]` |
@@ -153,7 +154,7 @@ niveau. De rang van je karakter is ook zijn niveau: Voorbijganger is niveau 1.
 ### De landingspagina
 
 De landingspagina is gewone HTML, zonder script. Ze noemt een paar aantallen
-(134 activiteiten, 7 rangen, 39 prestaties, twaalf terreinen, 21 plekken) en de rangen en terreinen. Verander
+(149 activiteiten, 7 rangen, 45 prestaties, dertien terreinen, 21 plekken) en de rangen en terreinen. Verander
 je die in `gegevens.js`, pas dan ook `index.html` aan. De iconen staan in een
 eigen sprite boven in `index.html`.
 
@@ -227,6 +228,14 @@ De regels staan in `spel.js`, de getallen en teksten in `gegevens.js`.
 - **Dossiers.** De vier activiteiten met `dossierstap` vragen welk dossier. Heb
   je in een dossier alle vier de stappen gedaan, dan komt er één keer een regel
   "Dossier afgerond" met `DOSSIER_BELONING`, met `dossierAf`.
+- **Erkenning.** Het terrein met `inkomend: true` is wat anderen naar jou toe
+  doen: gegroet bij naam, uitgenodigd zonder te vragen, om advies gevraagd,
+  geciteerd. Bekend word je door anderen, dus dit is de echte maat. Het kost geen
+  energie en krijgt geen bonussen. De statuspagina toont je bekendheid: de punten
+  aan erkenning in de laatste `ERKENNING.dagen` dagen, met een niveau uit
+  `ERKENNING.niveaus`, en de verhouding tussen wat binnenkwam en wat jij deed. Elke
+  rang vraagt een minimum aan `erkenning`, opgeteld over al je tijd. Een
+  spontane uitnodiging telt ook als uitnodiging om te beantwoorden.
 - **Kringen.** Elke activiteit telt mee voor de kringen van haar terrein, of voor
   haar eigen `kringen`: het gewicht keer een tiende van de basis-PR. Zo botsen
   dingen: een opiniestuk over fatbikes is goed bij oud geld en minder bij

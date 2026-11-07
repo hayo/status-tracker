@@ -5,29 +5,30 @@
 
 // Een rang vraagt PR (min), tijd in het spel (dagen) en een ritueel: een overgangsmoment, zoals in het echt.
 // De hoogste rangen vragen ook een goede stand in meerdere kringen (kring: aantal kringen, vanaf welke stand).
+// En erkenning: zo veel punten aan signalen dat anderen naar jou toe kwamen, over al je tijd in het spel.
 // Het ritueel is een voorwaarde zoals bij de prestaties (zie boven PRESTATIES).
 export const RANGEN = [
   { min: 0, dagen: 0, naam: 'Voorbijganger', uitleg: 'Een simpele passant in de groene lanen van Wassenaar.', icoon: 'person-walking' },
   { min: 500, dagen: 0, naam: 'Nieuwkomer', uitleg: 'Recent geland. Je observeert de ongeschreven regels.', icoon: 'box-open' },
   {
-    min: 1500, dagen: 14, naam: 'Geïntroduceerde', uitleg: 'Er wordt voor je ingestaan. Je bezoekt besloten bijeenkomsten.', icoon: 'handshake',
+    min: 1500, dagen: 14, erkenning: 50, naam: 'Geïntroduceerde', uitleg: 'Er wordt voor je ingestaan. Je bezoekt besloten bijeenkomsten.', icoon: 'handshake',
     ritueel: { tekst: 'Iemand nam je mee of nodigde je thuis uit', voorwaarde: { soort: 'een', lijst: [{ soort: 'activiteit', id: 'i07' }, { soort: 'activiteit', id: 'i03' }, { soort: 'activiteit', id: 'i04' }] } },
   },
   {
-    min: 3500, dagen: 90, naam: 'Lid', uitleg: 'Een actief en gerespecteerd lid van de lokale gemeenschap.', icoon: 'id-card',
+    min: 3500, dagen: 90, erkenning: 150, naam: 'Lid', uitleg: 'Een actief en gerespecteerd lid van de lokale gemeenschap.', icoon: 'id-card',
     ritueel: { tekst: 'Je werd lid van een vereniging of club', voorwaarde: { soort: 'een', lijst: [{ soort: 'symbool', id: 'm_vereniging' }, { soort: 'symbool', id: 'm_lid_oostdorp' }, { soort: 'symbool', id: 'm_rotary' }, { soort: 'symbool', id: 'm_bestuur' }, { soort: 'symbool', id: 'm_hgc' }, { soort: 'symbool', id: 'm_rozenstein' }] } },
   },
   {
-    min: 7500, dagen: 180, naam: 'Patroon', uitleg: 'Een sponsor van het dorp. Je dwingt respect af.', icoon: 'building-columns',
+    min: 7500, dagen: 180, erkenning: 400, naam: 'Patroon', uitleg: 'Een sponsor van het dorp. Je dwingt respect af.', icoon: 'building-columns',
     ritueel: { tekst: 'Je gaf iets terug: een diner, een donatie of een sponsoring', voorwaarde: { soort: 'een', lijst: [{ soort: 'activiteit', id: 'i08' }, { soort: 'activiteit', id: 'f06' }, { soort: 'activiteit', id: 'g11' }] } },
   },
   {
-    min: 15000, dagen: 365, naam: 'Wassenaarder', uitleg: 'Niet te onderscheiden van oud geld. Het dorp is van jou.', icoon: 'chess-knight',
+    min: 15000, dagen: 365, erkenning: 800, naam: 'Wassenaarder', uitleg: 'Niet te onderscheiden van oud geld. Het dorp is van jou.', icoon: 'chess-knight',
     ritueel: { tekst: 'Je bent gezien in zeven terreinen', voorwaarde: { soort: 'terreinen', aantal: 7 } },
     kring: { aantal: 3, vanaf: 200 },
   },
   {
-    min: 30000, dagen: 730, naam: 'Ereburger', uitleg: 'Het absolute toppunt van de lokale samenleving.', icoon: 'crown',
+    min: 30000, dagen: 730, erkenning: 1500, naam: 'Ereburger', uitleg: 'Het absolute toppunt van de lokale samenleving.', icoon: 'crown',
     kring: { aantal: 4, vanaf: 500 },
     ritueel: { tekst: 'Erkenning van hogerhand: lintje, raadszetel of de burgemeester', voorwaarde: { soort: 'een', lijst: [{ soort: 'symbool', id: 'm_knight' }, { soort: 'symbool', id: 'm_council' }, { soort: 'symbool', id: 'm_mayor' }] } },
   },
@@ -46,6 +47,32 @@ export const EIGENSCHAPPEN = {
 export const EIGENSCHAP_MAX = 4000;
 
 export const CATEGORIEEN = [
+  {
+    // Wat anderen naar jou toe doen: de echte maat voor bekend zijn. Kost geen energie, krijgt geen bonus.
+    id: 'erkenning',
+    kringen: { dorp: 1 },
+    inkomend: true,
+    naam: 'Erkenning: wat naar jou toe kwam',
+    icoon: 'inbox',
+    kleur: 'goud',
+    activiteiten: [
+      ['s01', 'Iemand groette je bij naam', 15, 'stealth'],
+      ['s02', 'Iemand die je nauwelijks kent, maakte een praatje met je', 20, 'civic'],
+      ['s03', 'Je werd uitgenodigd zonder dat je erom vroeg', 60, 'stealth', { uitnodiging: true }],
+      ['s04', 'Iemand vroeg je om advies', 50, 'civic'],
+      ['s05', 'Een raadslid of wethouder zocht contact met je', 80, 'civic', { kringen: { bestuur: 1 } }],
+      ['s06', 'Een journalist vroeg om je mening of je data', 80, 'civic', { kringen: { dorp: 0.5, bestuur: 0.5 } }],
+      ['s07', 'Je werd genoemd of geciteerd in de lokale media', 100, 'civic', { kringen: { dorp: 1, bestuur: 0.5 } }],
+      ['s08', 'Iemand stelde jou voor aan een ander', 50, 'stealth'],
+      ['s09', 'Iemand stuurde een ander naar jou door: "vraag het hem maar"', 70, 'civic'],
+      ['s10', 'Je werd gevraagd voor een bestuur, commissie of klus', 120, 'civic', { kringen: { dorp: 0.5, bestuur: 1 } }],
+      ['s11', 'Iemand bedankte je voor iets wat je deed', 30, 'civic'],
+      ['s12', 'Een diplomaat of expat nodigde je uit', 80, 'stealth', { uitnodiging: true, kringen: { diplomaten: 1 } }],
+      ['s13', 'Iemand van oud geld nodigde je thuis uit', 100, 'stealth', { uitnodiging: true, kringen: { oudgeld: 1 } }],
+      ['s14', 'Iemand kende je al van naam voordat jullie elkaar ontmoetten', 120, 'stealth', { kringen: { dorp: 0.5, oudgeld: 0.5, bestuur: 0.5 } }],
+      ['s15', 'Je werd gevraagd om te spreken of een toast uit te brengen', 100, 'civic'],
+    ],
+  },
   {
     id: 'dorp',
     kringen: { dorp: 1 },
@@ -380,6 +407,8 @@ export const STARTVRAGEN = [
  * lof (keer lovend besproken), blaam (keer kritisch besproken), quiz (vragen goed beantwoord),
  * plekken (ontdekt op de dorpskaart), buurten (actief in zo veel buurten), buurt (id, zo vaak), dossiers (afgerond),
  * kringen (zo veel kringen op stand vanaf), gunfactor (minstens), rol (id, zo veel mensen in die rol),
+ * erkenning (punten aan erkenning, altijd), bekendheid (erkenning in de laatste 90 dagen),
+ * verhouding (procent: hoeveel er naar jou toe kwam tegenover wat jij deed, de laatste 90 dagen),
  * alle (een lijst die allemaal moet), een (een lijst waarvan er één moet).
  */
 
@@ -421,6 +450,12 @@ export const PRESTATIES = [
   { id: 'p_schoolplein', naam: 'Schoolpleinnetwerk', uitleg: 'Vijf ouders van klasgenoten in je netwerk.', icoon: 'children', voorwaarde: { soort: 'rol', id: 'Ouder van een klasgenoot', aantal: 5 } },
   { id: 'p_gastgezin', naam: 'Huis van gastvrijheid', uitleg: 'Vijf keer samen met je vrouw mensen thuis ontvangen.', icoon: 'house-user', voorwaarde: { soort: 'activiteit', id: 'z07', aantal: 5 } },
   { id: 'p_gezinsdag', naam: 'Eerst het thuisfront', uitleg: 'Tien gezinsdagen zonder afspraken.', icoon: 'people-roof', voorwaarde: { soort: 'activiteit', id: 'z11', aantal: 10 } },
+  { id: 'p_gegroet', naam: 'Bij naam gegroet', uitleg: 'Tien keer gegroet bij naam.', icoon: 'user-check', voorwaarde: { soort: 'activiteit', id: 's01', aantal: 10 } },
+  { id: 'p_raadgever', naam: 'Raadgever', uitleg: 'Tien keer om advies gevraagd.', icoon: 'comment-dots', voorwaarde: { soort: 'activiteit', id: 's04', aantal: 10 } },
+  { id: 'p_vraagbaak', naam: '"Vraag het hem maar"', uitleg: 'Vijf keer doorverwezen naar jou.', icoon: 'signs-post', voorwaarde: { soort: 'activiteit', id: 's09', aantal: 5 } },
+  { id: 'p_naam', naam: 'Je naam gaat rond', uitleg: 'Iemand kende je al van naam voordat jullie elkaar ontmoetten.', icoon: 'ear-listen', voorwaarde: { soort: 'activiteit', id: 's14', aantal: 1 } },
+  { id: 'p_bekend', naam: 'Bekend gezicht', uitleg: 'Een bekendheid van 300 in 90 dagen.', icoon: 'star-half-stroke', voorwaarde: { soort: 'bekendheid', aantal: 300 } },
+  { id: 'p_omslag', naam: 'Het omslagpunt', uitleg: 'In 90 dagen kwam er meer naar jou toe dan jij naar anderen ging, met minstens tien signalen.', icoon: 'arrow-right-to-bracket', voorwaarde: { soort: 'verhouding', aantal: 100 } },
   { id: 'p_tong', naam: 'Over de tong', uitleg: 'Het dorp sprak er schande van.', icoon: 'comments', geheim: true, voorwaarde: { soort: 'blaam', aantal: 1 } },
   { id: 'p_schaduw', naam: 'Eminence grise', uitleg: 'Sociale discretie op 75 / 100.', icoon: 'user-secret', geheim: true, voorwaarde: { soort: 'skill', id: 'stealth', aantal: 3000 } },
 ];
@@ -439,6 +474,8 @@ export const TITELS = [
   { id: 't_gastheer', naam: 'Gastheer van de lanen', uitleg: 'Tien keer zelf mensen uitgenodigd.', voorwaarde: { soort: 'tegen', aantal: 10 } },
   { id: 't_spin', naam: 'De spin in het web', uitleg: 'Vijfentwintig mensen in tien verschillende rollen.', voorwaarde: { soort: 'alle', lijst: [{ soort: 'contacten', aantal: 25 }, { soort: 'rollen', aantal: 10 }] } },
   { id: 't_inspreker', naam: 'Inspreker van dienst', uitleg: 'Alle zes de lokale dossiers afgerond.', voorwaarde: { soort: 'dossiers', aantal: 6 } },
+  { id: 't_bekend', naam: 'Bekende Wassenaarder', uitleg: 'Een bekendheid van 700 in 90 dagen.', voorwaarde: { soort: 'bekendheid', aantal: 700 } },
+  { id: 't_vraagbaak', naam: 'De vraagbaak', uitleg: 'Vijftien keer om advies gevraagd of naar je doorverwezen.', voorwaarde: { soort: 'alle', lijst: [{ soort: 'activiteit', id: 's04', aantal: 10 }, { soort: 'activiteit', id: 's09', aantal: 5 }] } },
   { id: 't_ingewijde', naam: 'Ingewijde', uitleg: 'Vertrouwd in alle vier de kringen.', voorwaarde: { soort: 'kringen', aantal: 4, vanaf: 500 } },
   { id: 't_wereld', naam: 'Wereldburger', uitleg: 'Tien keer actief in diplomatieke en expat-kringen.', voorwaarde: { soort: 'terrein', id: 'diplomatiek', aantal: 10 } },
 ];
@@ -461,6 +498,7 @@ export const MISSIES = [
   { soort: 'pr', aantal: 300, tekst: 'Verdien 300 PR', beloning: 100 },
   { soort: 'dagen', aantal: 3, tekst: 'Wees actief op 3 verschillende dagen', beloning: 120 },
   { soort: 'onbekend', aantal: 1, tekst: 'Doe iets in een terrein waar je nog niets deed', beloning: 150 },
+  { soort: 'erkenning', aantal: 2, tekst: 'Noteer 2 keer dat iemand naar jou toe kwam', beloning: 100 },
 ];
 
 // Bij een reeks weken op rij krijg je extra XP: per week deze stap, tot dit maximum.
@@ -622,3 +660,12 @@ export const TYPEN = [
   { id: 'introvert', naam: 'Introvert', uitleg: 'Je laadt op in de natuur, op de plekken van de dorpskaart en thuis.', terreinen: ['buiten', 'kaart', 'gezin'] },
   { id: 'extravert', naam: 'Extravert', uitleg: 'Je laadt op van borrels, Pops en een volle tafel.', terreinen: ['oudgeld', 'dorp'] },
 ];
+
+/* ---------- Erkenning ---------- */
+
+// Bekendheid: de punten aan erkenning in de laatste dagen. De niveaus zijn [vanaf, naam].
+export const ERKENNING = {
+  dagen: 90,
+  niveaus: [[0, 'Onbekend'], [100, 'Gezicht in het dorp'], [300, 'Bekend gezicht'], [700, 'Bekende Wassenaarder'], [1500, 'Begrip in Wassenaar']],
+  verhoudingVanaf: 10, // pas vanaf zo veel signalen telt de verhouding
+};
