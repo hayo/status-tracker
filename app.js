@@ -435,7 +435,7 @@ function actieKnop(a, bij, info, voor = null) {
 }
 
 function bouwActiviteiten() {
-  el.activiteiten.replaceChildren(...CATEGORIEEN.map((c) => maak('section', { class: `categorie cat-${c.kleur}`, 'aria-labelledby': `az-cat-${c.id}` },
+  el.activiteiten.replaceChildren(...CATEGORIEEN.map((c) => maak('section', { class: `categorie cat-${c.kleur}`, 'aria-labelledby': `az-cat-${c.id}`, ...(c.pad ? { 'data-pad': c.pad } : {}) },
     maak('h4', { class: 'categorie-kop', id: `az-cat-${c.id}` }, icoon(c.icoon), c.naam, maak('span', { class: 'pad-bonus', 'data-terrein': c.id })),
     maak('ul', { class: 'acties' }, ...c.activiteiten.map((a) => actieKnop(a, () => vraagLog(a)))))));
 }
@@ -472,8 +472,10 @@ function filter() {
       li.hidden = !woorden.every((w) => tekst.includes(w));
       hier ||= !li.hidden;
     }
-    sectie.hidden = !hier;
-    iets ||= hier;
+    // Een terrein van een pad dat je niet koos, blijft dicht.
+    const open = !sectie.dataset.pad || sectie.dataset.pad === spel?.pad;
+    sectie.hidden = !hier || !open;
+    iets ||= hier && open;
   }
   el.nietsGevonden.hidden = iets;
   el.vaakBlok.hidden = woorden.length > 0 || !el.vaak.children.length;

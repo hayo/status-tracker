@@ -179,7 +179,7 @@ niveau. De rang van je karakter is ook zijn niveau: Voorbijganger is niveau 1.
 ### De landingspagina
 
 De landingspagina is gewone HTML, zonder script. Ze noemt een paar aantallen
-(312 activiteiten, 7 rangen, 45 prestaties, dertien terreinen, 23 plekken) en de rangen en terreinen. Verander
+(314 activiteiten, 7 rangen, 45 prestaties, veertien terreinen, 23 plekken) en de rangen en terreinen. Verander
 je die in `gegevens.js`, pas dan ook `index.html` aan. De iconen staan in een
 eigen sprite boven in `index.html`.
 
@@ -219,6 +219,10 @@ De regels staan in `spel.js`, de getallen en teksten in `gegevens.js`.
   `bonussen` als tekst. Later van pad wisselen verandert dus niets aan wat je al
   logde.
 - **Pad.** Vanaf rang `PAD_VANAF` kies je een pad uit `PADEN`. Wisselen mag.
+  Een terrein met `pad` in `CATEGORIEEN` is alleen open met dat pad
+  (`openTerreinen`): Ministerie en Rijksoverheid hoort bij De Haagse insider.
+  Zonder dat pad zie je het terrein niet bij het loggen, op je karakterblad en
+  in de weekmissies. Wat je er al logde, blijft staan.
 - **Prestaties en titels.** `PRESTATIES` en `TITELS` hebben een `voorwaarde`. Welke
   soorten er zijn, staat boven `PRESTATIES` in `gegevens.js`. Ze worden steeds
   uit het logboek berekend, dus niet bewaard. Haal je een activiteit weg, dan kan

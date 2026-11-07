@@ -100,6 +100,8 @@ export function volgendEvent(vandaag = new Date()) {
 }
 
 export const pad = (spel) => PADEN.find((p) => p.id === spel.pad) ?? null;
+// De terreinen die open zijn. Een terrein met een pad gaat pas open als je dat pad kiest.
+export const openTerreinen = (spel) => CATEGORIEEN.filter((c) => !c.pad || c.pad === spel.pad);
 
 // De nationale dag rond een datum, of null.
 export function nationaleDag(datum) {
@@ -470,8 +472,9 @@ export function missies(spel, vandaag = new Date()) {
   const ervoor = spel.logboek.filter((r) => r.activiteit && r.datum < sleutel && ACTIVITEITEN.has(r.activiteit));
   const gedaan = new Set(ervoor.map((r) => r.activiteit));
   const verkend = new Set(ervoor.map((r) => ACTIVITEITEN.get(r.activiteit).terrein));
-  const terrein = CATEGORIEEN[nummer % CATEGORIEEN.length];
-  const mogelijk = MISSIES.filter((m) => m.soort !== 'onbekend' || verkend.size < CATEGORIEEN.length);
+  const open = openTerreinen(spel);
+  const terrein = open[nummer % open.length];
+  const mogelijk = MISSIES.filter((m) => m.soort !== 'onbekend' || open.some((c) => !verkend.has(c.id)));
   const gekozen = [0, 1, 2].map((k) => mogelijk[(nummer * 7 + k * 3) % mogelijk.length]);
   const uniek = [...new Set(gekozen)];
   while (uniek.length < 3) uniek.push(mogelijk.find((m) => !uniek.includes(m)));

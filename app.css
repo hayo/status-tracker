@@ -2540,18 +2540,6 @@
 #aanzien .lm-vlag { fill: var(--lm-vlag); }
 #aanzien .lm-donker { fill: var(--lm-inkt); }
 
-#aanzien .pin-lijf .lm-krijt {
-  fill: none;
-  stroke: var(--lm-muur);
-  stroke-width: 1.2;
-}
-
-#aanzien .pin-lijf .lm-net {
-  fill: none;
-  stroke-width: 2;
-  stroke-dasharray: 1 1.5;
-}
-
 #aanzien .lm-lijn,
 #aanzien .lm-zuil,
 #aanzien .lm-stam {

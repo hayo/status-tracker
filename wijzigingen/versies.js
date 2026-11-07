@@ -9,6 +9,17 @@
 
 export const VERSIES = [
   {
+    versie: '2.9',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'Je kennis inzetten gaat weer over wat je vanuit je eigen vak weet, voor buren, verenigingen, ondernemers en de pers.',
+      'Nieuw terrein Lokale politiek: gezien worden in de raadszaal, van de tribune en koffie met een raadslid tot burgerlid of de kieslijst.',
+      'Ministerie en Rijksoverheid telt alleen nog mee met het nieuwe pad De Haagse insider. Zonder dat pad zie je het terrein niet. Wat je al logde, blijft staan.',
+      'De Bestuurder krijgt extra XP op Lokale politiek, De Diplomaat op Protocol en etiquette.',
+      'De tennisclub van je zoon heet nu gewoon de sportclub.',
+    ],
+  },
+  {
     versie: '2.8.4',
     datum: '2026-11-07',
     wijzigingen: [

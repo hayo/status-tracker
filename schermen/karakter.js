@@ -4,9 +4,9 @@
  */
 
 import {
-  RANGEN, TITELS, EIGENSCHAPPEN, EIGENSCHAP_MAX, KRINGEN, CATEGORIEEN, SYMBOLEN, TYPEN, GUNFACTOR,
+  RANGEN, TITELS, EIGENSCHAPPEN, EIGENSCHAP_MAX, KRINGEN, SYMBOLEN, TYPEN, GUNFACTOR,
 } from '../gegevens.js';
-import { rang, kringen, kringStand, gunfactor, gunLabel, energie, kapitaal, ontgrendeld, pad, dagenInSpel } from '../spel.js';
+import { rang, kringen, kringStand, gunfactor, gunLabel, energie, kapitaal, ontgrendeld, pad, dagenInSpel, openTerreinen } from '../spel.js';
 import { maak, icoon, meter, getal } from '../ui.js';
 import { radar, boog, ring } from '../grafieken.js';
 
@@ -89,7 +89,7 @@ export function toonKarakter(el, spel, st, vandaag) {
     ['users', 'Sociaal', kap.sociaal], ['medal', 'Symbolisch', kap.symbolisch],
   ].map(([ic, dt, dd]) => maak('div', {}, maak('dt', {}, icoon(ic), dt), maak('dd', { tekst: getal(dd) }))));
 
-  el.pijlers.replaceChildren(...CATEGORIEEN.map((c) => {
+  el.pijlers.replaceChildren(...openTerreinen(spel).map((c) => {
     const n = c.activiteiten.filter((a) => st.perActiviteit.has(a.id)).length;
     return maak('li', { class: `terrein cat-${c.kleur}` }, icoon(c.icoon), maak('label', { for: `az-pijler-${c.id}`, tekst: c.naam }),
       maak('span', { class: 'terrein-waarde', tekst: `${n} / ${c.activiteiten.length}` }), meter(`az-pijler-${c.id}`, n / c.activiteiten.length));
