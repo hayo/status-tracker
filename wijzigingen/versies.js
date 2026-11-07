@@ -9,6 +9,14 @@
 
 export const VERSIES = [
   {
+    versie: '2.8.4',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'Je kennis inzetten heet nu Je kennis in de lokale politiek. Met tien nieuwe acties: van een Woo-verzoek en een motie voorbereiden tot burgerlid of een plek op de kieslijst.',
+      'Ministerie en Rijksoverheid-aura heeft tien grote nieuwe acties, tot 900 PR. Bijvoorbeeld een werkbezoek van een bewindspersoon regelen of Wassenaar aan een landelijke pilot verbinden.',
+    ],
+  },
+  {
     versie: '2.8.3',
     datum: '2026-11-07',
     wijzigingen: [

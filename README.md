@@ -179,7 +179,7 @@ niveau. De rang van je karakter is ook zijn niveau: Voorbijganger is niveau 1.
 ### De landingspagina
 
 De landingspagina is gewone HTML, zonder script. Ze noemt een paar aantallen
-(292 activiteiten, 7 rangen, 45 prestaties, dertien terreinen, 23 plekken) en de rangen en terreinen. Verander
+(312 activiteiten, 7 rangen, 45 prestaties, dertien terreinen, 23 plekken) en de rangen en terreinen. Verander
 je die in `gegevens.js`, pas dan ook `index.html` aan. De iconen staan in een
 eigen sprite boven in `index.html`.
 
