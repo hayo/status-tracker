@@ -673,31 +673,35 @@ export const ERKENNING = {
 /* ---------- De kaart ---------- */
 
 // Een schematische kaart van Wassenaar, noorden boven, niet op schaal. Coördinaten in een vlak van
-// 1000 bij 700. De ligging van buurten en plekken is bij benadering: pas ze gerust aan.
+// 1000 bij 700. Buurten en bossen zijn hoekpunten; de kaart rondt ze zelf af. De ligging van buurten
+// en plekken is bij benadering: pas ze gerust aan.
 export const KAART = {
   breedte: 1000,
   hoogte: 700,
-  zee: 'M0 0H600L0 520Z',
-  kust: 'M600 0L0 520',
-  duinen: [
-    { naam: 'Berkheide', pad: 'M600 0H800L632 250H311Z', label: [560, 120] },
-    { naam: 'Meijendel', pad: 'M311 250H632L330 700H0V520Z', label: [300, 420] },
+  zee: 'M0 0H640C520 120 300 330 0 560Z',
+  kust: 'M640 0C520 120 300 330 0 560',
+  duinen: 'M640 0H820C720 180 520 380 330 700H0V560C300 330 520 120 640 0Z',
+  duinNamen: [['Berkheide', 600, 110], ['Meijendel', 300, 440]],
+  bossen: [
+    { naam: 'De Horsten', punten: [[880, 160], [990, 150], [995, 280], [900, 292]] },
+    { naam: 'Voorlinden', punten: [[505, 548], [602, 532], [626, 625], [522, 648]], naamOnder: true },
+    { naam: 'Duivenvoorde', punten: [[905, 560], [995, 548], [995, 668], [915, 662]] },
   ],
   wegen: [
-    { naam: 'Rijksstraatweg', pad: 'M380 700L1000 140' },
-    { naam: 'A44', pad: 'M600 700L1000 330' },
+    { naam: 'Rijksstraatweg', soort: 'weg', pad: 'M390 700C560 520 760 330 1000 150', label: '22%' },
+    { naam: 'A44', soort: 'snelweg', pad: 'M630 700C760 560 880 440 1000 330', label: '41%' },
   ],
   buurten: {
-    Rijksdorp: { pad: 'M612 175L722 165L708 300L602 312Z', label: [660, 240] },
-    Centrum: { pad: 'M728 255L830 245L838 360L716 370Z', label: [770, 360] },
-    Oostdorp: { pad: 'M830 190L972 170L980 330L842 350Z', label: [905, 265] },
-    Kerkehout: { pad: 'M716 376L838 366L846 470L708 480Z', label: [776, 402] },
-    'De Kieviet': { pad: 'M562 330L700 318L702 500L520 520Z', label: [615, 430] },
-    Zuid: { pad: 'M600 530L760 492L782 625L620 665Z', label: [690, 580] },
-    Maaldrift: { pad: 'M856 384L992 364L994 520L866 524Z', label: [925, 450] },
+    Rijksdorp: { punten: [[612, 175], [722, 165], [708, 300], [602, 312]], label: [660, 240] },
+    Centrum: { punten: [[728, 255], [830, 245], [838, 360], [716, 370]], label: [770, 360] },
+    Oostdorp: { punten: [[830, 190], [972, 170], [980, 330], [842, 350]], label: [905, 265] },
+    Kerkehout: { punten: [[716, 376], [838, 366], [846, 470], [708, 480]], label: [776, 402] },
+    'De Kieviet': { punten: [[562, 330], [700, 318], [702, 500], [520, 520]], label: [615, 430] },
+    Zuid: { punten: [[600, 530], [760, 492], [782, 625], [620, 665]], label: [700, 552] },
+    Maaldrift: { punten: [[856, 384], [992, 364], [994, 520], [866, 524]], label: [925, 508] },
   },
   plekken: {
-    slag: [350, 230], hollandseduinen: [500, 150], meijendel: [250, 560], tapuit: [380, 470],
+    slag: [402, 226], hollandseduinen: [565, 150], meijendel: [250, 560], tapuit: [380, 470],
     duinrell: [650, 205], wittenburg: [625, 285], voorlinden: [550, 590], louwman: [500, 670],
     ash: [700, 600], roggewoning: [630, 640], deylerhuis: [735, 448], kielten: [815, 450],
     paauw: [742, 322], pops: [782, 270], langstraat: [815, 296], dorpsmuseum: [805, 334],

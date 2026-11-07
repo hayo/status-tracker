@@ -9,6 +9,13 @@
 
 export const VERSIES = [
   {
+    versie: '2.7.1',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'De kaart is mooier: een vloeiende kust, golven in de zee, rimpels in de duinen, landgoedbossen, echte wegen met hun naam, een windroos en spelden die oplichten.',
+    ],
+  },
+  {
     versie: '2.7',
     datum: '2026-11-07',
     wijzigingen: [

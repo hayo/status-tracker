@@ -127,7 +127,7 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 | `CATEGORIEEN` | `id`, `kringen` (gewicht per kring), `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |
 | `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `stijl?` (`opzichtig` of `ingetogen`), `kringen?`, `eigenschap` |
 | `KRINGEN` | de vier kringen; met `KRING_STANDEN` en `KRING_SYMBOOL` |
-| `KAART` | de kaart: zee, kust, duinen, wegen, buurten (pad en labelpunt) en de plek van elke plek, in een vlak van 1000 bij 700 |
+| `KAART` | de kaart in een vlak van 1000 bij 700: zee, kust en duinen (paden), `duinNamen`, `bossen` en `buurten` (hoekpunten; de kaart rondt ze af), `wegen` (pad, soort en waar de naam staat) en de plek van elke plek |
 | `ERKENNING` | `dagen` voor de bekendheid, de `niveaus`, en `verhoudingVanaf` |
 | `GUNFACTOR`, `ENERGIE`, `TYPEN` | de getallen voor gunfactor en energie, en de typen introvert en extravert |
 | `ROLLEN` | de rollen voor het netwerk |

@@ -2201,45 +2201,139 @@
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 0.75em;
+  border-radius: 0.9em;
+  box-shadow: 0 6px 22px rgb(27 38 59 / 14%);
 }
 
 #aanzien .kaart-land {
-  fill: #f2efe6;
+  fill: #f4efe2;
+}
+
+#aanzien .zee-diep {
+  stop-color: #a9cbe6;
+}
+
+#aanzien .zee-ondiep {
+  stop-color: #d6e9f5;
 }
 
 #aanzien .kaart-zee {
-  fill: #cfe3f3;
+  fill: url("#az-kaart-zee");
 }
 
-#aanzien .kaart-kust {
+#aanzien .kaart-golven {
+  fill: url("#az-kaart-golven");
+}
+
+#aanzien .golf {
   fill: none;
-  stroke: #f3dfa2;
-  stroke-width: 14;
+  stroke: #fff;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.55;
 }
 
 #aanzien .kaart-duin {
-  fill: #e9dfbf;
+  fill: #ecdfb6;
 }
 
+#aanzien .kaart-rimpels {
+  fill: url("#az-kaart-rimpels");
+}
+
+#aanzien .rimpel {
+  fill: none;
+  stroke: #cdb87a;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+
+#aanzien .kaart-strand {
+  fill: none;
+  stroke: #f6e3a8;
+  stroke-width: 22;
+}
+
+#aanzien .kaart-vloedlijn {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-dasharray: 2 7;
+  stroke-linecap: round;
+  opacity: 0.8;
+}
+
+#aanzien .kaart-bos {
+  fill: #cfe0c3;
+}
+
+#aanzien .kaart-bomen {
+  fill: url("#az-kaart-bomen");
+}
+
+#aanzien .boom {
+  fill: #8fb47d;
+}
+
+#aanzien .kaart-weg-rand,
 #aanzien .kaart-weg {
   fill: none;
-  stroke: #d6d3cb;
-  stroke-width: 7;
   stroke-linecap: round;
 }
 
+#aanzien .kaart-weg-rand {
+  stroke: #c9c1ad;
+  stroke-width: 11;
+}
+
+#aanzien .kaart-weg {
+  stroke: #fffaf0;
+  stroke-width: 7;
+}
+
+#aanzien .kaart-weg-rand.snelweg {
+  stroke: #c98f3c;
+  stroke-width: 13;
+}
+
+#aanzien .kaart-weg.snelweg {
+  stroke: #f6c879;
+  stroke-width: 9;
+}
+
+#aanzien .kaart-weg-naam {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  fill: #8a7f66;
+  text-transform: uppercase;
+}
+
 #aanzien .kaart-zee-label,
-#aanzien .kaart-duin-label {
+#aanzien .kaart-duin-label,
+#aanzien .kaart-bos-label {
   font-family: var(--serif);
-  font-size: 22px;
   font-style: italic;
-  fill: #6b7f93;
   pointer-events: none;
 }
 
+#aanzien .kaart-zee-label {
+  font-size: 30px;
+  letter-spacing: 0.2em;
+  fill: #6f93b3;
+}
+
 #aanzien .kaart-duin-label {
-  fill: #8a7a4a;
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  fill: #9b8550;
+}
+
+#aanzien .kaart-bos-label {
+  font-size: 13px;
+  fill: #5c7d4c;
 }
 
 #aanzien .kaart-buurt {
@@ -2248,25 +2342,36 @@
 }
 
 #aanzien .kaart-buurt path {
-  stroke: #fff;
-  stroke-width: 3;
-  transition: opacity 150ms;
+  stroke: #b9ad92;
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+  fill-opacity: 0.85;
+  transition: fill-opacity 150ms;
 }
 
+/* Een lichtere groenreeks dan de kalender, zodat namen en spelden leesbaar blijven. */
+#aanzien .kaart-buurt.stap-0 path { fill: #fbf7ec; }
+#aanzien .kaart-buurt.stap-1 path { fill: #e6f0de; }
+#aanzien .kaart-buurt.stap-2 path { fill: #cfe3c5; }
+#aanzien .kaart-buurt.stap-3 path { fill: #b3d3a6; }
+#aanzien .kaart-buurt.stap-4 path { fill: #94c185; }
+
 #aanzien .kaart-buurt:hover path {
-  opacity: 0.85;
+  fill-opacity: 1;
 }
 
 #aanzien .kaart-buurt:focus-visible path,
 #aanzien .kaart-buurt.gekozen path {
   stroke: var(--navy);
-  stroke-width: 4;
+  stroke-width: 3;
+  stroke-dasharray: none;
 }
 
 #aanzien .kaart-buurt-label {
-  font-family: var(--sans);
-  font-size: 15px;
+  font-family: var(--serif);
+  font-size: 13px;
   font-weight: 700;
+  letter-spacing: 0.14em;
   fill: var(--navy);
   pointer-events: none;
 }
@@ -2276,10 +2381,20 @@
   outline: none;
 }
 
+#aanzien .pin-schaduw {
+  fill: rgb(0 0 0 / 22%);
+}
+
+#aanzien .pin-lijf {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 150ms;
+}
+
 #aanzien .pin-rand {
   fill: #fff;
   stroke: #9ca3af;
-  stroke-width: 2.5;
+  stroke-width: 2;
 }
 
 #aanzien .pin-icoon {
@@ -2289,18 +2404,80 @@
 #aanzien .kaart-pin.ontdekt .pin-rand {
   fill: var(--goud);
   stroke: #fff;
-  filter: drop-shadow(0 0 6px rgb(212 175 55 / 70%));
+}
+
+#aanzien .kaart-pin.ontdekt .pin-lijf {
+  filter: drop-shadow(0 0 5px rgb(212 175 55 / 75%));
 }
 
 #aanzien .kaart-pin.ontdekt .pin-icoon {
   fill: var(--navy);
 }
 
-#aanzien .kaart-pin:hover .pin-rand,
+#aanzien .kaart-pin:hover .pin-lijf,
+#aanzien .kaart-pin:focus-visible .pin-lijf,
+#aanzien .kaart-pin.gekozen .pin-lijf {
+  transform: scale(1.18);
+}
+
 #aanzien .kaart-pin:focus-visible .pin-rand,
 #aanzien .kaart-pin.gekozen .pin-rand {
   stroke: var(--navy);
-  stroke-width: 4;
+  stroke-width: 3;
+}
+
+#aanzien .windroos circle {
+  fill: rgb(255 255 255 / 55%);
+  stroke: #6f93b3;
+  stroke-width: 1.5;
+}
+
+#aanzien .windroos-noord {
+  fill: var(--navy);
+}
+
+#aanzien .windroos-zuid {
+  fill: #9fb5c9;
+}
+
+#aanzien .windroos text {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 700;
+  fill: var(--navy);
+}
+
+#aanzien .cartouche rect {
+  fill: #fffaf0;
+  stroke: var(--goud);
+  stroke-width: 2;
+}
+
+#aanzien .cartouche-kroon {
+  fill: var(--goud);
+}
+
+#aanzien .cartouche text {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 700;
+  fill: var(--navy);
+}
+
+#aanzien .kaart-kader,
+#aanzien .kaart-kader-binnen {
+  fill: none;
+  pointer-events: none;
+}
+
+#aanzien .kaart-kader {
+  stroke: var(--navy);
+  stroke-width: 3;
+}
+
+#aanzien .kaart-kader-binnen {
+  stroke: var(--goud);
+  stroke-width: 1.5;
 }
 
 #aanzien .kaart-info {
@@ -2340,6 +2517,12 @@
   background: var(--goud);
   box-shadow: 0 0 4px rgb(212 175 55 / 80%);
 }
+
+#aanzien .kaart-legenda .stap-0 { border: 1px dashed #b9ad92; background: #fbf7ec; }
+#aanzien .kaart-legenda .stap-1 { background: #e6f0de; }
+#aanzien .kaart-legenda .stap-2 { background: #cfe3c5; }
+#aanzien .kaart-legenda .stap-3 { background: #b3d3a6; }
+#aanzien .kaart-legenda .stap-4 { background: #94c185; }
 
 /* ---------- Bekendheid ---------- */
 
