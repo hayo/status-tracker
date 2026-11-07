@@ -4,6 +4,7 @@
  */
 
 // Een rang vraagt PR (min), tijd in het spel (dagen) en een ritueel: een overgangsmoment, zoals in het echt.
+// De hoogste rangen vragen ook een goede stand in meerdere kringen (kring: aantal kringen, vanaf welke stand).
 // Het ritueel is een voorwaarde zoals bij de prestaties (zie boven PRESTATIES).
 export const RANGEN = [
   { min: 0, dagen: 0, naam: 'Voorbijganger', uitleg: 'Een simpele passant in de groene lanen van Wassenaar.', icoon: 'person-walking' },
@@ -23,9 +24,11 @@ export const RANGEN = [
   {
     min: 15000, dagen: 365, naam: 'Wassenaarder', uitleg: 'Niet te onderscheiden van oud geld. Het dorp is van jou.', icoon: 'chess-knight',
     ritueel: { tekst: 'Je bent gezien in zeven terreinen', voorwaarde: { soort: 'terreinen', aantal: 7 } },
+    kring: { aantal: 3, vanaf: 200 },
   },
   {
     min: 30000, dagen: 730, naam: 'Ereburger', uitleg: 'Het absolute toppunt van de lokale samenleving.', icoon: 'crown',
+    kring: { aantal: 4, vanaf: 500 },
     ritueel: { tekst: 'Erkenning van hogerhand: lintje, raadszetel of de burgemeester', voorwaarde: { soort: 'een', lijst: [{ soort: 'symbool', id: 'm_knight' }, { soort: 'symbool', id: 'm_council' }, { soort: 'symbool', id: 'm_mayor' }] } },
   },
 ];
@@ -45,6 +48,7 @@ export const EIGENSCHAP_MAX = 4000;
 export const CATEGORIEEN = [
   {
     id: 'dorp',
+    kringen: { dorp: 1 },
     naam: 'Sociaal en Oostdorp',
     icoon: 'house-chimney',
     kleur: 'teal',
@@ -57,17 +61,17 @@ export const CATEGORIEEN = [
       ['a06', 'Koningsdag in het dorp gevierd', 40, 'civic'],
       ['a07', 'Voorstelling in De Warenar bezocht', 50, 'cultural', { plek: 'warenar' }],
       ['a08', 'Vergadering van Buurtvereniging Oostdorp bijgewoond', 60, 'civic'],
-      ['a09', 'Meegedaan aan Burendag of een opschoondag in de wijk', 70, 'civic'],
-      ['a10', 'Vrijwilliger bij de Oranjevereniging', 100, 'civic'],
+      ['a09', 'Meegedaan aan Burendag of een opschoondag in de wijk', 70, 'civic', { gunst: 1 }],
+      ['a10', 'Vrijwilliger bij de Oranjevereniging', 100, 'civic', { gunst: 1 }],
       ['a11', 'Buurtfeest of straatborrel georganiseerd', 150, 'civic', { tegen: true }],
-      ['a12', 'Condoleancekaart gestuurd of naar een uitvaart geweest', 60, 'civic'],
-      ['a13', 'Buren gefeliciteerd of op kraamvisite geweest', 40, 'civic'],
+      ['a12', 'Condoleancekaart gestuurd of naar een uitvaart geweest', 60, 'civic', { gunst: 1 }],
+      ['a13', 'Buren gefeliciteerd of op kraamvisite geweest', 40, 'civic', { gunst: 1 }],
       ['a14', 'Een verjaardag onthouden, met een kaart', 20, 'stealth'],
-      ['a15', 'Een oudere buur geholpen', 50, 'civic'],
+      ['a15', 'Een oudere buur geholpen', 50, 'civic', { gunst: 1 }],
       ['a16', 'Iemands naam onthouden en de volgende keer gebruikt', 15, 'stealth'],
-      ['a17', 'De buurtapp behulpzaam beantwoord', 15, 'civic'],
-      ['a18', 'Nieuwjaarsreceptie van de gemeente bezocht', 80, 'civic', { plek: 'paauw' }],
-      ['a19', 'Dodenherdenking op 4 mei bijgewoond', 40, 'civic', { stil: true }],
+      ['a17', 'De buurtapp behulpzaam beantwoord', 15, 'civic', { gunst: 1 }],
+      ['a18', 'Nieuwjaarsreceptie van de gemeente bezocht', 80, 'civic', { plek: 'paauw', kringen: { bestuur: 1, dorp: 0.5 } }],
+      ['a19', 'Dodenherdenking op 4 mei bijgewoond', 40, 'civic', { stil: true, gunst: 1 }],
       ['a20', 'Koffietafel op Koningsdag in het centrum', 40, 'civic', { plek: 'langstraat' }],
       ['a21', 'Spullen verkocht op de vrijmarkt van Koningsdag', 30, 'financial'],
       ['a22', 'Jazzavond van de Jazz Sociëteit in het Deylerhuis', 50, 'cultural', { plek: 'deylerhuis' }],
@@ -76,6 +80,7 @@ export const CATEGORIEEN = [
   },
   {
     id: 'civic',
+    kringen: { bestuur: 0.5, dorp: 0.5 },
     naam: 'Civic tech en data',
     icoon: 'code',
     kleur: 'blauw',
@@ -83,18 +88,19 @@ export const CATEGORIEEN = [
       ['b01', 'Raadsvergadering gevolgd, live of teruggekeken', 30, 'civic'],
       ['b02', 'Open data van de gemeente opgevraagd of gebruikt', 40, 'civic'],
       ['b03', 'Gemeenteraad Tracker bijgewerkt', 50, 'civic'],
-      ['b04', 'Raadsvergadering bijgewoond op de publieke tribune', 60, 'stealth', { plek: 'paauw' }],
+      ['b04', 'Raadsvergadering bijgewoond op de publieke tribune', 60, 'stealth', { plek: 'paauw', gunst: -1 }],
       ['b05', 'Blog over Wassenaar gepubliceerd op hayobethlehem.nl', 80, 'civic'],
-      ['b06', 'Maandelijks overzicht van stemgedrag naar journalisten gestuurd', 120, 'civic'],
+      ['b06', 'Maandelijks overzicht van stemgedrag naar journalisten gestuurd', 120, 'civic', { kringen: { dorp: 1, bestuur: -0.5 } }],
       ['b07', 'Vraag van een raadslid beantwoord met data', 120, 'civic'],
-      ['b08', 'Data gedeeld met een journalist van De Wassenaarse Krant of Sleutelstad', 150, 'civic'],
+      ['b08', 'Data gedeeld met een journalist van De Wassenaarse Krant of Sleutelstad', 150, 'civic', { kringen: { dorp: 1, bestuur: -0.5 } }],
       ['b09', 'Ingesproken bij een commissievergadering', 150, 'civic', { plek: 'paauw' }],
-      ['b10', 'Lokale media gebruikten jouw data in een artikel', 200, 'civic'],
+      ['b10', 'Lokale media gebruikten jouw data in een artikel', 200, 'civic', { kringen: { dorp: 1, bestuur: -0.5 } }],
       ['b11', 'Brief of reactie geplaatst in De Wassenaarse Krant, Sleutelstad of wassenaarders.nl', 70, 'civic'],
     ],
   },
   {
     id: 'erfgoed',
+    kringen: { oudgeld: 0.5, bestuur: 0.5 },
     naam: 'Erfgoed en lokale belangen',
     icoon: 'landmark-dome',
     kleur: 'rood',
@@ -107,43 +113,46 @@ export const CATEGORIEEN = [
       ['c06', 'Dorpsmuseum geadviseerd over digitalisering', 75, 'cultural', { plek: 'dorpsmuseum' }],
       ['c07', 'Blog geschreven over Princess Garden of de Tuin van Ruys', 80, 'cultural'],
       ['c08', 'Meegeholpen met het digitaliseren van de museumcollectie', 120, 'cultural', { plek: 'dorpsmuseum' }],
-      ['c09', 'Als vrijwilliger een rondleiding gegeven in het Dorpsmuseum', 90, 'cultural', { plek: 'dorpsmuseum' }],
+      ['c09', 'Als vrijwilliger een rondleiding gegeven in het Dorpsmuseum', 90, 'cultural', { plek: 'dorpsmuseum', gunst: 1 }],
     ],
   },
   {
     id: 'rijk',
+    kringen: { bestuur: 1 },
     naam: 'Ministerie en Rijksoverheid-aura',
     icoon: 'shield-halved',
     kleur: 'navy',
     activiteiten: [
-      ['d01', 'In een lokaal café gewerkt, pasje van het ministerie zichtbaar', 30, 'stealth'],
-      ['d02', 'Over Den Haag verteld zonder namen te noemen', 40, 'stealth'],
+      ['d01', 'In een lokaal café gewerkt, pasje van het ministerie zichtbaar', 30, 'stealth', { kringen: { bestuur: 0.5, dorp: -0.5 }, gunst: -1 }],
+      ['d02', 'Over Den Haag verteld zonder namen te noemen', 40, 'stealth', { gunst: -1 }],
       ['d03', 'Lokale ondernemer gewezen op een landelijke regeling', 60, 'financial'],
       ['d04', 'Lokale stichting geholpen met landelijke digitale regels', 100, 'stealth'],
       ['d05', 'Raadslid of wethouder uitgelegd hoe landelijk digitaal beleid werkt', 150, 'stealth'],
-      ['d06', 'Gemeente en ministerie-contacten informeel met elkaar verbonden', 250, 'stealth'],
+      ['d06', 'Gemeente en ministerie-contacten informeel met elkaar verbonden', 250, 'stealth', { gunst: -1 }],
     ],
   },
   {
     id: 'diplomatiek',
+    kringen: { diplomaten: 1 },
     naam: 'Diplomatieke en expat-kringen',
     icoon: 'globe',
     kleur: 'paars',
     activiteiten: [
-      ['e01', 'Internationale buren geholpen met taal of regels', 40, 'civic'],
+      ['e01', 'Internationale buren geholpen met taal of regels', 40, 'civic', { gunst: 1 }],
       ['e02', 'WhatsApp-buurtpreventie voor expats beheerd', 50, 'stealth'],
       ['e03', 'Expat-buren uitgenodigd voor koffie', 60, 'stealth'],
-      ['e04', 'Borrel van de internationale gemeenschap bezocht', 80, 'stealth'],
+      ['e04', 'Borrel van de internationale gemeenschap bezocht', 80, 'stealth', { gunst: -1 }],
       ['e05', 'International Festival van de American School bezocht', 100, 'cultural', { plek: 'ash' }],
-      ['e06', 'Lezing van de Diplomat Club Wassenaar bijgewoond', 250, 'stealth'],
-      ['e07', 'Uitgenodigd voor een handelsdiner, bijvoorbeeld op De Wittenburg', 400, 'stealth', { uitnodiging: true, bedank: true, plek: 'wittenburg' }],
-      ['e08', 'Twee mensen uit verschillende kringen aan elkaar voorgesteld', 80, 'stealth'],
+      ['e06', 'Lezing van de Diplomat Club Wassenaar bijgewoond', 250, 'stealth', { gunst: -1 }],
+      ['e07', 'Uitgenodigd voor een handelsdiner, bijvoorbeeld op De Wittenburg', 400, 'stealth', { uitnodiging: true, bedank: true, plek: 'wittenburg', gunst: -1 }],
+      ['e08', 'Twee mensen uit verschillende kringen aan elkaar voorgesteld', 80, 'stealth', { kringen: { diplomaten: 0.5, bestuur: 0.5, oudgeld: 0.5 } }],
       ['e09', 'Nationale-dagreceptie van een ambassade bijgewoond', 200, 'stealth', { nationaal: true }],
       ['e10', 'Gastles gegeven op de American School', 120, 'cultural', { plek: 'ash' }],
     ],
   },
   {
     id: 'buiten',
+    kringen: { dorp: 0.5, oudgeld: 0.5 },
     naam: 'Natuur en buitenleven',
     icoon: 'tree',
     kleur: 'groen',
@@ -154,9 +163,9 @@ export const CATEGORIEEN = [
       ['f04', 'Getennist bij Kielten', 40, 'physical', { plek: 'kielten' }],
       ['f05', 'Meegetraind met het WZK Tri-Team', 60, 'physical'],
       ['f06', 'Gedoneerd aan Stichting Duivenvoorde', 80, 'cultural'],
-      ['f07', 'Meegedaan aan een natuurwerkdag of strandopruimactie', 80, 'physical'],
+      ['f07', 'Meegedaan aan een natuurwerkdag of strandopruimactie', 80, 'physical', { gunst: 1 }],
       ['f08', 'Vrijwilliger bij Kasteel Duivenvoorde', 100, 'cultural', { plek: 'duivenvoorde' }],
-      ['f09', 'Vrijwilliger bij de Wassenaarse Reddingsbrigade', 150, 'physical', { plek: 'slag' }],
+      ['f09', 'Vrijwilliger bij de Wassenaarse Reddingsbrigade', 150, 'physical', { plek: 'slag', gunst: 1 }],
       ['f10', 'Meegedaan aan de Zwemloop Wassenaar', 200, 'physical', { plek: 'slag' }],
       ['f11', 'Wedstrijd van HGC Heren 1 bezocht op De Roggewoning', 40, 'physical', { plek: 'roggewoning' }],
       ['f12', 'Op de 9-holesbaan van Groen-Geel gespeeld', 50, 'physical', { plek: 'roggewoning' }],
@@ -167,6 +176,7 @@ export const CATEGORIEEN = [
   },
   {
     id: 'handel',
+    kringen: { dorp: 1 },
     naam: 'Lokale handel en filantropie',
     icoon: 'store',
     kleur: 'oranje',
@@ -175,17 +185,18 @@ export const CATEGORIEEN = [
       ['g02', 'Kwaliteitsvlees gehaald bij Slagerij Groeneveld', 20, 'financial', { plek: 'langstraat' }],
       ['g03', 'Boodschappen gedaan bij een speciaalzaak in de Langstraat', 20, 'financial', { plek: 'langstraat' }],
       ['g04', 'Gegeten bij een lokaal restaurant', 40, 'financial'],
-      ['g05', 'Spullen gebracht naar de Kinderkringloop', 40, 'civic'],
-      ['g06', 'Gecollecteerd voor een goed doel in de wijk', 60, 'civic'],
+      ['g05', 'Spullen gebracht naar de Kinderkringloop', 40, 'civic', { gunst: 1 }],
+      ['g06', 'Gecollecteerd voor een goed doel in de wijk', 60, 'civic', { gunst: 1 }],
       ['g07', 'Kinderkringloop digitaal geholpen', 100, 'civic'],
       ['g08', 'Centrummanagement geadviseerd over leegstand in de Langstraat', 100, 'financial'],
       ['g09', 'Lokale ondernemer geholpen met de website', 120, 'financial'],
       ['g10', 'Meegeholpen bij een jeugdteam, als trainer of scheidsrechter', 120, 'physical'],
-      ['g11', 'Jeugdteam van SV Wassenaar, Blauw-Zwart of Kielten gesponsord', 300, 'financial'],
+      ['g11', 'Jeugdteam van SV Wassenaar, Blauw-Zwart of Kielten gesponsord', 300, 'financial', { kringen: { dorp: 1.5 } }],
     ],
   },
   {
     id: 'overlast',
+    kringen: { bestuur: 0.5, dorp: 0.5 },
     naam: 'Lokale noodzaken en dossiers',
     icoon: 'bicycle',
     kleur: 'amber',
@@ -195,8 +206,8 @@ export const CATEGORIEEN = [
       ['h03', 'Informatieavond over de Noordrand bijgewoond', 50, 'civic'],
       ['h04', 'Data verzameld over overlast door fatbikes', 60, 'civic'],
       ['h05', 'Meegepraat in het debat over 30 km per uur', 60, 'civic'],
-      ['h06', 'Opiniestuk over fatbikes gepubliceerd', 90, 'civic'],
-      ['h07', 'Campagne gevoerd voor 30 km per uur', 120, 'civic'],
+      ['h06', 'Opiniestuk over fatbikes gepubliceerd', 90, 'civic', { kringen: { oudgeld: 1, dorp: -0.5 } }],
+      ['h07', 'Campagne gevoerd voor 30 km per uur', 120, 'civic', { kringen: { oudgeld: 1, bestuur: -0.5 } }],
       ['h08', 'Inzichten met data over de Noordrand gepubliceerd', 120, 'civic'],
       ['h09', 'Dossier, stap 1: informatieavond bijgewoond', 50, 'civic', { dossierstap: 1 }],
       ['h10', 'Dossier, stap 2: zienswijze ingediend', 80, 'civic', { dossierstap: 2 }],
@@ -206,6 +217,7 @@ export const CATEGORIEEN = [
   },
   {
     id: 'oudgeld',
+    kringen: { oudgeld: 1 },
     naam: 'Oud-geldgewoonten',
     icoon: 'champagne-glasses',
     kleur: 'goud',
@@ -213,16 +225,37 @@ export const CATEGORIEEN = [
       ['i01', 'Zondagse wandeling door De Kieviet', 20, 'stealth'],
       ['i02', 'Bedankkaart met de hand geschreven', 30, 'stealth'],
       ['i03', 'Borrel bij iemand thuis bijgewoond', 80, 'stealth', { uitnodiging: true, bedank: true }],
-      ['i04', 'Uitgenodigd voor een verjaardag in De Kieviet of Rijksdorp', 120, 'stealth', { uitnodiging: true, bedank: true }],
-      ['i05', 'Zelf een tuinborrel gegeven voor buren en contacten', 150, 'stealth', { tegen: true }],
+      ['i04', 'Uitgenodigd voor een verjaardag in De Kieviet of Rijksdorp', 120, 'stealth', { uitnodiging: true, bedank: true, gunst: -1 }],
+      ['i05', 'Zelf een tuinborrel gegeven voor buren en contacten', 150, 'stealth', { tegen: true, kringen: { oudgeld: 1, dorp: 0.5 } }],
       ['i06', 'Eetclub of boekenclub bijgewoond', 60, 'cultural'],
-      ['i07', 'Als introducé meegenomen naar de golfclub of de Rotary', 120, 'stealth', { uitnodiging: true, bedank: true }],
+      ['i07', 'Als introducé meegenomen naar de golfclub of de Rotary', 120, 'stealth', { uitnodiging: true, bedank: true, gunst: -1 }],
       ['i08', 'Een diner thuis gegeven', 150, 'stealth', { tegen: true }],
       ['i09', 'Een tegenbezoek gebracht', 60, 'stealth', { tegen: true }],
     ],
   },
   {
+    id: 'gezin',
+    kringen: { dorp: 1 },
+    naam: 'Gezin: met je vrouw en zoon',
+    icoon: 'people-roof',
+    kleur: 'rood',
+    activiteiten: [
+      ['z01', 'Praatje met andere ouders op het schoolplein', 20, 'civic', { energie: 3 }],
+      ['z02', 'Ouderavond of schoolactiviteit van je zoon bezocht', 40, 'civic'],
+      ['z03', 'Met je zoon naar een wedstrijd of training', 40, 'physical'],
+      ['z04', 'Je zoon naar een kinderfeestje gebracht, met een praatje', 30, 'stealth', { energie: 5 }],
+      ['z05', 'Zelf een kinderfeestje of speelafspraak georganiseerd', 80, 'civic', { tegen: true }],
+      ['z06', 'Je zoon nam een vriendje mee naar huis', 30, 'civic', { energie: 3 }],
+      ['z07', 'Samen met je vrouw mensen thuis ontvangen', 120, 'stealth', { tegen: true, kringen: { oudgeld: 1, dorp: 0.5 } }],
+      ['z08', 'Met je vrouw naar een diner of borrel', 80, 'stealth', { kringen: { oudgeld: 1 } }],
+      ['z09', 'Je vrouw stelde je voor aan haar netwerk', 80, 'stealth', { kringen: { oudgeld: 0.5, diplomaten: 0.5 } }],
+      ['z10', 'Met z\'n drieën naar Meijendel, het strand of Duinrell', 30, 'physical', { energie: -20 }],
+      ['z11', 'Gezinsdag: geen afspraken, alleen samen', 10, 'physical', { energie: -30, gunst: 1 }],
+    ],
+  },
+  {
     id: 'kaart',
+    kringen: { dorp: 0.5 },
     naam: 'Dorpskaart: plekken',
     icoon: 'map',
     kleur: 'teal',
@@ -239,24 +272,27 @@ export const CATEGORIEEN = [
   },
   {
     id: 'protocol',
+    kringen: { diplomaten: 0.5, oudgeld: 0.5 },
     naam: 'Protocol en etiquette',
     icoon: 'scroll',
     kleur: 'zilver',
     activiteiten: [
       ['p01', 'Binnen twee dagen geantwoord op een uitnodiging (RSVP)', 20, 'stealth'],
       ['p02', 'De juiste dresscode gedragen', 20, 'cultural'],
-      ['p03', 'Een bedankje gestuurd: kaart of bloemen', 30, 'stealth'],
-      ['p04', 'Visitekaartjes uitgewisseld', 20, 'stealth'],
+      ['p03', 'Een bedankje gestuurd: kaart of bloemen', 30, 'stealth', { gunst: 1 }],
+      ['p04', 'Visitekaartjes uitgewisseld', 20, 'stealth', { gunst: -1 }],
       ['p05', 'Een ambassadeur correct aangesproken', 40, 'cultural'],
       ['p06', 'Een korte toast uitgebracht', 80, 'civic'],
       ['p07', 'Small talk gevoerd in een derde taal', 40, 'cultural'],
-      ['p08', 'Discreet gebleven over een besloten bijeenkomst', 50, 'stealth'],
+      ['p08', 'Discreet gebleven over een besloten bijeenkomst', 50, 'stealth', { gunst: 1 }],
       ['p09', 'Als gastheer de tafelschikking goed gedaan', 60, 'cultural'],
     ],
   },
 // Kenmerken (vijfde veld): uitnodiging (je werd uitgenodigd), tegen (je nodigde zelf uit),
 // bedank (vraagt om een bedankje), nationaal (extra XP rond een nationale dag), plek (id in PLEKKEN),
-// dossierstap (1 tot 4, je kiest een dossier uit DOSSIERS), stil (nooit een bonus, zoals bij een herdenking).
+// dossierstap (1 tot 4, je kiest een dossier uit DOSSIERS), stil (nooit een bonus, zoals bij een herdenking),
+// kringen (in plaats van die van het terrein), gunst (1 belangeloos, -1 strategisch),
+// energie (wat het kost; negatief is opladen; anders volgt het uit de punten).
 ].map((c) => ({ ...c, activiteiten: c.activiteiten.map(([id, naam, punten, eigenschap, kenmerken = {}]) => ({ id, naam, punten, eigenschap, ...kenmerken })) }));
 
 export const SYMBOLEN = [
@@ -264,17 +300,17 @@ export const SYMBOLEN = [
   { id: 'm_hgc', punten: 400, naam: 'Lid van HGC', icoon: 'hockey-puck', stijl: 'ingetogen', eigenschap: 'physical' },
   { id: 'm_rozenstein', punten: 900, naam: 'Lid van Golfclub Rozenstein', icoon: 'golf-ball-tee', eigenschap: 'physical' },
   { id: 'm_barbour', punten: 200, naam: 'Een Barbour-jas die ouder is dan je kinderen', icoon: 'shirt', stijl: 'ingetogen', eigenschap: 'stealth' },
-  { id: 'm_hond', punten: 200, naam: 'Je hond kent de weg door Meijendel beter dan jij', icoon: 'dog', stijl: 'ingetogen', eigenschap: 'physical' },
+  { id: 'm_hond', punten: 200, naam: 'Je kent de paden van Meijendel blind', icoon: 'person-hiking', stijl: 'ingetogen', eigenschap: 'physical' },
   { id: 'm_boswachter', punten: 250, naam: 'De boswachter groet je bij naam', icoon: 'tree', stijl: 'ingetogen', eigenschap: 'physical' },
   { id: 'm_fiets', punten: 150, naam: 'Je fiets heeft een mand en is minstens twintig jaar oud', icoon: 'bicycle', stijl: 'ingetogen', eigenschap: 'stealth' },
   { id: 'm_familieborrel', punten: 600, naam: 'Uitgenodigd op de nieuwjaarsborrel van een oude familie', icoon: 'champagne-glasses', stijl: 'ingetogen', eigenschap: 'stealth' },
-  { id: 'm_lid_oostdorp', punten: 300, naam: 'Lid van Buurtvereniging Oostdorp', icoon: 'house-chimney', stijl: 'ingetogen', eigenschap: 'civic' },
+  { id: 'm_lid_oostdorp', punten: 300, naam: 'Lid van Buurtvereniging Oostdorp', icoon: 'house-chimney', stijl: 'ingetogen', kringen: { dorp: 1.5 }, eigenschap: 'civic' },
   { id: 'm_slager', punten: 300, naam: 'Bij naam begroet bij Slagerij Groeneveld', icoon: 'drumstick-bite', stijl: 'ingetogen', eigenschap: 'financial' },
-  { id: 'm_pops', punten: 300, naam: 'Bij Pops weten ze wat je drinkt', icoon: 'mug-hot', stijl: 'ingetogen', eigenschap: 'stealth' },
+  { id: 'm_pops', punten: 300, naam: 'Bij Pops weten ze wat je drinkt', icoon: 'mug-hot', stijl: 'ingetogen', kringen: { dorp: 1 }, eigenschap: 'stealth' },
   { id: 'm_news', punten: 400, naam: 'Genoemd in De Wassenaarse Krant', icoon: 'newspaper', eigenschap: 'civic' },
   { id: 'm_heritage_map', punten: 600, naam: 'Beschermer van Wassenaars erfgoed', icoon: 'landmark-dome', eigenschap: 'cultural' },
   { id: 'm_art', punten: 600, naam: 'Schilderij van de Haagse School gekocht', icoon: 'image', stijl: 'ingetogen', eigenschap: 'cultural' },
-  { id: 'm_car', punten: 700, naam: 'Klassieke Porsche of Land Rover gekocht', icoon: 'car', stijl: 'opzichtig', eigenschap: 'financial' },
+  { id: 'm_car', punten: 700, naam: 'Klassieke Porsche of Land Rover gekocht', icoon: 'car', stijl: 'opzichtig', kringen: { oudgeld: -1, dorp: -0.5 }, eigenschap: 'financial' },
   { id: 'm_rotary', punten: 700, naam: 'Bestuurslid van de Rotary of Lions Club', icoon: 'handshake-angle', eigenschap: 'civic' },
   { id: 'm_bestuur', punten: 700, naam: 'Bestuurslid van een lokale stichting of vereniging', icoon: 'users', eigenschap: 'civic' },
   { id: 'm_paauw', punten: 800, naam: 'Je zienswijze over De Paauw werd genoemd in de raad', icoon: 'tree', eigenschap: 'cultural' },
@@ -283,14 +319,14 @@ export const SYMBOLEN = [
   { id: 'm_civic_tool', punten: 1000, naam: 'Je civic tool wordt gebruikt door de gemeente', icoon: 'code-branch', eigenschap: 'civic' },
   { id: 'm_haring', punten: 1200, naam: 'Jaarlijkse haringparty georganiseerd', icoon: 'fish-fins', stijl: 'ingetogen', eigenschap: 'stealth' },
   { id: 'm_mayor_consult', punten: 1200, naam: 'De burgemeester vroeg je om advies over tech', icoon: 'lightbulb', eigenschap: 'civic' },
-  { id: 'm_council', punten: 1500, naam: 'Gekozen in de gemeenteraad van Wassenaar', icoon: 'landmark', eigenschap: 'civic' },
-  { id: 'm_spreker', punten: 1500, naam: 'Spreker bij de Diplomat Club Wassenaar', icoon: 'microphone', eigenschap: 'stealth' },
-  { id: 'm_strand', punten: 1800, naam: 'Strandhuisje bij de Wassenaarse Slag', icoon: 'umbrella-beach', stijl: 'opzichtig', eigenschap: 'cultural' },
-  { id: 'm_haagsche', punten: 2000, naam: 'Ballotage gehaald bij de Koninklijke Haagsche Golf', icoon: 'golf-ball-tee', stijl: 'opzichtig', eigenschap: 'physical' },
-  { id: 'm_house', punten: 2500, naam: 'Rijksmonument gekocht', icoon: 'house-flag', stijl: 'opzichtig', eigenschap: 'financial' },
-  { id: 'm_mayor', punten: 3000, naam: 'Je tutoyeert de burgemeester', icoon: 'handshake-simple', stijl: 'ingetogen', eigenschap: 'stealth' },
-  { id: 'm_knight', punten: 5000, naam: 'Ridder in de Orde van Oranje-Nassau', icoon: 'medal', eigenschap: 'civic' },
-  { id: 'm_royal', punten: 8000, naam: 'In de inner circle van het Koninklijk Huis', icoon: 'chess-king', stijl: 'ingetogen', eigenschap: 'stealth' },
+  { id: 'm_council', punten: 1500, naam: 'Gekozen in de gemeenteraad van Wassenaar', icoon: 'landmark', kringen: { bestuur: 1.5, dorp: 0.5 }, eigenschap: 'civic' },
+  { id: 'm_spreker', punten: 1500, naam: 'Spreker bij de Diplomat Club Wassenaar', icoon: 'microphone', kringen: { diplomaten: 1.5 }, eigenschap: 'stealth' },
+  { id: 'm_strand', punten: 1800, naam: 'Strandhuisje bij de Wassenaarse Slag', icoon: 'umbrella-beach', stijl: 'opzichtig', kringen: { oudgeld: 1 }, eigenschap: 'cultural' },
+  { id: 'm_haagsche', punten: 2000, naam: 'Ballotage gehaald bij de Koninklijke Haagsche Golf', icoon: 'golf-ball-tee', stijl: 'opzichtig', kringen: { oudgeld: 1.5 }, eigenschap: 'physical' },
+  { id: 'm_house', punten: 2500, naam: 'Rijksmonument gekocht', icoon: 'house-flag', stijl: 'opzichtig', kringen: { oudgeld: 1 }, eigenschap: 'financial' },
+  { id: 'm_mayor', punten: 3000, naam: 'Je tutoyeert de burgemeester', icoon: 'handshake-simple', stijl: 'ingetogen', kringen: { bestuur: 1.5 }, eigenschap: 'stealth' },
+  { id: 'm_knight', punten: 5000, naam: 'Ridder in de Orde van Oranje-Nassau', icoon: 'medal', kringen: { bestuur: 1, oudgeld: 1 }, eigenschap: 'civic' },
+  { id: 'm_royal', punten: 8000, naam: 'In de inner circle van het Koninklijk Huis', icoon: 'chess-king', stijl: 'ingetogen', kringen: { oudgeld: 2 }, eigenschap: 'stealth' },
 ];
 
 // Startvragen: per antwoord de punten. De eigenschap krijgt punten × deel.
@@ -343,6 +379,7 @@ export const STARTVRAGEN = [
  * wederkerig (uitnodigingen op tijd beantwoord), tegen (zelf uitgenodigd), bedankt (op tijd bedankt),
  * lof (keer lovend besproken), blaam (keer kritisch besproken), quiz (vragen goed beantwoord),
  * plekken (ontdekt op de dorpskaart), buurten (actief in zo veel buurten), buurt (id, zo vaak), dossiers (afgerond),
+ * kringen (zo veel kringen op stand vanaf), gunfactor (minstens), rol (id, zo veel mensen in die rol),
  * alle (een lijst die allemaal moet), een (een lijst waarvan er één moet).
  */
 
@@ -379,6 +416,11 @@ export const PRESTATIES = [
   { id: 'p_kieviet', naam: 'Kievietse kringen', uitleg: 'Tien keer actief in De Kieviet.', icoon: 'chess-rook', voorwaarde: { soort: 'buurt', id: 'De Kieviet', aantal: 10 } },
   { id: 'p_dossier', naam: 'Dossierkenner', uitleg: 'Eén lokaal dossier van begin tot eind gevolgd.', icoon: 'folder-open', voorwaarde: { soort: 'dossiers', aantal: 1 } },
   { id: 'p_waakhond', naam: 'Waakhond van het dorp', uitleg: 'Drie lokale dossiers afgerond.', icoon: 'folder-open', voorwaarde: { soort: 'dossiers', aantal: 3 } },
+  { id: 'p_welkom', naam: 'Overal welkom', uitleg: 'Gewaardeerd in alle vier de kringen.', icoon: 'scale-balanced', voorwaarde: { soort: 'kringen', aantal: 4, vanaf: 200 } },
+  { id: 'p_gegund', naam: 'Iedereen gunt het je', uitleg: 'Een gunfactor van 80 of meer.', icoon: 'heart', voorwaarde: { soort: 'gunfactor', aantal: 80 } },
+  { id: 'p_schoolplein', naam: 'Schoolpleinnetwerk', uitleg: 'Vijf ouders van klasgenoten in je netwerk.', icoon: 'children', voorwaarde: { soort: 'rol', id: 'Ouder van een klasgenoot', aantal: 5 } },
+  { id: 'p_gastgezin', naam: 'Huis van gastvrijheid', uitleg: 'Vijf keer samen met je vrouw mensen thuis ontvangen.', icoon: 'house-user', voorwaarde: { soort: 'activiteit', id: 'z07', aantal: 5 } },
+  { id: 'p_gezinsdag', naam: 'Eerst het thuisfront', uitleg: 'Tien gezinsdagen zonder afspraken.', icoon: 'people-roof', voorwaarde: { soort: 'activiteit', id: 'z11', aantal: 10 } },
   { id: 'p_tong', naam: 'Over de tong', uitleg: 'Het dorp sprak er schande van.', icoon: 'comments', geheim: true, voorwaarde: { soort: 'blaam', aantal: 1 } },
   { id: 'p_schaduw', naam: 'Eminence grise', uitleg: 'Sociale discretie op 75 / 100.', icoon: 'user-secret', geheim: true, voorwaarde: { soort: 'skill', id: 'stealth', aantal: 3000 } },
 ];
@@ -397,6 +439,7 @@ export const TITELS = [
   { id: 't_gastheer', naam: 'Gastheer van de lanen', uitleg: 'Tien keer zelf mensen uitgenodigd.', voorwaarde: { soort: 'tegen', aantal: 10 } },
   { id: 't_spin', naam: 'De spin in het web', uitleg: 'Vijfentwintig mensen in tien verschillende rollen.', voorwaarde: { soort: 'alle', lijst: [{ soort: 'contacten', aantal: 25 }, { soort: 'rollen', aantal: 10 }] } },
   { id: 't_inspreker', naam: 'Inspreker van dienst', uitleg: 'Alle zes de lokale dossiers afgerond.', voorwaarde: { soort: 'dossiers', aantal: 6 } },
+  { id: 't_ingewijde', naam: 'Ingewijde', uitleg: 'Vertrouwd in alle vier de kringen.', voorwaarde: { soort: 'kringen', aantal: 4, vanaf: 500 } },
   { id: 't_wereld', naam: 'Wereldburger', uitleg: 'Tien keer actief in diplomatieke en expat-kringen.', voorwaarde: { soort: 'terrein', id: 'diplomatiek', aantal: 10 } },
 ];
 
@@ -474,7 +517,7 @@ export const RODDEL = {
 export const ROLLEN = [
   'Buur', 'Dorpsgenoot', 'Raadslid of wethouder', 'Ambtenaar', 'Journalist', 'Diplomaat', 'Expat',
   'Ondernemer', 'Bestuurder van een vereniging', 'Cultuur of erfgoed', 'Sport of natuur',
-  'Oud-Wassenaarse familie', 'Haagse politiek of Rijk',
+  'Oud-Wassenaarse familie', 'Haagse politiek of Rijk', 'Ouder van een klasgenoot',
 ];
 
 // Nationale dagen (MM-DD). Ambassades houden hun receptie vaak rond deze dag, soms op een andere.
@@ -547,3 +590,35 @@ export const DOSSIERS = [
   { id: 'kieviet', naam: 'Bomenkap en villabouw in De Kieviet', icoon: 'tree' },
 ];
 export const DOSSIER_STAPPEN = ['Informatieavond', 'Zienswijze', 'Inspreken', 'Uitkomst en blog'];
+
+/* ---------- Dimensies: kringen, gunfactor, energie ---------- */
+
+// Je aanzien per kring. Elke activiteit telt mee voor de kringen van haar terrein (kringen), of voor
+// haar eigen kringen. Per punt basis-PR telt een tiende mee, keer het gewicht. Negatief kan ook.
+export const KRINGEN = [
+  { id: 'dorp', naam: 'Dorpelingen', icoon: 'house-chimney' },
+  { id: 'oudgeld', naam: 'Oud geld', icoon: 'chess-rook' },
+  { id: 'diplomaten', naam: 'Diplomaten en expats', icoon: 'globe' },
+  { id: 'bestuur', naam: 'Bestuur en politiek', icoon: 'landmark' },
+];
+export const KRING_STANDEN = [
+  [-Infinity, 'Gewantrouwd'], [0, 'Onbekend'], [50, 'Bekend'], [200, 'Gewaardeerd'], [500, 'Vertrouwd'], [1000, 'Ingewijd'],
+];
+export const KRING_SYMBOOL = { dorp: 0.5, oudgeld: 0.5 }; // voor een statussymbool zonder eigen kringen
+
+// De gunfactor (Goffman, oud geld): belangeloos doen laat hem stijgen, strategisch netwerken dalen.
+// Hij kijkt naar de laatste weken.
+export const GUNFACTOR = {
+  start: 50, dagen: 84, belangeloos: 3, strategisch: -2, opzichtig: -5, blaam: -5,
+  streber: 30, streberFactor: 0.8, gegund: 70, gegundFactor: 1.1,
+};
+
+// Tijd en energie: elke week een sociaal budget. Een activiteit kost energie (de punten gedeeld door
+// ENERGIE.deler, tussen min en max), tenzij ze een eigen energie heeft. Wie over zijn budget gaat,
+// heeft een sociale kater en verdient minder.
+export const ENERGIE = { week: 100, deler: 6, min: 3, max: 30, kater: 0.7 };
+// Je type bepaalt waar je van oplaadt: die activiteiten kosten niets en geven de helft terug.
+export const TYPEN = [
+  { id: 'introvert', naam: 'Introvert', uitleg: 'Je laadt op in de natuur, op de plekken van de dorpskaart en thuis.', terreinen: ['buiten', 'kaart', 'gezin'] },
+  { id: 'extravert', naam: 'Extravert', uitleg: 'Je laadt op van borrels, Pops en een volle tafel.', terreinen: ['oudgeld', 'dorp'] },
+];

@@ -112,10 +112,12 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 
 | Wat | Velden |
 | --- | --- |
-| `RANGEN` | `min` (punten vanaf), `dagen` (tijd in het spel), `ritueel` (`tekst` en `voorwaarde`), `naam`, `uitleg`, `icoon` |
+| `RANGEN` | `min` (punten vanaf), `dagen` (tijd in het spel), `ritueel` (`tekst` en `voorwaarde`), `kring?` (`aantal` kringen vanaf stand `vanaf`), `naam`, `uitleg`, `icoon` |
 | `EIGENSCHAPPEN` | sleutel => `naam` en `icoon`. `EIGENSCHAP_MAX` is het aantal punten waarbij de balk vol is |
-| `CATEGORIEEN` | `id`, `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |
-| `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `stijl?` (`opzichtig` of `ingetogen`), `eigenschap` |
+| `CATEGORIEEN` | `id`, `kringen` (gewicht per kring), `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |
+| `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `stijl?` (`opzichtig` of `ingetogen`), `kringen?`, `eigenschap` |
+| `KRINGEN` | de vier kringen; met `KRING_STANDEN` en `KRING_SYMBOOL` |
+| `GUNFACTOR`, `ENERGIE`, `TYPEN` | de getallen voor gunfactor en energie, en de typen introvert en extravert |
 | `ROLLEN` | de rollen voor het netwerk |
 | `NATIONALE_DAGEN` | `[land, MM-DD]` |
 | `QUIZ` | `id`, `vraag`, `antwoorden`, `goed` (index), `uitleg` |
@@ -127,7 +129,9 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 De kenmerken van een activiteit: `uitnodiging` (je werd uitgenodigd), `tegen` (je
 nodigde zelf uit), `bedank` (vraagt om een bedankje) en `nationaal` (extra XP rond
 een nationale dag), `plek` (een id uit `PLEKKEN`), `dossierstap` (1 tot 4) en
-`stil` (nooit een bonus, zoals bij de Dodenherdenking).
+`stil` (nooit een bonus, zoals bij de Dodenherdenking), `kringen` (eigen gewichten
+in plaats van die van het terrein; negatief mag), `gunst` (1 belangeloos, -1
+strategisch) en `energie` (eigen kosten; negatief is opladen).
 
 Een nieuwe activiteit krijgt een nieuw id, zoals `a24`. Een nieuwe plek op de
 dorpskaart: zet hem in `PLEKKEN` en geef een of meer activiteiten die `plek`.
@@ -149,7 +153,7 @@ niveau. De rang van je karakter is ook zijn niveau: Voorbijganger is niveau 1.
 ### De landingspagina
 
 De landingspagina is gewone HTML, zonder script. Ze noemt een paar aantallen
-(123 activiteiten, 7 rangen, 34 prestaties, elf terreinen, 21 plekken) en de rangen en terreinen. Verander
+(134 activiteiten, 7 rangen, 39 prestaties, twaalf terreinen, 21 plekken) en de rangen en terreinen. Verander
 je die in `gegevens.js`, pas dan ook `index.html` aan. De iconen staan in een
 eigen sprite boven in `index.html`.
 
@@ -223,6 +227,22 @@ De regels staan in `spel.js`, de getallen en teksten in `gegevens.js`.
 - **Dossiers.** De vier activiteiten met `dossierstap` vragen welk dossier. Heb
   je in een dossier alle vier de stappen gedaan, dan komt er één keer een regel
   "Dossier afgerond" met `DOSSIER_BELONING`, met `dossierAf`.
+- **Kringen.** Elke activiteit telt mee voor de kringen van haar terrein, of voor
+  haar eigen `kringen`: het gewicht keer een tiende van de basis-PR. Zo botsen
+  dingen: een opiniestuk over fatbikes is goed bij oud geld en minder bij
+  dorpelingen; een Porsche kost aanzien bij oud geld. Roddel komt uit één kring
+  en telt daar (`kringen` in de regel). Wassenaarder vraagt drie kringen op
+  Gewaardeerd, Ereburger alle vier op Vertrouwd.
+- **Gunfactor.** Over de laatste `GUNFACTOR.dagen` dagen, vanaf 50: belangeloze
+  activiteiten erbij, strategische eraf, net als opzichtige symbolen en blaam.
+  Onder `streber` leveren strategische activiteiten minder op, vanaf `gegund`
+  alles iets meer.
+- **Energie.** Elke week `ENERGIE.week`. Een activiteit kost de punten gedeeld door
+  `deler`, tussen `min` en `max`, of haar eigen `energie`. Je `type` (Erelijst)
+  maakt sommige terreinen opladend. De kosten worden in de regel bewaard. Boven
+  je budget heb je een sociale kater: ×`kater` op wat energie kost.
+- **Gezin.** Een eigen terrein met je vrouw en zoon. De rol "Ouder van een
+  klasgenoot" voor het schoolpleinnetwerk; gezinsdagen laden altijd op.
 - **Stil.** Een activiteit met `stil` krijgt nooit een bonus: een herdenking is
   geen wedstrijd.
 - **Etiquettequiz.** Onder Strategie. Elk goed antwoord geeft één keer

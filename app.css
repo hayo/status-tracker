@@ -1927,6 +1927,86 @@
   color: #15803d;
 }
 
+/* ---------- Je positie: kringen, gunfactor, energie ---------- */
+
+#aanzien .positie {
+  display: grid;
+  gap: 1em 2em;
+}
+
+@media (width >= 46em) {
+  #aanzien .positie {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+
+#aanzien .positie h4 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  margin: 0 0 0.5em;
+  color: var(--navy);
+  font-family: var(--serif);
+}
+
+#aanzien .positie p {
+  margin: 0.4em 0 1em;
+}
+
+#aanzien .kringen {
+  display: grid;
+  gap: 0.75em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .kring {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.3em 0.6em;
+  font-size: 0.9em;
+}
+
+#aanzien .kring .spoor {
+  grid-column: 1 / -1;
+}
+
+#aanzien .kring-icoon {
+  color: var(--navy);
+}
+
+#aanzien .kring-stand {
+  color: var(--zacht);
+  font-size: 0.9em;
+  font-weight: 700;
+}
+
+#aanzien .negatief .kring-stand {
+  color: var(--rood);
+}
+
+#aanzien meter::-webkit-meter-suboptimum-value {
+  background: var(--goud);
+}
+
+#aanzien meter::-webkit-meter-even-less-good-value {
+  background: var(--rood);
+}
+
+#aanzien .kater h4 {
+  color: var(--rood);
+}
+
+#aanzien .venster-effect {
+  color: var(--zacht);
+  font-size: 0.85em;
+}
+
+#aanzien .venster-effect:empty {
+  display: none;
+}
+
 /* ---------- Opslag op de server ---------- */
 
 #aanzien .koppel {

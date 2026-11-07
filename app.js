@@ -11,10 +11,12 @@ import { VERSIES } from './wijzigingen/versies.js';
 import {
   RANGEN, EIGENSCHAPPEN, EIGENSCHAP_MAX, CATEGORIEEN, SYMBOLEN, STARTVRAGEN, PRESTATIES, TITELS, PADEN, PAD_VANAF,
   ROLLEN, QUIZ, QUIZ_PUNTEN, DUNBAR, HECHT_VANAF, NATIONAAL_MARGE, PLEKKEN, BUURTEN, DOSSIER_STAPPEN, DOSSIER_BELONING,
+  KRINGEN, KRING_SYMBOOL, TYPEN, GUNFACTOR,
 } from './gegevens.js';
 import {
   dagSleutel, alsDatum, plusDagen, maandag, dagenTussen, ACTIVITEITEN, telt, rangIndex, rang as rangVan, verval,
   kapitaal, netwerk, gastvrijheid, opvolgingen, roddel, nationaleDag, komendeNationaleDagen, dossiers,
+  kringen, kringStand, gunfactor, gunLabel, kosten, energie,
   behaald, perWeek, reeks, event, volgendEvent, pad, bonussen, statistiek, voortgang, ontgrendeld,
   missies, jaren, jaaroverzicht, samenvoegen,
 } from './spel.js';
@@ -71,7 +73,7 @@ function laad() {
 // Zet opgeslagen gegevens om naar een spel. Kent ook de formaten van versie 1 en 2.
 function leesIn(ruw) {
   if (!ruw || typeof ruw !== 'object') throw new Error('Geen geldig bestand.');
-  const nieuw = { versie: 3, logboek: [], ronde: 0, titel: null, pad: null, vergeten: false, generatie: nieuwId(), bijgewerkt: '', verwijderd: [] };
+  const nieuw = { versie: 3, logboek: [], ronde: 0, titel: null, pad: null, type: null, vergeten: false, generatie: nieuwId(), bijgewerkt: '', verwijderd: [] };
   if (ruw.versie >= 2 && Array.isArray(ruw.logboek)) {
     const geldig = ruw.logboek.filter((r) => r && typeof r.datum === 'string' && Number.isFinite(r.punten));
     return {
@@ -80,6 +82,7 @@ function leesIn(ruw) {
       ronde: Number.isInteger(ruw.ronde) ? ruw.ronde : 0,
       titel: typeof ruw.titel === 'string' ? ruw.titel : null,
       pad: typeof ruw.pad === 'string' ? ruw.pad : null,
+      type: TYPEN.some((t) => t.id === ruw.type) ? ruw.type : null,
       vergeten: ruw.vergeten === true,
       generatie: typeof ruw.generatie === 'string' ? ruw.generatie : nieuw.generatie,
       bijgewerkt: typeof ruw.bijgewerkt === 'string' ? ruw.bijgewerkt : '',
@@ -271,6 +274,8 @@ function toonStatus() {
     [volgende.eisen.punten, `${getal(volgende.min)} PR`, `je hebt er ${getal(p)}`],
     [volgende.eisen.dagen, `${volgende.dagen} dagen in het dorp`, `je bent er ${nu.dagen} ${nu.dagen === 1 ? 'dag' : 'dagen'}`],
     ...(volgende.ritueel ? [[volgende.eisen.ritueel, volgende.ritueel.tekst, volgende.eisen.ritueel ? 'gedaan' : 'nog niet']] : []),
+    ...(volgende.kring ? [[volgende.eisen.kringen, `${kringStand(volgende.kring.vanaf)} in ${volgende.kring.aantal === KRINGEN.length ? 'alle' : volgende.kring.aantal} kringen`,
+      `nu in ${Object.values(st.kringen).filter((n) => n >= volgende.kring.vanaf).length}`]] : []),
   ].map(([klaar, eis, stand]) => maak('li', { class: klaar ? 'eis klaar' : 'eis' },
     icoon(klaar ? 'circle-check' : 'hourglass-half', 'icoon eis-icoon'), maak('span', {}, maak('strong', { tekst: eis }), ` — ${stand}`))) : []));
   el.eisenKop.hidden = !volgende;
@@ -283,6 +288,7 @@ function toonStatus() {
 
   toonMissies();
   toonVerplichtingen();
+  toonPositie();
 
   const kap = kapitaal(spel, st);
   el.kapitaal.replaceChildren(...[
@@ -295,7 +301,7 @@ function toonStatus() {
   el.roddel.hidden = !recent;
   if (recent) {
     el.roddel.classList.toggle('blaam', laatste.punten < 0);
-    el.roddelTekst.textContent = `${laatste.naam.replace(/^Roddel: /, '')} (${laatste.punten > 0 ? '+' : '−'}${getal(Math.abs(laatste.punten))} PR)`;
+    el.roddelTekst.textContent = `${laatste.naam.replace(/^Roddel /, '')} (${laatste.punten > 0 ? '+' : '−'}${getal(Math.abs(laatste.punten))} PR)`;
   }
 
   const weken = perWeek(spel.logboek, KALENDER_WEKEN);
@@ -347,6 +353,29 @@ function toonMissies() {
     maak('span', { class: 'missie-beloning', tekst: m.klaar ? 'Voltooid' : `+${getal(m.beloning)} PR` }),
     maak('span', { class: 'missie-stand', tekst: `${getal(m.nu)} / ${getal(m.doel)}` }),
     meter(`az-missie-${n}`, m.nu / m.doel))));
+}
+
+// Je positie: stand per kring, gunfactor en energie deze week.
+function toonPositie() {
+  const stand = kringen(spel.logboek);
+  el.kringen.replaceChildren(...KRINGEN.map((k) => maak('li', { class: stand[k.id] < 0 ? 'kring negatief' : 'kring' },
+    icoon(k.icoon, 'icoon kring-icoon'),
+    maak('label', { for: `az-kring-${k.id}`, tekst: k.naam }),
+    maak('span', { class: 'kring-stand', tekst: `${kringStand(stand[k.id])} · ${getal(stand[k.id])}` }),
+    maak('span', { class: 'spoor' }, maak('meter', { id: `az-kring-${k.id}`, min: 0, max: 1000, value: Math.max(0, Math.min(1000, stand[k.id])) })))));
+  const g = gunfactor(spel.logboek);
+  el.gunMeter.value = g;
+  el.gunWaarde.textContent = `${getal(g)} — ${gunLabel(g)}`;
+  el.gunUitleg.textContent = g < GUNFACTOR.streber
+    ? 'Men vindt je een streber. Strategisch netwerken levert nu minder op. Doe eens iets belangeloos.'
+    : g >= GUNFACTOR.gegund ? 'Het dorp gunt het je. Alles levert iets meer op.' : 'Belangeloze dingen laten hem stijgen, zichtbaar netwerken laat hem dalen.';
+  const e = energie(spel, vandaag());
+  el.energieMeter.value = Math.max(0, e.over);
+  el.energieWaarde.textContent = `${getal(e.over)} van ${getal(e.budget)}`;
+  el.energieUitleg.textContent = e.over < 0
+    ? 'Sociale kater: je zit over je budget. Activiteiten leveren minder op tot volgende week, behalve wat je oplaadt.'
+    : `Deze week. ${spel.type ? TYPEN.find((t) => t.id === spel.type).uitleg : 'Kies je type op de Erelijst.'} Een gezinsdag laadt altijd op.`;
+  el.energieBlok.classList.toggle('kater', e.over < 0);
 }
 
 // Wat je nog moet doen: bedankjes en tegenuitnodigingen.
@@ -627,6 +656,13 @@ function toonNationaleDagen() {
     icoon('flag'), maak('span', {}, maak('strong', { tekst: d.land }), ` — ${datumKort.format(d.datum)}${d.over <= 0 ? ' (nu!)' : ` (over ${d.over} ${d.over === 1 ? 'dag' : 'dagen'})`}`))));
 }
 
+function toonTypen() {
+  el.typen.replaceChildren(el.typen.querySelector('legend'),
+    ...[{ id: null, naam: 'Nog niet gekozen', uitleg: 'Niets laadt extra op, behalve je gezin.' }, ...TYPEN].map((t) => maak('label', { class: 'keuze' },
+      maak('input', { type: 'radio', name: 'az-type', value: t.id ?? '', checked: (spel.type ?? null) === t.id, bij: () => { spel.type = t.id; bewaar(); verwerk(); meld('Type gekozen', t.naam); } }),
+      maak('span', {}, maak('strong', { tekst: t.naam }), maak('span', { class: 'zacht', tekst: ` — ${t.uitleg}` })))));
+}
+
 function keuzeTitel(id, naam, uitleg) {
   return maak('label', { class: 'keuze' },
     maak('input', { type: 'radio', name: 'az-titel', value: id ?? '', checked: (spel.titel ?? null) === id || (id === null && !spel.titel), bij: () => kiesTitel(id) }),
@@ -694,8 +730,9 @@ function voegToe(regel, stil = false) {
   }
   const rd = roddel(spel);
   if (rd) {
-    spel.logboek.push({ id: nieuwId(), tijd: new Date().toISOString(), ronde: spel.ronde, datum: vandaag(), naam: `Roddel: ${rd.tekst}`, punten: rd.punten, eigenschappen: {}, roddel: rd.id });
-    extra.push(['comments', `${rd.punten > 0 ? 'Lof' : 'Er wordt over je gepraat'}: ${rd.tekst} (${rd.punten > 0 ? '+' : '−'}${getal(Math.abs(rd.punten))} PR)`]);
+    const kring = KRINGEN.find((k) => k.id === rd.kring).naam;
+    spel.logboek.push({ id: nieuwId(), tijd: new Date().toISOString(), ronde: spel.ronde, datum: vandaag(), naam: `Roddel bij ${kring.toLocaleLowerCase('nl')}: ${rd.tekst}`, punten: rd.punten, eigenschappen: {}, roddel: rd.id, kringen: rd.kringen });
+    extra.push(['comments', `${rd.punten > 0 ? 'Lof' : 'Er wordt over je gepraat'} bij ${kring.toLocaleLowerCase('nl')}: ${rd.tekst} (${rd.punten > 0 ? '+' : '−'}${getal(Math.abs(rd.punten))} PR)`]);
   }
   bewaar();
   verwerk();
@@ -734,6 +771,18 @@ function toonBonus() {
     ? [icoon('fire'), maak('span', { tekst: `${b.lijst.map(([n, f]) => `${n} ${factor(f)}`).join(' · ')} → +${getal(b.punten)} PR` })]
     : []));
   el.logBonus.hidden = !b.lijst.length;
+  const a = ACTIVITEITEN.get(item.id);
+  const gewichten = symbool ? (item.kringen ?? KRING_SYMBOOL) : a?.kringen ?? {};
+  const effect = KRINGEN.filter((k) => gewichten[k.id]).map((k) => {
+    const n = Math.round((gewichten[k.id] * item.punten) / 10);
+    return `${k.naam} ${n < 0 ? '−' : '+'}${getal(Math.abs(n))}`;
+  });
+  const kost = symbool ? 0 : kosten(spel, item);
+  const over = energie(spel, el.logDatum.value || vandaag()).over;
+  el.logEffect.textContent = [
+    kost ? `Energie ${kost > 0 ? `−${kost}` : `+${-kost} (je laadt op)`}, nog ${getal(over - kost)} van 100 deze week` : null,
+    effect.length ? effect.join(' · ') : null,
+  ].filter(Boolean).join('. ');
 }
 
 el.logDatum.addEventListener('input', () => teLoggen && toonBonus());
@@ -766,6 +815,7 @@ el.logVenster.addEventListener('close', () => {
     ...(voor ? { voor: voor.id } : {}),
     ...(buurt && !symbool ? { buurt } : {}),
     ...(dossier ? { dossier } : {}),
+    ...(!symbool ? { energie: kosten(spel, item) } : {}),
   });
   if (symbool) meld('Status verhoogd', `${item.naam}: geclaimd!`);
   else meld('Activiteit gelogd', `+${getal(b.punten)} PR & XP verdiend!`);
@@ -962,6 +1012,7 @@ function verwerk() {
   toonErelijst();
   toonNetwerk();
   toonDorpskaart();
+  toonTypen();
   toonQuiz();
   toonNationaleDagen();
   el.vergeten.checked = spel.vergeten;

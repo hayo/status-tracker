@@ -9,6 +9,19 @@
 
 export const VERSIES = [
   {
+    versie: '2.5',
+    datum: '2026-11-07',
+    wijzigingen: [
+      'Aanzien per kring: dorpelingen, oud geld, diplomaten en expats, en bestuur en politiek. Niet iedereen is overal blij mee.',
+      'De hoogste rangen vragen een goede stand in meerdere kringen.',
+      'De gunfactor: belangeloos iets doen laat hem stijgen, zichtbaar netwerken dalen. Een streber verdient minder.',
+      'Energie: elke week 100. Kies of je introvert of extravert bent; dat bepaalt waar je van oplaadt. Over je budget? Dan heb je een sociale kater.',
+      'Nieuw terrein: je gezin. Het schoolplein, de ouderavond, samen mensen ontvangen en gezinsdagen die je energie teruggeven.',
+      'Roddel komt nu uit een bepaalde kring, en telt daar ook mee.',
+      'Vijf nieuwe prestaties en een titel.',
+    ],
+  },
+  {
     versie: '2.4',
     datum: '2026-11-07',
     wijzigingen: [
