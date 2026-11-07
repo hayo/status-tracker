@@ -9,6 +9,15 @@
 
 export const VERSIES = [
   {
+    versie: '2.8',
+    datum: '2026-11-07',
+    wijzigingen: [
+      '130 nieuwe acties om te loggen: tien extra in elke categorie. Nu zijn het er 279.',
+      'Civic tech en data heet nu Je kennis inzetten. Het gaat over wat je vanuit je eigen vak weet, dus iedereen kan deze categorie gebruiken.',
+      'De prestaties, titels en statussymbolen die bij die categorie horen, zijn ook neutraler gemaakt.',
+    ],
+  },
+  {
     versie: '2.7.3',
     datum: '2026-11-07',
     wijzigingen: [
