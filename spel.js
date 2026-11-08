@@ -12,7 +12,7 @@ const {
   WEDERKERIG_WEKEN, WEDERKERIG_BONUS, BEDANK_DAGEN, BEDANK_BONUS, VERZADIGD_NA, VERZADIGD_FACTOR,
   NIEUWE_BRUG, HECHT_VANAF, OPZICHTIG, INGETOGEN, RODDEL, NATIONALE_DAGEN, NATIONAAL_MARGE, NATIONAAL_BONUS,
   PLEKKEN, ONTDEKKING_BONUS, DOSSIERS, KRINGEN, KRING_STANDEN, KRING_SYMBOOL, GUNFACTOR, ENERGIE, TYPEN, ERKENNING,
-  KAPITAAL, WERELD, LOADOUT,
+  KAPITAAL, WERELD, LOADOUT, SPEELSTIJLEN,
 } = W;
 
 /* ---------- Datums ---------- */
@@ -289,6 +289,8 @@ export function bonussen(spel, item, datum, extra = {}) {
   const gun = gunfactor(ervoor, alsDatum(datum));
   const l = loadout(spel);
   if (l && l.factor !== 1 && LOADOUT.terreinen.includes(a?.terrein)) lijst.push([`Loadout: ${l.naam}`, l.factor]);
+  const stijl = speelstijl(spel);
+  if (stijl?.factoren[a?.eigenschap]) lijst.push([`Speelstijl: ${stijl.naam}`, stijl.factoren[a.eigenschap]]);
   if (gun < GUNFACTOR.streber && a?.gunst < 0) lijst.push([GUNFACTOR.namen[0], GUNFACTOR.streberFactor]);
   if (gun >= GUNFACTOR.gegund) lijst.push([GUNFACTOR.namen[2], GUNFACTOR.gegundFactor]);
   if (a && kosten(spel, item) > 0 && energie(spel, datum).over < 0) lijst.push(['Sociale kater', ENERGIE.kater]);
@@ -432,6 +434,9 @@ export function rang(spel, st = statistiek(spel)) {
   const volgende = RANGEN[index + 1];
   return { index, punten, dagen, volgende: volgende ? { ...volgende, eisen: eisen(volgende) } : null };
 }
+
+// De speelstijl: hoe je speelt. Geeft een factor op de XP van activiteiten met bepaalde skills.
+export const speelstijl = (spel) => SPEELSTIJLEN.find((s) => s.id === spel.stijl) ?? null;
 
 // De loadout: de trede van elk gekozen deel, en samen een naam en een factor (het gemiddelde).
 // Toebehoren (LOADOUT.extra) tellen samen als één deel: de gemiddelde trede van wat je aanvinkte.

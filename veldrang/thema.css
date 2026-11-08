@@ -244,11 +244,14 @@
 #aanzien .loadout-deel {
   display: grid;
   align-content: start;
+  min-width: 0;
   gap: 0.3em;
   margin: 0;
 }
 
 #aanzien .loadout-deel select {
+  width: 100%;
+  min-width: 0;
   min-height: 2.6em;
   padding: 0.4em 0.6em;
   border: 1px solid var(--steek);
@@ -271,9 +274,9 @@
 #aanzien .loadout-staal svg {
   display: block;
   width: 100%;
-  height: 2.6em;
-  border: 1px solid var(--steek);
-  border-radius: 0.4em;
+  max-width: 16em;
+  height: auto;
+  margin: 0.3em auto 0;
 }
 
 #aanzien .stalen {
@@ -386,4 +389,12 @@
   height: auto;
   border-radius: 0.3em;
   background: #f3eedc;
+}
+
+/* Speelstijl: het effect op je skills onder de uitleg. */
+#aanzien .stijl-effect {
+  display: block;
+  color: var(--goud-tekst);
+  font-size: 0.85em;
+  font-weight: 700;
 }

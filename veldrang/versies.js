@@ -5,6 +5,17 @@
 
 export const VERSIES = [
   {
+    versie: '1.5.0',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Nieuw: je speelstijl. Kies hoe je speelt, zoals sneaky, tactical, veel schieten of spray and pray. Je stijl geeft een bonus op de skills die erbij passen, en soms een malus.',
+      'Granaten en messen horen nu bij je loadout, met een plaatje bij elke keuze.',
+      'Ruim 120 nieuwe activiteiten om te loggen, in alle terreinen. Ook voor granaten en knife kills.',
+      'Twintig nieuwe patches en twee nieuwe prestaties: Ninja en Grenadier.',
+      'Het camopatroon bij je keuze is nu een grote helm in plaats van een smalle strook.',
+    ],
+  },
+  {
     versie: '1.4.2',
     datum: '2026-11-08',
     wijzigingen: [

@@ -8,6 +8,7 @@ export const W = {};
 
 const LEEG = {
   TYPEN: [],
+  SPEELSTIJLEN: [],
   ENERGIE: null,
   QUIZ: [],
   QUIZ_PUNTEN: 0,

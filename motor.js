@@ -25,7 +25,7 @@ import { bouwKaart, toonKaart } from './schermen/dorp.js';
 const {
   RANGEN, EIGENSCHAPPEN, EIGENSCHAP_MAX, CATEGORIEEN, SYMBOLEN, STARTVRAGEN, PRESTATIES, TITELS, PADEN, PAD_VANAF,
   ROLLEN, QUIZ, QUIZ_PUNTEN, DUNBAR, HECHT_VANAF, NATIONAAL_MARGE, PLEKKEN, BUURTEN, DOSSIER_STAPPEN, DOSSIER_BELONING,
-  KRINGEN, KRING_SYMBOOL, TYPEN, VERSIES, WERELD, LOADOUT,
+  KRINGEN, KRING_SYMBOOL, TYPEN, VERSIES, WERELD, LOADOUT, SPEELSTIJLEN,
 } = W;
 
 const SLEUTEL = WERELD.sleutel;
@@ -60,7 +60,7 @@ function laad() {
 // Zet opgeslagen gegevens om naar een spel. Kent ook de formaten van versie 1 en 2.
 function leesIn(ruw) {
   if (!ruw || typeof ruw !== 'object') throw new Error('Geen geldig bestand.');
-  const nieuw = { versie: 3, logboek: [], ronde: 0, titel: null, pad: null, type: null, loadout: {}, vergeten: false, generatie: nieuwId(), bijgewerkt: '', verwijderd: [] };
+  const nieuw = { versie: 3, logboek: [], ronde: 0, titel: null, pad: null, type: null, stijl: null, loadout: {}, vergeten: false, generatie: nieuwId(), bijgewerkt: '', verwijderd: [] };
   if (ruw.versie >= 2 && Array.isArray(ruw.logboek)) {
     const geldig = ruw.logboek.filter((r) => r && typeof r.datum === 'string' && Number.isFinite(r.punten));
     return {
@@ -70,6 +70,7 @@ function leesIn(ruw) {
       titel: typeof ruw.titel === 'string' ? ruw.titel : null,
       pad: typeof ruw.pad === 'string' ? ruw.pad : null,
       type: TYPEN.some((t) => t.id === ruw.type) ? ruw.type : null,
+      stijl: SPEELSTIJLEN.some((t) => t.id === ruw.stijl) ? ruw.stijl : null,
       loadout: ruw.loadout && typeof ruw.loadout === 'object'
         ? Object.fromEntries(Object.entries(ruw.loadout).filter(([k, v]) => (k === 'extra' ? Array.isArray(v) : typeof v === 'string'))
           .map(([k, v]) => [k, k === 'extra' ? v.filter((x) => typeof x === 'string') : v]))
@@ -625,6 +626,16 @@ function toonTypen() {
       maak('span', {}, maak('strong', { tekst: t.naam }), maak('span', { class: 'zacht', tekst: ` — ${t.uitleg}` })))));
 }
 
+// De speelstijl: één keuze, met per skill een factor op je XP.
+function toonSpeelstijl() {
+  if (!SPEELSTIJLEN.length || !el.speelstijl) return;
+  el.speelstijl.replaceChildren(el.speelstijl.querySelector('legend'),
+    ...[{ id: null, naam: 'Nog niet gekozen', uitleg: 'Geen bonus en geen malus.', factoren: {} }, ...SPEELSTIJLEN].map((s) => maak('label', { class: 'keuze' },
+      maak('input', { type: 'radio', name: 'az-speelstijl', value: s.id ?? '', checked: (spel.stijl ?? null) === s.id, bij: () => { spel.stijl = s.id; bewaar(); verwerk(); meld('Speelstijl gekozen', s.naam); } }),
+      maak('span', {}, maak('strong', { tekst: s.naam }), maak('span', { class: 'zacht', tekst: ` — ${s.uitleg}` }),
+        ...(Object.keys(s.factoren).length ? [maak('span', { class: 'stijl-effect', tekst: Object.entries(s.factoren).map(([e, f]) => `${EIGENSCHAPPEN[e].kort} ${factor(f)}`).join(' · ') })] : [])))));
+}
+
 // De loadout: per deel (camouflage, wapen) een keuze. Hoe exotischer, hoe meer aanzien op het veld.
 function bouwLoadout() {
   if (!LOADOUT || !el.loadout) return;
@@ -686,7 +697,7 @@ function toonLoadout() {
     if (vak) {
       vak.replaceChildren(...(!spec ? [] : spec.plaatje
         ? [maak('img', { class: 'loadout-plaatje', src: spec.plaatje, alt: `${deel.naam}: ${optie[1]}`, width: 480, height: 240, loading: 'lazy' })]
-        : [staal(spec, `${deel.naam}: ${optie[1]}`)]));
+        : [staal(spec, `${deel.naam}: ${optie[1]}`, 'helm')]));
     }
   }
   const l = loadout(spel);
@@ -1048,6 +1059,7 @@ function verwerk() {
   toonNetwerk();
   toonDorpskaart();
   toonTypen();
+  toonSpeelstijl();
   toonQuiz();
   toonNationaleDagen();
   toonLoadout();

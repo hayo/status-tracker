@@ -89,8 +89,8 @@ De motor (`motor.js`, `spel.js`, `schermen/`, `ui.js`, `grafieken.js`,
 - een eigen thema (`thema.css`) bovenop `../app.css`.
 
 Systemen die een wereld mag weglaten: energie en typen (`ENERGIE`, `TYPEN`), de
-quiz (`QUIZ`), nationale dagen (`NATIONALE_DAGEN`), kapitaal (`KAPITAAL`) en de
-loadout (`LOADOUT`). De motor slaat ze dan over.
+quiz (`QUIZ`), nationale dagen (`NATIONALE_DAGEN`), kapitaal (`KAPITAAL`), de
+loadout (`LOADOUT`) en de speelstijl (`SPEELSTIJLEN`). De motor slaat ze dan over.
 
 Elke wereld bewaart onder een eigen sleutel in localStorage (`WERELD.sleutel`)
 en gebruikt eigen namen voor het id en de sleutel op de server
@@ -112,9 +112,12 @@ verschil met Wassenaar zit alleen in de gegevens en het thema:
 - zes skills voor de spelelementen, twaalf terreinen, patches als symbolen,
   reputatie, sportiviteit (de gunfactor) en vijf kringen: team, organisatoren,
   scene, online en de NABV;
-- een loadout (`LOADOUT`): camouflage en hoofdwapen, elk in een trede van
-  huurkit tot exotisch. Het gemiddelde geeft een factor op spelen,
-  spelelementen en plekken;
+- een loadout (`LOADOUT`): camouflage, wapens, hoofddeksel, draagsysteem,
+  richtmiddel, granaat en mes, elk in een trede van speedsoft tot exotisch,
+  plus toebehoren. Het gemiddelde geeft een factor op spelen, spelelementen en
+  plekken;
+- een speelstijl (`SPEELSTIJLEN`), zoals sneaky, tactical of spray and pray:
+  per skill een factor op de XP;
 - militaire status: een startvraag en patches naar rang en functie;
 - een verzonnen speelgebied als stafkaart, met een raster, zes sectoren en
   dertien plekken.
@@ -210,7 +213,8 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 | `KRINGEN` | `id`, `naam`, `kort` (op de radar), `icoon`; met `KRING_STANDEN` en `KRING_SYMBOOL` |
 | `RODDEL` | per soort `punten`, `tekst` en `kring` (wie er bij kritiek over praat) |
 | `KAPITAAL` | per soort `naam`, `icoon` en `skills` (de som) of `symbolen: true` |
-| `LOADOUT` | `treden` (`naam`, `factor`), `terreinen` waar de factor geldt, en `delen` met `opties` als `[id, naam, trede]` |
+| `LOADOUT` | `treden` (`naam`, `factor`), `terreinen` waar de factor geldt, `extra?` (toebehoren: `naam`, `max`, `malus`, `opties`) en `delen` met `opties` als `[id, naam, trede, beeld?]` |
+| `SPEELSTIJLEN` | `id`, `naam`, `uitleg` en `factoren` (skill => factor op de XP van activiteiten met die skill) |
 | `KAART` | de kaart in een vlak van 1000 bij 700: `titel`, `label` (voor schermlezers), `zeeNaam` en `zeeLabel` (plek), `zeegezicht` (schip en zeeslang), `raster?` (vakgrootte van een stafkaart), `schaal`, `tekst` (`gebied`, `mist`, `kies`, `hulp`, `buurt`), zee, kust en duinen (paden), `duinNamen`, `bossen` en `buurten` (hoekpunten die rijken delen; de kaart tekent de grenzen grillig; een buurt heeft een `titel` als rijk en een `kleur` voor zijn wapen), `wegen` (pad, soort en waar de naam staat) en per plek een punt en een tekening (`kasteel`, `molen`, `tempel`, `koepel`, `huis`, `herberg`, `markt`, `school`, `tent`, `vuurtoren`, `boom`, `berg`, `uitkijk`, `vlag`, `bunker`, `hal`, `wrak` of `kist`) |
 | `ERKENNING` | `dagen` voor de bekendheid, de `niveaus`, en `verhoudingVanaf` |
 | `GUNFACTOR`, `ENERGIE`, `TYPEN` | de getallen voor gunfactor en energie, met `titel`, `namen` en `uitleg` van de gunfactor (laag, midden, hoog), en de typen introvert en extravert |
