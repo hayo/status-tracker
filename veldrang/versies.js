@@ -5,6 +5,14 @@
 
 export const VERSIES = [
   {
+    versie: '1.3.2',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Richtmiddel heeft nu veertien concrete keuzes, van een micro red dot en een ACOG tot een Elcan, een PSO-1 en nachtzicht.',
+      'De treden van de toebehoren zijn bijgesteld: een NGAL-achtige laserbox met IR is nu exotisch.',
+    ],
+  },
+  {
     versie: '1.3.1',
     datum: '2026-11-08',
     wijzigingen: [

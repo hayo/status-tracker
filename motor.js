@@ -651,8 +651,9 @@ function bouwLoadout() {
   if (LOADOUT.extra) {
     el.loadout.append(maak('fieldset', { class: 'loadout-extra' },
       maak('legend', { tekst: `${LOADOUT.extra.naam} (meer dan ${LOADOUT.extra.max} is een kerstboom)` }),
-      ...[...LOADOUT.extra.opties].sort((a, b) => b[2] - a[2]).map(([id, naam, trede]) => maak('label', { class: 'keuze' },
+      ...[...LOADOUT.extra.opties].sort((a, b) => b[2] - a[2]).map(([id, naam, trede, spec]) => maak('label', { class: 'keuze' },
         maak('input', { type: 'checkbox', value: id, bij: (e) => kiesExtra(id, e.target.checked) }),
+        spec?.plaatje ? maak('img', { class: 'extra-plaatje', src: spec.plaatje, alt: '', width: 96, height: 48, loading: 'lazy' }) : null,
         maak('span', {}, naam, maak('span', { class: 'zacht', tekst: ` · ${LOADOUT.treden[trede].naam}` }))))));
   }
   for (const s of el.loadout.querySelectorAll('select')) s.addEventListener('change', (e) => kiesLoadout(e.target.id.slice('az-loadout-'.length), e.target.value));

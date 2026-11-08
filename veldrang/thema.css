@@ -380,3 +380,10 @@
   padding: 0 0.3em;
   font-weight: 700;
 }
+
+#aanzien .extra-plaatje {
+  width: 4.5em;
+  height: auto;
+  border-radius: 0.3em;
+  background: #f3eedc;
+}
