@@ -40,7 +40,7 @@ export const RANGEN = [
   { min: 0, dagen: 0, naam: 'Rekruut', code: 'OR-1', embleem: { schouder: true }, uitleg: 'Net begonnen. Je leert de regels, het veld en je gear.', icoon: 'user' },
   {
     min: 400, dagen: 0, naam: 'Soldaat', code: 'OR-2', embleem: { strepen: 2, visgraat: true }, uitleg: 'Je hebt je eerste games achter de rug en weet waar de safezone is.', icoon: 'person-rifle',
-    ritueel: { tekst: 'Je speelde je eerste game', voorwaarde: { soort: 'een', lijst: [{ soort: 'terrein', id: 'spelen', aantal: 1 }, { soort: 'ervaring', aantal: 1 }] } },
+    ritueel: { tekst: 'Je speelde je eerste game', voorwaarde: { soort: 'een', lijst: [{ soort: 'terrein', id: 'spelen', aantal: 1 }, { soort: 'terrein', id: 'acties', aantal: 1 }, { soort: 'terrein', id: 'veld', aantal: 1 }, { soort: 'ervaring', aantal: 1 }] } },
   },
   {
     min: 1200, dagen: 14, erkenning: 40, naam: 'Korporaal', code: 'OR-3', embleem: { strepen: 1, visgraat: true, breed: true }, uitleg: 'Een vaste speler. Men herkent je op het veld.', icoon: 'chevron-up',

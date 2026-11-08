@@ -444,6 +444,14 @@ function toonStatus() {
     'aria-current': j === i ? 'step' : undefined,
   }, icoon(j <= i ? r.icoon : 'lock'), maak('span', { class: 'ladder-naam', tekst: r.naam }), maak('span', { class: 'ladder-min', tekst: `${getal(r.min)} PR` }))));
   el.padOproep.hidden = !(i >= PAD_VANAF && !gekozenPad);
+  // Genoeg PR, maar een andere eis houdt je tegen, en je start is van vóór de ervaring meetelde:
+  // dan wijzen we op de startvragen. Alleen in een wereld waarvan de startantwoorden iets meegeven.
+  const start = spel.logboek.find((r) => r.start && ronde(r) === spel.ronde);
+  const startMetExtra = STARTVRAGEN.some((v) => v.antwoorden.some((a) => a[2]));
+  if (el.startOproep) {
+    el.startOproep.hidden = !(startMetExtra && start && !('ervaringDagen' in start) && volgende?.eisen.punten && !Object.values(volgende.eisen).every(Boolean));
+    if (volgende) el.startOproepTekst.textContent = `Je hebt genoeg PR voor ${volgende.naam}, maar nog niet alles wat die rang vraagt. Speel je al langer? Vul de startvragen opnieuw in: je ervaring telt nu mee als tijd, erkenning en patches. Je logboek blijft staan.`;
+  }
 
   toonMissies();
   toonVerplichtingen();
@@ -1185,10 +1193,12 @@ el.startFormulier.addEventListener('submit', (e) => {
   meld(WERELD.welkom, `Je begint je reis als ${RANGEN[rangVan(spel).index].naam}.`);
 });
 
-el.startOpnieuwKnop?.addEventListener('click', () => {
-  startOpnieuw = true;
-  location.hash = '#start';
-});
+for (const knop of [el.startOpnieuwKnop, el.startOproepKnop]) {
+  knop?.addEventListener('click', () => {
+    startOpnieuw = true;
+    location.hash = '#start';
+  });
+}
 
 el.bewaarKnop.addEventListener('click', () => {
   const url = URL.createObjectURL(new Blob([JSON.stringify(spel, null, 1)], { type: 'application/json' }));

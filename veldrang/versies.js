@@ -8,6 +8,8 @@ export const VERSIES = [
     versie: '1.8.0',
     datum: '2026-11-08',
     wijzigingen: [
+      'Soldaat worden gaat nu met elke gespeelde game, ook als je een kill, een plek of een ander spelelement logt. Wie veel punten had maar nooit iets onder Spelen logde, bleef ten onrechte Rekruut.',
+      'Heb je genoeg punten maar houdt een andere eis je tegen? Dan wijst het statusscherm op de startvragen, zodat je ervaring meetelt.',
       'Nieuw: een teampagina die iedereen met de link kan bekijken. Met de badge van je team, de ranglijst met rangen, camo en wapens, de skills en de profielen.',
       'Upload de badge van je team op de Erelijst. Je teamleden en de teampagina zien hem meteen.',
       'Met de link kun je kijken, niet aansluiten. Daarvoor blijft de teamcode nodig.',

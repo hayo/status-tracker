@@ -13,6 +13,7 @@ export const VERSIES = [
     datum: '2026-11-08',
     wijzigingen: [
       'Achter de schermen: de motor en de opslag kunnen nu een teampagina met badge aan. Voor Wassenaar verandert er niets.',
+      'Achter de schermen: het statusscherm kan wijzen op de startvragen als een eis je tegenhoudt.',
     ],
   },
   {
