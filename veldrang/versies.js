@@ -5,6 +5,13 @@
 
 export const VERSIES = [
   {
+    versie: '1.6.1',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Teams en opslag op de server gebruiken nu het goede adres op hayobethlehem.nl.',
+    ],
+  },
+  {
     versie: '1.6.0',
     datum: '2026-11-08',
     wijzigingen: [

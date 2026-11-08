@@ -9,7 +9,7 @@
 import { W } from './wereld.js';
 
 // Op een andere site dan hayobethlehem.nl (zoals GitHub Pages) gaat de opslag naar deze URL.
-const SERVER = 'https://hayobethlehem.nl/forge/status-tracker/opslag.php';
+const SERVER = 'https://hayobethlehem.nl/content/forge/status-tracker/opslag.php';
 const TEKENS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // zonder O, 0, I en 1, die lijken op elkaar
 const LENGTE = 26; // 26 × 5 bits = 130 bits
 

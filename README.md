@@ -4,7 +4,7 @@ Een kleine game: je levelt je karakter op in de Wassenaarse samenleving. Je logt
 wat je doet, verdient prestigepunten (PR) en XP, en stijgt van Voorbijganger tot
 Ereburger.
 
-Demo: https://hayobethlehem.nl/forge/status-tracker en
+Demo: https://hayobethlehem.nl/content/forge/status-tracker/ en
 https://hayo.github.io/status-tracker/
 
 Dezelfde motor drijft een tweede app aan: **Veldrang**, voor airsofters, in
@@ -453,7 +453,7 @@ Het bestand staat naast de app en komt via de Action ook op de site.
   `bewaard/` heeft een `.htaccess` die alles weigert (Apache), en een
   `.gitignore`, zodat de bestanden nooit in git komen.
 - **Wie.** De app op GitHub Pages praat met
-  `https://hayobethlehem.nl/forge/status-tracker/opslag.php` (bovenaan
+  `https://hayobethlehem.nl/content/forge/status-tracker/opslag.php` (bovenaan
   `opslag.js`). Daarvoor staat CORS open voor de sites in `AANZIEN_HERKOMST`,
   standaard `https://hayo.github.io` en `https://hayobethlehem.nl`. De CSP van
   `app.html` staat `connect-src` naar hayobethlehem.nl toe.

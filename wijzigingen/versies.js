@@ -9,6 +9,13 @@
 
 export const VERSIES = [
   {
+    versie: '3.0.8',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Opslag op de server gebruikt nu het goede adres op hayobethlehem.nl.',
+    ],
+  },
+  {
     versie: '3.0.7',
     datum: '2026-11-08',
     wijzigingen: [
