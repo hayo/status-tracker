@@ -271,7 +271,7 @@
 }
 
 /* Camostalen: het echte patroon, bij de keuze als strook en in het overzicht als helm. */
-#aanzien .loadout-staal svg {
+#aanzien .loadout-staal :is(svg, img) {
   display: block;
   width: 100%;
   max-width: 16em;
@@ -304,7 +304,7 @@
   font-size: 0.85em;
 }
 
-#aanzien .staal-kaart svg {
+#aanzien .staal-kaart :is(svg, img) {
   width: 100%;
   height: auto;
 }

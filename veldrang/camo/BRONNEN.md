@@ -38,3 +38,14 @@ Per patroon: het bestand, de maker en de licentie.
 | `wz93.webp` | [Wz._93_Pantera.png](https://commons.wikimedia.org/wiki/File:Wz._93_Pantera.png) | NotNiko13 | CC BY-SA 4.0 |
 
 vz95.webp is alleen de woodland-helft van het bestand.
+
+## Nagetekend met Gemini
+
+Van deze patronen is geen vrij beeld te vinden. Het beeldmodel van Gemini tekende ze na, naar het
+echte patroon: `pencott.webp`, `kryptek.webp`, `partizan.webp`, `alpenflage.webp` (pizza camo),
+`mm14.webp`, `dubok.webp`, `type07.webp`, `nwu.webp` en `grijs.webp`.
+
+## De helmen
+
+`helm/` heeft per patroon een helm: het patroon op een helm die Gemini tekende, met de schaduw van
+die helm erop. Rails, banden en lijnen blijven zoals ze zijn.

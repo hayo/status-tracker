@@ -1,7 +1,8 @@
 /*
  * Camostalen: een stukje echte camouflage. Een staal is een foto van het patroon (beeld), of een
  * effen kleur als er geen patroon is. In de vorm van een helm (vorm 'helm') of als rechthoek ('vlak').
- * De foto's komen van Wikimedia Commons, met een vrije licentie; de bron staat bij elk staal.
+ * De foto's komen van Wikimedia Commons, met een vrije licentie; de bron staat bij elk staal. Een
+ * wereld kan per staal ook een kant-en-klare helm geven (spec.helm), een plaatje met het patroon erop.
  */
 
 import { maak } from './ui.js';
@@ -16,6 +17,10 @@ let teller = 0;
 
 // Een staal als SVG. spec: { beeld?, kleuren? }. naam is de toegankelijke naam; zonder naam is het versiering.
 export function staal(spec, naam = null, vorm = 'vlak') {
+  // Een kant-en-klare helm (spec.helm): het patroon op een getekende helm, met schaduw.
+  if (vorm === 'helm' && spec.helm) {
+    return maak('img', { class: 'staal staal-helm', src: spec.helm, alt: naam ?? '', width: 480, height: 459, loading: 'lazy' });
+  }
   const id = `az-staal-${++teller}`;
   const vulling = spec.beeld
     ? maak('svg:image', { href: spec.beeld, width: B, height: H, preserveAspectRatio: 'xMidYMid slice' })

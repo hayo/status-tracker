@@ -458,6 +458,12 @@ export function teamProfiel(spel, st = statistiek(spel)) {
   };
 }
 
+// Met WERELD.stilleMinpunten zie je vooraf niet wat minder oplevert: geen minpunten bij een
+// activiteit, geen malus bij een loadout of speelstijl, en alleen de namen van de hogere treden.
+// Het telt wel mee; in je logboek zie je achteraf wat het opleverde.
+export const stil = (n) => Boolean(WERELD.stilleMinpunten) && n < 0;
+export const tredeZichtbaar = (t) => !WERELD.stilleMinpunten || LOADOUT.treden[t].factor > 1;
+
 // De speelstijl: hoe je speelt. Geeft een factor op de XP van activiteiten met bepaalde skills.
 export const speelstijl = (spel) => SPEELSTIJLEN.find((s) => s.id === spel.stijl) ?? null;
 

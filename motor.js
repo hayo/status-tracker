@@ -13,7 +13,7 @@ import {
   netwerk, gastvrijheid, opvolgingen, roddel, nationaleDag, komendeNationaleDagen, dossiers,
   kringStand, kosten, energie,
   behaald, perWeek, reeks, event, volgendEvent, pad, bonussen, statistiek, voortgang, ontgrendeld,
-  missies, jaren, jaaroverzicht, samenvoegen, loadout, teamProfiel, actieveLoadout, loadoutNaam,
+  missies, jaren, jaaroverzicht, samenvoegen, loadout, teamProfiel, actieveLoadout, loadoutNaam, stil, tredeZichtbaar,
 } from './spel.js';
 import * as opslag from './opslag.js';
 import * as teams from './team.js';
@@ -577,7 +577,7 @@ function toonWeken(weken) {
 function actieKnop(a, bij, info, voor = null) {
   return maak('li', {}, maak('button', { type: 'button', class: a.punten >= 100 ? 'actie groot' : 'actie', bij }, voor,
     maak('span', { class: 'actie-naam' }, a.naam, info ? maak('span', { class: 'actie-info', tekst: info }) : null),
-    maak('span', { class: a.punten < 0 ? 'actie-punten min' : 'actie-punten', tekst: metTeken(a.punten) })));
+    stil(a.punten) ? null : maak('span', { class: a.punten < 0 ? 'actie-punten min' : 'actie-punten', tekst: metTeken(a.punten) })));
 }
 
 function bouwActiviteiten() {
@@ -771,7 +771,18 @@ function toonSpeelstijl() {
     ...[{ id: null, naam: 'Nog niet gekozen', uitleg: 'Geen bonus en geen malus.', factoren: {} }, ...SPEELSTIJLEN].map((s) => maak('label', { class: 'keuze' },
       maak('input', { type: 'radio', name: 'az-speelstijl', value: s.id ?? '', checked: (spel.stijl ?? null) === s.id, bij: () => { spel.stijl = s.id; bewaar(); verwerk(); meld('Speelstijl gekozen', s.naam); } }),
       maak('span', {}, maak('strong', { tekst: s.naam }), maak('span', { class: 'zacht', tekst: ` — ${s.uitleg}` }),
-        ...(Object.keys(s.factoren).length ? [maak('span', { class: 'stijl-effect', tekst: Object.entries(s.factoren).map(([e, f]) => `${EIGENSCHAPPEN[e].kort} ${factor(f)}`).join(' · ') })] : [])))));
+        ...((z) => (z.length ? [maak('span', { class: 'stijl-effect', tekst: z.map(([e, f]) => `${EIGENSCHAPPEN[e].kort} ${factor(f)}`).join(' · ') })] : []))(
+          Object.entries(s.factoren).filter(([, f]) => !stil(f - 1)))))));
+}
+
+// De opties per trede, van hoog naar laag. Treden die je niet mag zien, staan samen alfabetisch onder Overig.
+function keuzeGroepen(opties) {
+  const optie = ([id, naam]) => maak('option', { value: id }, naam);
+  const groepen = LOADOUT.treden.map((t, n) => [t, n]).reverse().filter(([, n]) => tredeZichtbaar(n))
+    .map(([t, n]) => [t.naam, opties.filter((o) => o[2] === n)]);
+  const rest = opties.filter((o) => !tredeZichtbaar(o[2])).sort((a, b) => a[1].localeCompare(b[1], 'nl'));
+  if (rest.length) groepen.push(['Overig', rest]);
+  return groepen.filter(([, lijst]) => lijst.length).map(([label, lijst]) => maak('optgroup', { label }, ...lijst.map(optie)));
 }
 
 // De loadout: per deel (camouflage, wapen) een keuze. Hoe exotischer, hoe meer aanzien op het veld.
@@ -781,8 +792,7 @@ function bouwLoadout() {
     maak('label', { for: `az-loadout-${deel.id}`, tekst: deel.naam }),
     maak('select', { id: `az-loadout-${deel.id}` },
       maak('option', { value: '' }, 'Nog niet gekozen'),
-      ...LOADOUT.treden.map((t, n) => [t, n]).reverse().map(([t, n]) => maak('optgroup', { label: t.naam },
-        ...deel.opties.filter(([, , trede]) => trede === n).map(([id, naam]) => maak('option', { value: id }, naam))))),
+      ...keuzeGroepen(deel.opties)),
     deel.opties.some((o) => o[3]) ? maak('span', { class: 'loadout-staal', id: `az-loadout-staal-${deel.id}` }) : null)));
   // Alle stalen op een rij, per trede van exotisch naar laag.
   if (el.loadoutStalen) {
@@ -791,9 +801,10 @@ function bouwLoadout() {
       .map(([, naam, trede, spec]) => maak('li', { class: `staal-kaart trede-${trede}` },
         staal(spec, null, 'helm'),
         maak('span', { class: 'staal-naam', tekst: naam }),
-        maak('span', { class: 'staal-trede', tekst: LOADOUT.treden[trede].naam }),
-        spec.bron
+        tredeZichtbaar(trede) ? maak('span', { class: 'staal-trede', tekst: LOADOUT.treden[trede].naam }) : null,
+        spec.bron?.link
           ? maak('a', { class: 'staal-bron', href: spec.bron.link, tekst: `Foto: ${spec.bron.maker}, ${spec.bron.licentie}` })
+          : spec.bron ? maak('span', { class: 'staal-bron', tekst: `Beeld: ${spec.bron.maker}` })
           : spec.geenBeeld ? maak('span', { class: 'staal-bron', tekst: 'Geen vrij beeld van dit patroon' }) : null))));
   }
   // Toebehoren: een vinkje per stuk, van exotisch naar laag.
@@ -803,7 +814,7 @@ function bouwLoadout() {
       ...[...LOADOUT.extra.opties].sort((a, b) => b[2] - a[2]).map(([id, naam, trede, spec]) => maak('label', { class: 'keuze' },
         maak('input', { type: 'checkbox', value: id, bij: (e) => kiesExtra(id, e.target.checked) }),
         spec?.plaatje ? maak('img', { class: 'extra-plaatje', src: spec.plaatje, alt: '', width: 96, height: 48, loading: 'lazy' }) : null,
-        maak('span', {}, naam, maak('span', { class: 'zacht', tekst: ` · ${LOADOUT.treden[trede].naam}` }))))));
+        maak('span', {}, naam, tredeZichtbaar(trede) ? maak('span', { class: 'zacht', tekst: ` · ${LOADOUT.treden[trede].naam}` }) : null)))));
   }
   for (const s of el.loadout.querySelectorAll('select')) s.addEventListener('change', (e) => kiesLoadout(e.target.id.slice('az-loadout-'.length), e.target.value));
   // Meer loadouts: kies welke je draagt, en geef hem een naam.
@@ -870,7 +881,7 @@ function toonLoadout() {
   el.loadout.querySelectorAll('.loadout-sets input[type=radio]').forEach((r, i) => {
     r.checked = i === nr;
     const l = loadout({ loadout: spel.loadouts?.[i] ?? {} });
-    r.nextElementSibling.replaceChildren(maak('strong', { tekst: loadoutNaam(spel, i) }), maak('span', { class: 'zacht', tekst: ` · ${l ? l.naam : 'leeg'}` }));
+    r.nextElementSibling.replaceChildren(maak('strong', { tekst: loadoutNaam(spel, i) }), maak('span', { class: 'zacht', tekst: ` · ${!l ? 'leeg' : tredeZichtbaar(l.trede) ? l.naam : 'gekozen'}` }));
   });
   const naamVeld = el.loadout.querySelector('#az-loadout-naam');
   if (naamVeld) naamVeld.value = kit.naam ?? '';
@@ -890,7 +901,9 @@ function toonLoadout() {
   const l = loadout(spel);
   const namen = LOADOUT.terreinen.map((t) => CATEGORIEEN.find((c) => c.id === t).naam.split(':')[0].toLocaleLowerCase('nl'));
   el.loadoutStand.textContent = l
-    ? `${(LOADOUT.aantal ?? 1) > 1 ? `${loadoutNaam(spel, nr)}. ` : ''}Uitstraling: ${l.naam}. ${l.factor === 1 ? 'Geen bonus of malus' : `${factor(l.factor)} XP`} op ${namen.join(', ')}.${l.kerstboom ? ` Kerstboom: ${l.toebehoren} toebehoren is te veel, ${factor(LOADOUT.extra.malus)}.` : ''}`
+    ? `${(LOADOUT.aantal ?? 1) > 1 ? `${loadoutNaam(spel, nr)}. ` : ''}${stil(l.factor - 1) || (l.factor === 1 && !tredeZichtbaar(l.trede))
+      ? 'Hoe exotischer je kit, hoe meer aanzien op het veld.'
+      : `Uitstraling: ${l.naam}. ${l.factor === 1 ? 'Geen bonus' : `${factor(l.factor)} XP`} op ${namen.join(', ')}.`}${l.kerstboom ? ` Kerstboom: ${l.toebehoren} toebehoren is te veel.` : ''}`
     : 'Kies je camouflage en je hoofdwapen. Hoe exotischer, hoe meer aanzien. Huurkit is het saaist.';
 }
 
@@ -997,11 +1010,13 @@ function berekening() {
 function toonBonus() {
   const { item, symbool } = teLoggen;
   const b = berekening();
-  el.logInfo.textContent = `${metTeken(item.punten)} PR & XP · ${EIGENSCHAPPEN[item.eigenschap].naam}${symbool ? ` · ${WERELD.symbool.toLocaleLowerCase('nl')}` : ''}`;
-  el.logBonus.replaceChildren(...(b.lijst.length
-    ? [icoon('fire'), maak('span', { tekst: `${b.lijst.map(([n, f]) => `${n} ${factor(f)}`).join(' · ')} → ${metTeken(b.punten)} PR` })]
+  el.logInfo.textContent = `${stil(item.punten) ? '' : `${metTeken(item.punten)} PR & XP · `}${EIGENSCHAPPEN[item.eigenschap].naam}${symbool ? ` · ${WERELD.symbool.toLocaleLowerCase('nl')}` : ''}`;
+  // Een malus van je loadout of speelstijl laten we stil, als de wereld dat wil.
+  const lijst = b.lijst.filter(([n, f]) => !(stil(f - 1) && /^(Loadout|Speelstijl):/.test(n)));
+  el.logBonus.replaceChildren(...(lijst.length
+    ? [icoon('fire'), maak('span', { tekst: `${lijst.map(([n, f]) => `${n} ${factor(f)}`).join(' · ')}${stil(b.punten) ? '' : ` → ${metTeken(b.punten)} PR`}` })]
     : []));
-  el.logBonus.hidden = !b.lijst.length;
+  el.logBonus.hidden = !lijst.length;
   const a = ACTIVITEITEN.get(item.id);
   const gewichten = symbool ? (item.kringen ?? KRING_SYMBOOL) : a?.kringen ?? {};
   const effect = KRINGEN.filter((k) => gewichten[k.id]).map((k) => {

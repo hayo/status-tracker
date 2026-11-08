@@ -231,7 +231,7 @@ Alles staat in `wassenaar/gegevens.js` (bij Veldrang: `veldrang/gegevens.js`). A
 
 | Wat | Velden |
 | --- | --- |
-| `WERELD` | de teksten en namen per wereld: `naam`, `sleutel` en `sync` (nooit veranderen), `bestand`, `welkom`, `jaar`, `eisDagen`, `bezig`, `symbool`, `symbolen`, `symboolGeclaimd`, `geenSymbolen`, `bekendheid`, `bekendTop`, `bekendLeeg`, `teLaat`, `bedankje` (id), `discretie` (skill), `dossier`, `dossierSkill`, `quiz`, `quizSkill` |
+| `WERELD` | de teksten en namen per wereld: `naam`, `sleutel` en `sync` (nooit veranderen), `bestand`, `welkom`, `jaar`, `eisDagen`, `bezig`, `symbool`, `symbolen`, `symboolGeclaimd`, `geenSymbolen`, `bekendheid`, `stilleMinpunten` (vooraf geen minpunten of malus tonen), `bekendTop`, `bekendLeeg`, `teLaat`, `bedankje` (id), `discretie` (skill), `dossier`, `dossierSkill`, `quiz`, `quizSkill` |
 | `RANGEN` | `code?` (zoals OR-2, in plaats van het niveau) en `embleem?` (`schouder`, of `strepen` met `visgraat` en `breed`, of `sterren` met `balk` of `krans`; in plaats van `icoon`), `min` (punten vanaf), `dagen` (tijd in het spel), `ritueel` (`tekst` en `voorwaarde`), `kring?` (`aantal` kringen vanaf stand `vanaf`), `erkenning?` (punten aan erkenning), `naam`, `uitleg`, `icoon` |
 | `EIGENSCHAPPEN` | sleutel => `naam`, `kort` (op de radar) en `icoon`. `EIGENSCHAP_MAX` is het aantal punten waarbij de balk vol is |
 | `CATEGORIEEN` | `id`, `kringen` (gewicht per kring), `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |
@@ -498,6 +498,8 @@ Animaties (de glans op de XP-balk, het niveauvenster) staan uit bij
   licentie (publiek domein, CC BY-SA, CC0 of de Britse Open Government Licence).
   Maker, licentie en bronpagina staan bij elk staal in de app en in
   `veldrang/camo/BRONNEN.md`. Zet je er een bij, vermeld dan ook de bron.
+  Patronen zonder vrij beeld tekende Gemini na; de helmen in
+  `veldrang/camo/helm/` zijn elk patroon op een helm van Gemini.
 - Veldrang, plaatjes van wapens, optics en toebehoren (`veldrang/wapens/`,
   `veldrang/uitrusting/`): gemaakt met het beeldmodel van Gemini, in één
   gamestijl, zonder merktekens.

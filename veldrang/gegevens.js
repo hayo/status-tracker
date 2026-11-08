@@ -20,6 +20,7 @@ export const WERELD = {
   symboolGeclaimd: 'Patch verdiend',
   geenSymbolen: 'Nog geen patches verdiend.',
   bekendheid: 'Reputatie',
+  stilleMinpunten: true, // vooraf geen minpunten of malus tonen: speedsoft, huurkit en spray and pray kiest dan niemand meer
   bekendTop: 'Hoger kan niet: je bent een legende in de scene',
   bekendLeeg: 'Noteer wat er naar jou toe komt: iemand kent je callsign, vraagt je in een squad of om advies. Dat is de echte maat voor reputatie.',
   teLaat: 'te laat, je team praat erover',
@@ -521,6 +522,16 @@ export const SYMBOLEN = [
   { id: 'm_sponsor', punten: 1200, naam: 'Gesponsord door een merk of winkel', icoon: 'ribbon', stijl: 'opzichtig', kringen: { online: 1.5 }, eigenschap: 'techniek' },
   { id: 'm_winkel', punten: 1500, naam: 'Een eigen airsoftwinkel of techbedrijf', icoon: 'store', kringen: { scene: 1.5 }, eigenschap: 'techniek' },
   { id: 'm_eigenveld', punten: 2000, naam: 'Een eigen speelveld of CQB-locatie', icoon: 'house-flag', kringen: { veld: 2, scene: 1 }, eigenschap: 'tactiek' },
+  { id: 'm_pyro', punten: 600, naam: 'Een certificaat voor pyrotechniek', icoon: 'fire', stijl: 'ingetogen', kringen: { veld: 0.5 }, eigenschap: 'techniek' },
+  { id: 'm_vrijwilliger', punten: 700, naam: 'Vaste vrijwilliger bij de NABV', icoon: 'hand-holding-heart', stijl: 'ingetogen', kringen: { bond: 1 }, eigenschap: 'tactiek' },
+  { id: 'm_scenario', punten: 800, naam: 'Een veld speelde een scenario dat jij schreef', icoon: 'scroll', kringen: { veld: 1, scene: 0.5 }, eigenschap: 'tactiek' },
+  { id: 'm_eigencamo', punten: 900, naam: 'Een eigen camopatroon laten maken', icoon: 'palette', stijl: 'opzichtig', kringen: { team: 0.5, scene: 0.5 }, eigenschap: 'techniek' },
+  { id: 'm_instructeur', punten: 900, naam: 'Vaste instructeur bij een veld', icoon: 'person-chalkboard', kringen: { veld: 1, scene: 0.5 }, eigenschap: 'tactiek' },
+  { id: 'm_origineel', punten: 900, naam: 'Een origineel uniform uit WO2 of de Koude Oorlog', icoon: 'shirt', stijl: 'opzichtig', eigenschap: 'techniek' },
+  { id: 'm_teamopgericht', punten: 900, naam: 'Zelf een team opgericht', icoon: 'people-group', kringen: { team: 1.5 }, eigenschap: 'tactiek' },
+  { id: 'm_podcast', punten: 1000, naam: 'Een eigen podcast of kanaal over airsoft', icoon: 'microphone', stijl: 'opzichtig', kringen: { online: 1.5 }, eigenschap: 'techniek' },
+  { id: 'm_48uur', punten: 1500, naam: 'Een milsim van 48 uur of langer volgehouden', icoon: 'hourglass-half', kringen: { scene: 1 }, eigenschap: 'conditie' },
+  { id: 'm_tienjaar', punten: 1500, naam: 'Tien jaar of langer actief in de scene', icoon: 'award', stijl: 'ingetogen', kringen: { scene: 1.5 }, eigenschap: 'tactiek' },
   { id: 'm_legende', punten: 3000, naam: 'Een legende: iedereen kent je callsign', icoon: 'crown', stijl: 'ingetogen', kringen: { scene: 2, online: 1 }, eigenschap: 'stealth' },
 ];
 
@@ -592,6 +603,16 @@ export const PRESTATIES = [
   { id: 'p_granaat', naam: 'Grenadier', uitleg: 'Tien kills met een granaat of mijn.', icoon: 'bomb', voorwaarde: { soort: 'activiteit', id: 'k13', aantal: 10 } },
   { id: 'p_arsenaal', naam: 'Arsenaal', uitleg: 'Drie complete loadouts, elk met minstens vijf delen.', icoon: 'vest', voorwaarde: { soort: 'loadouts', aantal: 3 } },
   { id: 'p_kameleon', naam: 'Kameleon', uitleg: 'Drie complete loadouts, elk in een andere camo.', icoon: 'leaf', voorwaarde: { soort: 'camos', aantal: 3 } },
+  { id: 'p_rook', naam: 'Rookgordijn', uitleg: 'Vijf keer een rookgordijn gegooid zodat je team kon oversteken.', icoon: 'wind', voorwaarde: { soort: 'activiteit', id: 'k17', aantal: 5 } },
+  { id: 'p_onderdruk', naam: 'Onderdrukker', uitleg: 'Tien keer onderdrukkingsvuur gegeven.', icoon: 'gauge-high', voorwaarde: { soort: 'activiteit', id: 'k23', aantal: 10 } },
+  { id: 'p_laatste', naam: 'De laatste man', uitleg: 'Vijf keer als laatste van je kant de ronde gewonnen.', icoon: 'chess-king', voorwaarde: { soort: 'activiteit', id: 'k28', aantal: 5 } },
+  { id: 'p_ontmantel', naam: 'Ontmantelaar', uitleg: 'Drie keer een bom of objective ontmanteld onder vuur.', icoon: 'screwdriver-wrench', voorwaarde: { soort: 'activiteit', id: 'k27', aantal: 3 } },
+  { id: 'p_opfor', naam: 'Aan de andere kant', uitleg: 'Vijf keer gespeeld als OPFOR of als crew van het veld.', icoon: 'masks-theater', voorwaarde: { soort: 'activiteit', id: 's27', aantal: 5 } },
+  { id: 'p_winter', naam: 'Winterhard', uitleg: 'Drie games in sneeuw of vorst.', icoon: 'snowflake', voorwaarde: { soort: 'activiteit', id: 's25', aantal: 3 } },
+  { id: 'p_duur', naam: 'Duurloper', uitleg: 'Drie keer meer dan acht uur achter elkaar gespeeld.', icoon: 'stopwatch', voorwaarde: { soort: 'activiteit', id: 's26', aantal: 3 } },
+  { id: 'p_trainer', naam: 'Trainer', uitleg: 'Vijf keer zelf een teamtraining gegeven.', icoon: 'person-chalkboard', voorwaarde: { soort: 'activiteit', id: 'e13', aantal: 5 } },
+  { id: 'p_teamspeler', naam: 'Teamspeler', uitleg: 'Twintig keer actief voor je team.', icoon: 'people-group', voorwaarde: { soort: 'terrein', id: 'team', aantal: 20 } },
+  { id: 'p_allround', naam: 'Van alle markten thuis', uitleg: 'Doe 75 verschillende activiteiten.', icoon: 'list-check', voorwaarde: { soort: 'verschillend', aantal: 75 } },
   { id: 'p_havik', naam: 'Oog van de havik', uitleg: 'Tien keer iemand uitgeschakeld van grote afstand.', icoon: 'crosshairs', voorwaarde: { soort: 'activiteit', id: 'k02', aantal: 10 } },
   { id: 'p_counter', naam: 'Countersniper', uitleg: 'Drie snipers van de tegenpartij uitgeschakeld.', icoon: 'bullseye', voorwaarde: { soort: 'activiteit', id: 'k03', aantal: 3 } },
   { id: 'p_geest', naam: 'Geest', uitleg: 'Drie games zonder geraakt te worden.', icoon: 'user-secret', voorwaarde: { soort: 'activiteit', id: 'k11', aantal: 3 } },
@@ -655,7 +676,7 @@ export const PADEN = [
 
 // De speelstijl: hoe je meestal speelt. Per skill een factor op de XP van activiteiten met die skill.
 // Een goede stijl geeft een bonus op wat erbij past en soms een malus op wat je laat liggen.
-// Spray and pray, campen en speedsoft kosten je aanzien.
+// Spray and pray, campen en speedsoft kosten je aanzien. Die malus zie je vooraf niet (stilleMinpunten).
 export const SPEELSTIJLEN = [
   { id: 'sluiper', naam: 'Sneaky', uitleg: 'Sluipen en verrassen. Niemand ziet je, tot het te laat is.', factoren: { stealth: 1.15, cqb: 0.95 } },
   { id: 'tactisch', naam: 'Tactical', uitleg: 'Dekking, communicatie en een plan. Je speelt als team.', factoren: { tactiek: 1.15 } },
@@ -666,8 +687,8 @@ export const SPEELSTIJLEN = [
   { id: 'eenling', naam: 'Lone wolf', uitleg: 'Je speelt je eigen spel, los van je team.', factoren: { stealth: 1.1, tactiek: 0.9 } },
   { id: 'rollenspel', naam: 'Milsim-rollenspeler', uitleg: 'Je blijft in je rol, met radio, procedures en rantsoen.', factoren: { tactiek: 1.05, conditie: 1.05 } },
   { id: 'tacticool', naam: 'Tacticool', uitleg: 'Je kit ziet er beter uit dan je speelt.', factoren: { techniek: 1.1, conditie: 0.95 } },
-  { id: 'camper', naam: 'Camper', uitleg: 'Op één plek liggen en wachten tot iemand langskomt.', factoren: { precisie: 1.05, conditie: 0.9, tactiek: 0.9 } },
-  { id: 'spray', naam: 'Spray and pray', uitleg: 'Vol automatisch en niet richten. Veel BB\'s, weinig aanzien.', factoren: { precisie: 0.8, cqb: 0.95 } },
+  { id: 'camper', naam: 'Camper', uitleg: 'Een goede plek zoeken en geduldig wachten tot iemand langskomt.', factoren: { precisie: 1.05, conditie: 0.9, tactiek: 0.9 } },
+  { id: 'spray', naam: 'Spray and pray', uitleg: 'Vol automatisch. Het volume doet het werk.', factoren: { precisie: 0.8, cqb: 0.95 } },
   { id: 'speedsoft', naam: 'Run and gun (speedsoft)', uitleg: 'Rennen, glijden en zo snel mogelijk schieten.', factoren: { cqb: 0.85, tactiek: 0.85, conditie: 0.9 } },
 ];
 
@@ -676,7 +697,7 @@ export const SPEELSTIJLEN = [
 // De factor geldt voor spelen, spelelementen en plekken: het gemiddelde van de delen die je koos.
 // Per optie: [id, naam, trede, beeld?]. Bij camo is het beeld een foto van het echte patroon van
 // Wikimedia Commons (camo/), met maker, licentie en bronpagina; bij wapens een plaatje (wapens/).
-// De bronnen staan ook in camo/BRONNEN.md. Zonder vrij beeld: geenBeeld, en dan verzinnen we niets.
+// De bronnen staan ook in camo/BRONNEN.md. Zonder vrij beeld tekende Gemini het patroon na.
 export const LOADOUT = {
   treden: [
     { naam: 'Speedsoft', factor: 0.7 },
@@ -723,6 +744,13 @@ export const LOADOUT = {
         ['huur', 'Huurkit van het veld', 1, { kleuren: ['#4a4c3a'] }],
         ['zwart', 'Zwart', 2, { kleuren: ['#1e1e1e'] }],
         ['effen', 'Effen groen, tan of coyote', 2, { kleuren: ['#6b6a45'] }],
+        ['wolfgrey', 'Effen grijs (wolf grey)', 2, { kleuren: ['#6b6e70'] }],
+        ['grijs', 'Grijs digitaal (urban)', 4, { beeld: 'camo/grijs.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
+        ['nwu', 'Navy NWU Type I (blueberry)', 5, { beeld: 'camo/nwu.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
+        ['mm14', 'Oekraïens MM-14 (pixel)', 5, { beeld: 'camo/mm14.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
+        ['dubok', 'Oekraïens Dubok', 5, { beeld: 'camo/dubok.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
+        ['type07', 'Chinees Type 07 (woodland)', 5, { beeld: 'camo/type07.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
+        ['alpenflage', 'Zwitsers Alpenflage (pizza camo)', 6, { beeld: 'camo/alpenflage.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
         ['ucp', 'UCP (Amerikaans digitaal grijs)', 2, { beeld: 'camo/ucp.webp', bron: { maker: 'Doubleailes', licentie: 'publiek domein', link: 'https://commons.wikimedia.org/wiki/File:Universal_Camouflage_Pattern_%28UCP%29.jpg' } }],
         ['multicam', 'Multicam', 3, { beeld: 'camo/multicam.webp', bron: { maker: 'Chikumaya', licentie: 'publiek domein', link: 'https://commons.wikimedia.org/wiki/File:Multicam_pattern_%28cropped%29.jpg' } }],
         ['woodland', 'Woodland (M81)', 3, { beeld: 'camo/woodland.webp', bron: { maker: 'U.S. Army', licentie: 'publiek domein', link: 'https://commons.wikimedia.org/wiki/File:%22M81%22_U.S._woodland_camouflage_pattern_swatch.png' } }],
@@ -734,13 +762,13 @@ export const LOADOUT = {
         ['mtp', 'MTP (Brits)', 4, { beeld: 'camo/mtp.webp', bron: { maker: 'Amanda Reynolds, Ministry of Defence photographer', licentie: 'OGL v1.0', link: 'https://commons.wikimedia.org/wiki/File:British_Armed_Forces_Multi_Terrain_Pattern_camouflage.jpg' } }],
         ['mcvariant', 'Multicam Tropic, Arid of Black', 4, { beeld: 'camo/mcvariant.webp', bron: { maker: 'onbekende maker', licentie: 'publiek domein', link: 'https://commons.wikimedia.org/wiki/File:TROPIC_MULTICAM_%28cropped%29.jpg' } }],
         ['atacs', 'A-TACS', 4, { beeld: 'camo/atacs.webp', bron: { maker: 'GTRus', licentie: 'CC BY-SA 4.0', link: 'https://commons.wikimedia.org/wiki/File:A-TACS_AU.jpg' } }],
-        ['pencott', 'PenCott', 4, { kleuren: ['#8a8a6a'], geenBeeld: true }],
-        ['kryptek', 'Kryptek', 5, { kleuren: ['#8a8a6a'], geenBeeld: true }],
+        ['pencott', 'PenCott', 4, { beeld: 'camo/pencott.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
+        ['kryptek', 'Kryptek', 5, { beeld: 'camo/kryptek.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
         ['vz95', 'Tsjechisch woodland (vz. 95)', 5, { beeld: 'camo/vz95.webp', bron: { maker: 'Chekotay', licentie: 'CC BY-SA 4.0', link: 'https://commons.wikimedia.org/wiki/File:Maskovac%C3%AD_potisk_stejnokroje_95.jpg' } }],
         ['m90', 'Zweeds splinter (M90)', 5, { beeld: 'camo/m90.webp', bron: { maker: 'LEJK', licentie: 'CC BY-SA 4.0', link: 'https://commons.wikimedia.org/wiki/File:M90_Seamless_Camo.png' } }],
         ['splinter', 'Duits Splittertarn', 5, { beeld: 'camo/splinter.webp', bron: { maker: 'Mediatus', licentie: 'CC BY-SA 3.0', link: 'https://commons.wikimedia.org/wiki/File:Buntfarbenmuster_31_%28Splittertarn%29_%28cropped%29.jpg' } }],
         ['flora', 'Russisch Flora of EMR', 5, { beeld: 'camo/flora.webp', bron: { maker: 'GTRus', licentie: 'CC BY-SA 4.0', link: 'https://commons.wikimedia.org/wiki/File:Flora_cam.jpg' } }],
-        ['partizan', 'Russisch Partizan of SS-Leto', 5, { kleuren: ['#8a8a6a'], geenBeeld: true }],
+        ['partizan', 'Russisch Partizan of SS-Leto', 5, { beeld: 'camo/partizan.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
         ['m84', 'Deens M/84', 5, { beeld: 'camo/m84.webp', bron: { maker: 'Skjoldbro', licentie: 'CC BY-SA 4.0', link: 'https://commons.wikimedia.org/wiki/File:M84_camouflage_pattern.png' } }],
         ['m05', 'Fins M05', 5, { beeld: 'camo/m05.webp', bron: { maker: 'Pekka Vilhunen', licentie: 'publiek domein', link: 'https://commons.wikimedia.org/wiki/File:M05_woodland_pattern.jpg' } }],
         ['wz93', 'Pools wz. 93', 5, { beeld: 'camo/wz93.webp', bron: { maker: 'NotNiko13', licentie: 'CC BY-SA 4.0', link: 'https://commons.wikimedia.org/wiki/File:Wz._93_Pantera.png' } }],
@@ -878,6 +906,9 @@ export const LOADOUT = {
     },
   ],
 };
+
+// Elk camopatroon heeft ook een helm: het patroon op een helm die Gemini tekende (camo/helm/).
+for (const optie of LOADOUT.delen.find((d) => d.id === 'camo').opties) optie[3].helm = `camo/helm/${optie[0]}.webp`;
 
 // Weekmissies: elke week drie. {terrein} wordt de naam van een terrein.
 export const MISSIES = [

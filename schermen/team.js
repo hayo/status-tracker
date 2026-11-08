@@ -7,7 +7,7 @@
 
 import { W } from '../wereld.js';
 import { maak, icoon, getal, metTeken } from '../ui.js';
-import { ACTIVITEITEN, loadout } from '../spel.js';
+import { ACTIVITEITEN, loadout, tredeZichtbaar } from '../spel.js';
 import { staal } from '../staal.js';
 import { toonCode } from '../opslag.js';
 
@@ -97,7 +97,9 @@ function profiel(l, eigen) {
       ['Prestigepunten', `${getal(l.pr)} PR`],
       [W.WERELD.bekendheid, getal(l.reputatie)],
       ['Speelstijl', l.stijl?.naam ?? 'nog niet gekozen'],
-      ...(uitstraling ? [['Loadout', `${l.loadout.naam ? `${l.loadout.naam}: ` : ''}${uitstraling.naam}`]] : []),
+      ...(uitstraling ? [['Loadout', tredeZichtbaar(uitstraling.trede)
+        ? `${l.loadout.naam ? `${l.loadout.naam}: ` : ''}${uitstraling.naam}`
+        : l.loadout.naam ?? 'gekozen']] : []),
     ].map(([dt, dd]) => maak('div', {}, maak('dt', { tekst: dt }), maak('dd', { tekst: dd })))),
     maak('h5', { tekst: 'Loadout' }), kit(l),
     ...lijstje(W.WERELD.symbolen ?? 'Patches', l.symbolen),
@@ -105,7 +107,7 @@ function profiel(l, eigen) {
     maak('h5', { tekst: 'Laatste activiteiten' }),
     l.laatste.length
       ? maak('ul', { class: 'team-laatste' }, ...l.laatste.map((x) => maak('li', {},
-        maak('span', { class: 'zacht', tekst: `${datumKort.format(new Date(`${x.datum}T12:00`))} ` }), x.a.naam, maak('span', { class: x.punten < 0 ? 'actie-punten min' : 'actie-punten', tekst: ` ${metTeken(x.punten)}` }))))
+        maak('span', { class: 'zacht', tekst: `${datumKort.format(new Date(`${x.datum}T12:00`))} ` }), x.a.naam, x.punten < 0 ? null : maak('span', { class: 'actie-punten', tekst: ` ${metTeken(x.punten)}` }))))
       : maak('p', { class: 'zacht', tekst: 'Nog niets gelogd.' })));
 }
 

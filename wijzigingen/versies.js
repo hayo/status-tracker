@@ -9,6 +9,13 @@
 
 export const VERSIES = [
   {
+    versie: '3.0.10',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Achter de schermen: de motor kan minpunten vooraf stil houden, helmen als plaatje tonen en het handboek met iconen opmaken. Voor Wassenaar verandert er niets.',
+    ],
+  },
+  {
     versie: '3.0.9',
     datum: '2026-11-08',
     wijzigingen: [

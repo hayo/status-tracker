@@ -5,6 +5,18 @@
 
 export const VERSIES = [
   {
+    versie: '1.7.0',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'De camo-helm is opnieuw getekend: een echte helm met rails en banden, met het patroon en de schaduw erop.',
+      'Nieuwe camopatronen: Zwitsers Alpenflage (pizza camo), Oekraïens MM-14 en Dubok, Chinees Type 07, Navy NWU (blueberry), grijs digitaal en effen grijs. PenCott, Kryptek en Partizan hebben nu ook een plaatje.',
+      'Tien nieuwe patches en tien nieuwe prestaties, zoals Rookgordijn, De laatste man en Winterhard.',
+      'Het handboek heeft nu iconen, een overzicht van alle rangen met hun embleem, en uitleg over je kit, je speelstijl en teams.',
+      'Bij het kiezen zie je alleen nog wat iets oplevert, niet wat het kost.',
+      'Bovenaan de site staat nu een keuzepagina, met een link naar de landingspagina van Veldrang.',
+    ],
+  },
+  {
     versie: '1.6.1',
     datum: '2026-11-08',
     wijzigingen: [
