@@ -17,7 +17,7 @@ import {
 } from './spel.js';
 import * as opslag from './opslag.js';
 import * as teams from './team.js';
-import { toonTeam } from './schermen/team.js';
+import { toonTeam, teamNaam } from './schermen/team.js';
 import { maak, icoon, meter, getal, factor, metTeken } from './ui.js';
 import { staal } from './staal.js';
 import { toonKarakter } from './schermen/karakter.js';
@@ -134,7 +134,7 @@ function bewaar() {
 
 /* ---------- Team ---------- */
 
-const teamStaat = { leden: null, eigen: null, fout: '', bezig: false, gestuurd: '' };
+const teamStaat = { leden: null, badge: null, link: null, eigen: null, fout: '', bezig: false, gestuurd: '' };
 let teamKlok;
 
 const toonTeamNu = () => toonTeam(el, { ...teamStaat, team: spel?.team ?? null });
@@ -173,7 +173,12 @@ async function haalTeam() {
   toonTeamNu();
   try {
     teamStaat.eigen ??= await teams.lidVan(t.token);
-    teamStaat.leden = (await teams.lees(t.code)) ?? [];
+    const sleutels = await teams.uitCode(t.code);
+    teamStaat.link = new URL(`team.html#${teams.kijklink(sleutels)}`, location.href).href;
+    const r = await teams.lees(sleutels);
+    teamStaat.leden = r?.leden ?? [];
+    if (teamStaat.badge) URL.revokeObjectURL(teamStaat.badge);
+    teamStaat.badge = teams.badgeUrl(r?.badge);
     teamStaat.fout = '';
   } catch {
     teamStaat.fout = 'De server is niet bereikbaar. Probeer het later opnieuw.';
@@ -192,7 +197,7 @@ async function maakTeam(callsign, naam) {
     meld('Team maken lukte niet', fout.message, true);
     return;
   }
-  Object.assign(teamStaat, { leden: null, eigen: null, fout: '', gestuurd: '' });
+  Object.assign(teamStaat, { leden: null, badge: null, link: null, eigen: null, fout: '', gestuurd: '' });
   bewaar();
   meld(`Team ${naam} gemaakt`, 'Deel de teamcode in je teamchat. Wie de code heeft, kan aansluiten.');
   await haalTeam();
@@ -202,9 +207,9 @@ async function sluitAan(callsign, invoer) {
   const code = opslag.leesCode(invoer);
   if (!code) { meld('Onbekende code', 'Een teamcode heeft 26 letters en cijfers.', true); return; }
   let leden;
-  try { leden = await teams.lees(code); } catch { meld('Geen verbinding', 'De server is niet bereikbaar. Probeer het later opnieuw.', true); return; }
+  try { leden = (await teams.lees(await teams.uitCode(code)))?.leden; } catch { meld('Geen verbinding', 'De server is niet bereikbaar. Probeer het later opnieuw.', true); return; }
   if (!leden?.length) { meld('Geen team gevonden', 'Bij deze code hoort geen team. Kijk de code nog eens na.', true); return; }
-  const naam = String([...leden].sort((a, b) => a.bijgewerkt.localeCompare(b.bijgewerkt)).at(-1).profiel?.teamnaam ?? '').slice(0, 40) || 'zonder naam';
+  const naam = teamNaam(leden);
   const team = { code, token: teams.nieuwToken(), callsign, naam };
   try {
     spel.team = team;
@@ -214,7 +219,7 @@ async function sluitAan(callsign, invoer) {
     meld('Aansluiten lukte niet', fout.message, true);
     return;
   }
-  Object.assign(teamStaat, { leden: null, eigen: null, fout: '', gestuurd: '' });
+  Object.assign(teamStaat, { leden: null, badge: null, link: null, eigen: null, fout: '', gestuurd: '' });
   bewaar();
   meld(`Welkom bij team ${naam}`, 'Je profiel staat nu op de teampagina.');
   await haalTeam();
@@ -225,7 +230,7 @@ function verlaatTeam() {
   vraag(`Team ${t.naam} verlaten?`, 'Je profiel verdwijnt van de teampagina. Met de teamcode kun je later weer aansluiten.', 'Verlaat het team', async () => {
     try { await teams.verlaat(t.code, t.token); } catch { meld('Geen verbinding', 'De server is niet bereikbaar. Probeer het later opnieuw.', true); return; }
     spel.team = null;
-    Object.assign(teamStaat, { leden: null, eigen: null, fout: '', gestuurd: '' });
+    Object.assign(teamStaat, { leden: null, badge: null, link: null, eigen: null, fout: '', gestuurd: '' });
     bewaar();
     toonTeamNu();
     meld('Team verlaten', `Je staat niet meer op de pagina van team ${t.naam}.`);
@@ -252,6 +257,29 @@ function bouwTeam() {
   });
   el.teamVervers.addEventListener('click', stuurTeam);
   el.teamVerlaat.addEventListener('click', verlaatTeam);
+  el.teamLinkKopieer.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(teamStaat.link);
+      meld('Gekopieerd', 'De link naar de teampagina staat op je klembord. Wie de link heeft, kan kijken maar niet aansluiten.');
+    } catch {
+      meld('Kopiëren lukte niet', 'Open de teampagina en kopieer het adres.', true);
+    }
+  });
+  // De badge: een plaatje van je team, verkleind en versleuteld met de teamcode.
+  el.teamBadgeBestand.addEventListener('change', async () => {
+    const bestand = el.teamBadgeBestand.files[0];
+    el.teamBadgeBestand.value = '';
+    if (!bestand || !spel.team) return;
+    if (!/^image\/(png|jpeg|webp)$/.test(bestand.type)) { meld('Dit kan niet', 'Kies een plaatje: png, jpg of webp.', true); return; }
+    try {
+      await teams.zetBadge(spel.team.code, spel.team.token, await teams.maakBadge(bestand));
+      meld('Badge geplaatst', 'Je teamleden en de teampagina zien hem nu.');
+    } catch (fout) {
+      meld('Badge plaatsen lukte niet', fout.message, true);
+      return;
+    }
+    await haalTeam();
+  });
 }
 
 /* ---------- Opslag op de server ---------- */

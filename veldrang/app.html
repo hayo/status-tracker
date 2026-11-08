@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self' https://hayobethlehem.nl; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob:; font-src 'self'; connect-src 'self' https://hayobethlehem.nl; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="robots" content="noindex">
   <meta name="description" content="Level je karakter op als airsofter: van Rekruut tot Generaal.">
   <meta name="theme-color" content="#3f4a2a">
@@ -465,6 +465,18 @@
           </form>
         </div>
         <div id="az-team-aan" hidden>
+          <div class="team-kop-badge">
+            <span id="az-team-badge" class="team-badge" hidden></span>
+            <div>
+              <p><a class="knop" id="az-team-link" href="team.html" hidden><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-trophy"/></svg> Open de teampagina</a></p>
+              <p class="knoppen">
+                <button type="button" class="knop knop-licht knop-klein" id="az-team-link-kopieer" hidden><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-link"/></svg> Kopieer de link</button>
+                <label class="knop knop-licht knop-klein" for="az-team-badge-bestand"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-upload"/></svg> Badge uploaden</label>
+                <input class="verborgen" type="file" id="az-team-badge-bestand" accept="image/png,image/jpeg,image/webp">
+              </p>
+              <p class="zacht">De teampagina kan iedereen met de link zien. Aansluiten kan alleen met de teamcode.</p>
+            </div>
+          </div>
           <p class="synccode"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-key"/></svg> <code id="az-team-code"></code>
             <button type="button" class="knop knop-licht knop-klein" id="az-team-kopieer"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-copy"/></svg> Kopieer</button></p>
           <p class="zacht">De teamcode. Deel hem alleen met je team: wie de code heeft, ziet de teampagina.</p>

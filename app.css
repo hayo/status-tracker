@@ -3388,3 +3388,169 @@
 #aanzien .strategie h4 .icoon {
   color: var(--cat);
 }
+
+/* ---------- Badge van een team en de teampagina ---------- */
+
+#aanzien .team-kop-badge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1em 1.4em;
+  margin-bottom: 1em;
+}
+
+#aanzien .team-badge img {
+  display: block;
+  width: 6em;
+  height: 6em;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 25%));
+}
+
+#aanzien.teampagina {
+  max-width: 64em;
+  margin: 0 auto;
+}
+
+#aanzien .tp-kop-link {
+  margin: 0;
+}
+
+#aanzien .tp-app-link {
+  color: var(--goud-licht);
+  font-weight: 700;
+}
+
+#aanzien .tp-held {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.2em 2em;
+}
+
+#aanzien .tp-badge img {
+  display: block;
+  width: 10em;
+  height: 10em;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 6px rgb(0 0 0 / 30%));
+}
+
+#aanzien .tp-label {
+  margin: 0;
+  color: var(--zacht);
+  font-size: 0.85em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+#aanzien .tp-held h2 {
+  margin: 0.1em 0 0.3em;
+  font-family: var(--serif);
+  font-size: 2.2em;
+  line-height: 1.1;
+}
+
+#aanzien .tp-cijfers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em 1.8em;
+  margin: 0.4em 0 0;
+}
+
+#aanzien .tp-cijfers dt {
+  color: var(--zacht);
+  font-size: 0.8em;
+}
+
+#aanzien .tp-cijfers dd {
+  margin: 0;
+  font-size: 1.25em;
+  font-weight: 700;
+}
+
+#aanzien .tp-leden {
+  display: grid;
+  gap: 0.8em;
+  margin: 0.8em 0 1.5em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .tp-lid {
+  display: grid;
+  grid-template-columns: 2em 3.2em 1fr auto;
+  align-items: center;
+  gap: 0.4em 0.9em;
+  padding: 0.8em 1em;
+  border: 1px solid var(--lijn);
+  border-left: 0.35em solid var(--lijn);
+  border-radius: 0.6em;
+  background: var(--vlak);
+}
+
+#aanzien .tp-plek-1 {
+  border-left-color: #c9a44c;
+}
+
+#aanzien .tp-plek-2 {
+  border-left-color: #a7a9ac;
+}
+
+#aanzien .tp-plek-3 {
+  border-left-color: #b0773c;
+}
+
+#aanzien .tp-plek {
+  color: var(--zacht);
+  font-size: 1.3em;
+  font-weight: 700;
+  text-align: center;
+}
+
+#aanzien .tp-embleem {
+  width: 3.2em;
+  height: 3.2em;
+  color: var(--goud);
+}
+
+#aanzien .tp-wie {
+  display: grid;
+  gap: 0.1em;
+}
+
+#aanzien .tp-callsign {
+  font-size: 1.15em;
+}
+
+#aanzien .tp-pr {
+  font-size: 1.1em;
+  white-space: nowrap;
+}
+
+#aanzien .tp-kit {
+  grid-column: 3 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em;
+}
+
+#aanzien .tp-kit :is(img, svg) {
+  width: 8em;
+  height: auto;
+}
+
+@media (width < 32em) {
+  #aanzien .tp-lid {
+    grid-template-columns: 1.6em 2.6em 1fr;
+  }
+
+  #aanzien .tp-pr {
+    grid-column: 3;
+  }
+
+  #aanzien .tp-kit {
+    grid-column: 1 / -1;
+  }
+}

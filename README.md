@@ -63,7 +63,8 @@ spel.js                   de spelregels: rang, bonussen, prestaties, missies, ve
 opslag.js                 de opslag op de server: synccode, versleutelen, lezen en schrijven
 opslag.php                de server: bewaart versleutelde voortgang per speler
 bewaard/                  de standaardmap voor opslag.php, buiten git
-team.js, schermen/team.js teams: versleutelde profielen per lid, en de teampagina
+team.js, schermen/team.js teams: versleutelde profielen per lid, badge, kijklink en het teampaneel
+teampagina.js             de teampagina om te bekijken, met een link (veldrang/team.html)
 wassenaar/                Wassenaar Aanzien: gegevens.js (de inhoud), wassenaar.js (vult de wereld),
                           app.js (de ingang), app.html (de tool), index.html (de landingspagina),
                           index.php (binnen een site), manifest en iconen
@@ -147,8 +148,16 @@ je profiel na een wijziging en haalt het team op als je de Erelijst opent.
 Profielen van anderen worden gecontroleerd (`schoon` in `schermen/team.js`)
 en alleen als tekst getoond.
 
-Het paneel staat alleen in `veldrang/app.html`. Een wereld zonder `#az-team`
-heeft geen teams.
+Uit de teamcode komen ook een schrijfbewijs en een kijklink. De server bewaart
+alleen de hash van het schrijfbewijs; zonder bewijs kan niemand aansluiten. De
+kijklink (`veldrang/team.html#id.sleutel`) bevat alleen het id en de sleutel om
+te lezen. Wie de link heeft, ziet de teampagina (`teampagina.js`): badge, naam,
+een ranglijst met rang, PR, camo-helm en wapen, de skills en de profielen. Maar
+aansluiten kan alleen met de code. Elk lid kan een badge uploaden; de app
+verkleint die tot 256 beeldpunten en versleutelt hem met de teamcode.
+
+Het paneel en de teampagina staan alleen in Veldrang. Een wereld zonder
+`#az-team` heeft geen teams.
 
 ## Versies
 

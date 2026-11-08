@@ -5,6 +5,15 @@
 
 export const VERSIES = [
   {
+    versie: '1.8.0',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Nieuw: een teampagina die iedereen met de link kan bekijken. Met de badge van je team, de ranglijst met rangen, camo en wapens, de skills en de profielen.',
+      'Upload de badge van je team op de Erelijst. Je teamleden en de teampagina zien hem meteen.',
+      'Met de link kun je kijken, niet aansluiten. Daarvoor blijft de teamcode nodig.',
+    ],
+  },
+  {
     versie: '1.7.1',
     datum: '2026-11-08',
     wijzigingen: [

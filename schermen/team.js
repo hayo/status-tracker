@@ -46,7 +46,17 @@ export function schoon(p, lid) {
   };
 }
 
-const procent = (punten) => Math.round(Math.min(1, punten / EIGENSCHAP_MAX) * 100);
+// De naam van het team: de naam die de meeste leden noemen. Zo kan één vreemd profiel hem niet veranderen.
+export function teamNaam(leden) {
+  const tel = new Map();
+  for (const l of leden) {
+    const n = String(l.profiel?.teamnaam ?? '').trim().slice(0, 40);
+    if (n) tel.set(n, (tel.get(n) ?? 0) + 1);
+  }
+  return [...tel].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'zonder naam';
+}
+
+export const procent = (punten) => Math.round(Math.min(1, punten / EIGENSCHAP_MAX) * 100);
 
 function ranglijst(leden, eigen) {
   return leden.map((l, i) => maak('tr', { class: l.lid === eigen ? 'jij' : null },
@@ -58,7 +68,7 @@ function ranglijst(leden, eigen) {
     maak('td', { tekst: l.stijl?.naam ?? '–' })));
 }
 
-function skilltabel(leden, eigen) {
+export function skilltabel(leden, eigen) {
   const sleutels = Object.keys(EIGENSCHAPPEN);
   const beste = Object.fromEntries(sleutels.map((k) => [k, Math.max(...leden.map((l) => procent(l.skills[k])))]));
   return [
@@ -73,7 +83,7 @@ function skilltabel(leden, eigen) {
   ];
 }
 
-function kit(l) {
+export function kit(l) {
   const stukken = (W.LOADOUT?.delen ?? []).map((d) => [d, d.opties.find((o) => o[0] === l.loadout[d.id])]).filter(([, o]) => o);
   if (!stukken.length) return maak('p', { class: 'zacht', tekst: 'Nog geen loadout gekozen.' });
   return maak('ul', { class: 'team-kit' }, ...stukken.map(([d, [, naam, , spec]]) => maak('li', { class: 'team-stuk' },
@@ -87,7 +97,7 @@ const lijstje = (titel, items) => [
   items.length ? maak('ul', { class: 'team-chips' }, ...items.map((x) => maak('li', { class: 'team-chip' }, icoon(x.icoon), ` ${x.naam}`))) : maak('p', { class: 'zacht', tekst: 'Nog geen.' }),
 ];
 
-function profiel(l, eigen) {
+export function profiel(l, eigen) {
   const r = RANGEN[l.rang];
   const uitstraling = W.LOADOUT ? loadout({ loadout: l.loadout }) : null;
   return maak('li', { class: 'team-lid' }, maak('details', {},
@@ -120,6 +130,11 @@ export function toonTeam(el, staat) {
   el.teamTitel.textContent = team ? `Team ${team.naam}` : 'Je team';
   if (!team) return;
   el.teamCode.textContent = toonCode(team.code);
+  el.teamLink.hidden = !staat.link;
+  if (staat.link) el.teamLink.href = staat.link;
+  el.teamLinkKopieer.hidden = !staat.link;
+  el.teamBadge.hidden = !staat.badge;
+  el.teamBadge.replaceChildren(...(staat.badge ? [maak('img', { src: staat.badge, alt: 'Badge van het team', width: 96, height: 96 })] : []));
   const leden = (staat.leden ?? []).map((l) => schoon(l.profiel, l.lid)).sort((a, b) => b.pr - a.pr || a.callsign.localeCompare(b.callsign, 'nl'));
   const laatst = (staat.leden ?? []).map((l) => l.bijgewerkt).sort().at(-1);
   el.teamStatus.textContent = staat.fout || (staat.bezig && !staat.leden ? 'Bezig met ophalen…'
