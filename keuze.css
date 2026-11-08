@@ -1,0 +1,120 @@
+/*
+ * De keuzepagina: Wassenaar Aanzien of Veldrang. Ook voor de doorverwijzing van oude adressen.
+ * Alles hangt onder .az-keuze, zodat het binnen een site met niets botst.
+ */
+
+.az-keuze {
+  --groen: #2a4d3e;
+  --olijf: #3f4a2a;
+  --goud: #8a6a12;
+  --tekst: #1f2421;
+  --zacht: #545a55;
+  --lijn: #dcd6c8;
+
+  max-width: 46em;
+  margin: 0 auto;
+  padding: 2em 1em 3em;
+  color: var(--tekst);
+  font: 1.05em/1.55 system-ui, sans-serif;
+}
+
+body:has(> main > .az-keuze) {
+  margin: 0;
+  background: #f6f2e9;
+}
+
+.az-keuze h1 {
+  margin: 0 0 0.3em;
+  color: var(--groen);
+  font-size: 2em;
+  line-height: 1.2;
+}
+
+.az-keuze-intro {
+  margin: 0 0 1.5em;
+  color: var(--zacht);
+}
+
+.az-keuze-lijst {
+  display: grid;
+  gap: 1.2em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (width >= 40em) {
+  .az-keuze-lijst {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.az-keuze-kaart {
+  display: grid;
+  align-content: start;
+  gap: 0.6em;
+  padding: 1.4em;
+  border: 1px solid var(--lijn);
+  border-top: 0.4em solid var(--kleur);
+  border-radius: 0.8em;
+  background: #fff;
+}
+
+.az-keuze-wassenaar {
+  --kleur: var(--groen);
+}
+
+.az-keuze-veldrang {
+  --kleur: var(--olijf);
+}
+
+.az-keuze-kaart img {
+  width: 4.5em;
+  height: 4.5em;
+}
+
+.az-keuze-kaart h2 {
+  margin: 0;
+  font-size: 1.4em;
+}
+
+.az-keuze-kaart h2 a {
+  color: var(--kleur);
+}
+
+.az-keuze-kaart p {
+  margin: 0;
+}
+
+.az-keuze-knoppen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6em 1.2em;
+  margin-top: 0.4em;
+}
+
+.az-keuze-knop {
+  display: inline-block;
+  padding: 0.6em 1.1em;
+  border-radius: 0.5em;
+  background: var(--kleur, var(--groen));
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.az-keuze-knop:hover,
+.az-keuze-knop:focus-visible {
+  filter: brightness(1.15);
+}
+
+.az-keuze a:focus-visible {
+  outline: 3px solid var(--goud);
+  outline-offset: 2px;
+}
+
+.az-keuze-knoppen a:not(.az-keuze-knop) {
+  color: var(--kleur);
+  font-weight: 600;
+}

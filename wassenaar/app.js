@@ -4,4 +4,4 @@
  */
 
 import './wassenaar.js';
-import './motor.js';
+import '../motor.js';

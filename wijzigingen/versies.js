@@ -9,6 +9,14 @@
 
 export const VERSIES = [
   {
+    versie: '3.0.9',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Wassenaar Aanzien staat nu in een eigen map, naast Veldrang. Het oude adres stuurt je vanzelf door; je voortgang blijft staan.',
+      'Bovenaan staat een keuzepagina: Wassenaar Aanzien of Veldrang.',
+    ],
+  },
+  {
     versie: '3.0.8',
     datum: '2026-11-08',
     wijzigingen: [

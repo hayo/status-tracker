@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Wassenaar Aanzien binnen een site, zoals op hayobethlehem.nl/forge.
+ * De keuzepagina binnen een site, zoals op hayobethlehem.nl/content/forge/status-tracker.
  *
- * Los opgevraagd levert dit de landingspagina, index.html. Binnen een site, via de parser, de
- * tool zelf: alleen het artikel #aanzien uit app.html, met de opmaak en het script erbij. De site
- * zet er kop en menu omheen. Zo is app.html de enige bron van de tool.
+ * Los opgevraagd levert dit index.html. Binnen een site, via de parser, alleen het deel tussen de
+ * markeringen in index.html, met keuze.css erbij. Wassenaar Aanzien staat in wassenaar/, Veldrang
+ * in veldrang/; elk heeft een eigen index.php.
  */
 
 declare(strict_types=1);
@@ -18,25 +18,19 @@ declare(strict_types=1);
         return;
     }
 
-    $html = (string) file_get_contents(__DIR__ . '/app.html');
+    $html = (string) file_get_contents(__DIR__ . '/index.html');
 
-    // De URL van deze map, afgeleid van de documentroot, met de wijzigingsdatum tegen een oude cache.
     $slash = static fn (string $p): string => str_replace('\\', '/', $p);
     $root = rtrim($slash((string) realpath((string) ($_SERVER['DOCUMENT_ROOT'] ?? ''))), '/');
-    $map = $slash((string) realpath(__DIR__));
-    if ($root === '' || !str_starts_with($map . '/', $root . '/')) {
-        throw new RuntimeException('De map van Wassenaar Aanzien staat niet onder de documentroot.');
+    $bestand = $slash((string) realpath(__DIR__ . '/keuze.css'));
+    if ($root === '' || $bestand === '' || !str_starts_with($bestand, $root . '/')) {
+        throw new RuntimeException('De keuzepagina staat niet onder de documentroot.');
     }
-    $url = static fn (string $pad): string => htmlspecialchars(
-        substr($map, strlen($root)) . '/' . $pad . '?v=' . filemtime(__DIR__ . '/' . $pad),
-        ENT_QUOTES
-    );
+    $css = htmlspecialchars(substr($bestand, strlen($root)) . '?v=' . filemtime($bestand), ENT_QUOTES);
 
     if (!preg_match('~<!-- begin inhoud[^>]*-->(.*)<!-- einde inhoud -->~s', $html, $deel)) {
-        throw new RuntimeException('In app.html staat geen inhoud tussen de markeringen.');
+        throw new RuntimeException('In index.html staat geen inhoud tussen de markeringen.');
     }
 
-    echo '<link rel="stylesheet" href="', $url('app.css'), '">', "\n",
-        trim($deel[1]), "\n",
-        '<script type="module" src="', $url('app.js'), '"></script>', "\n";
+    echo '<link rel="stylesheet" href="', $css, '">', "\n", trim($deel[1]), "\n";
 })();

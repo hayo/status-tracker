@@ -4,7 +4,7 @@
  */
 
 import * as gegevens from './gegevens.js';
-import { VERSIES } from './wijzigingen/versies.js';
-import { vul } from './wereld.js';
+import { VERSIES } from '../wijzigingen/versies.js';
+import { vul } from '../wereld.js';
 
 vul({ ...gegevens, VERSIES });

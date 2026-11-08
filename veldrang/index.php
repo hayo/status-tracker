@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Veldrang binnen een site, zoals op hayobethlehem.nl/forge.
+ * Veldrang binnen een site, zoals op hayobethlehem.nl/content/forge.
  *
  * Los opgevraagd levert dit de landingspagina, index.html. Binnen een site, via de parser, de tool
  * zelf: alleen het artikel #aanzien uit app.html, met de opmaak en het script erbij. De opmaak van de

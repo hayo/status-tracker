@@ -11,8 +11,12 @@ Dezelfde motor drijft een tweede app aan: **Veldrang**, voor airsofters, in
 `veldrang/`. Daar level je van Rekruut tot Generaal. Zie
 [Motor en werelden](#motor-en-werelden).
 
-De startpagina (`index.html`) legt uit hoe het spel werkt. De knop "Open de
-tool" opent de tool zelf (`app.html`).
+Bovenaan staat een keuzepagina (`index.html`): Wassenaar Aanzien of Veldrang.
+Wassenaar staat in `wassenaar/`, Veldrang in `veldrang/`. Elk heeft een eigen
+landingspagina (`index.html`) die uitlegt hoe het spel werkt, en de tool zelf
+(`app.html`). Het oude adres `app.html` bovenaan stuurt door naar
+`wassenaar/app.html`, zodat bladwijzers en geïnstalleerde apps blijven werken.
+Je voortgang blijft staan: die hoort bij de site, niet bij de map.
 
 - **Karakter**: je karakterblad. Avatar met uitrustingsvakken, een radar voor je
   skills en een voor je kringen, de gunfactor als boog, je energie als ring,
@@ -41,14 +45,13 @@ repo.
 ## Opbouw
 
 ```
-index.html                de landingspagina: wat het is en hoe het werkt, met een knop naar de tool
-landing.css               de opmaak van de landingspagina, bovenop app.css
-app.html                  de tool, en de losse pagina eromheen
-index.php                 binnen een site: geeft alleen het artikel uit app.html door
+index.html                de keuzepagina: Wassenaar Aanzien of Veldrang
+keuze.css                 de opmaak van de keuzepagina, alles onder .az-keuze
+index.php                 binnen een site: geeft alleen de keuzepagina door
+app.html, doorsturen.js   het oude adres van de tool: stuurt door naar wassenaar/app.html, met #… erbij
+landing.css               de opmaak van de landingspagina's, bovenop app.css
 app.css                   de opmaak, alles onder #aanzien
 standalone.css            de achtergrond en de groene balk van de losse pagina
-app.js                    de ingang van Wassenaar: laadt eerst wassenaar.js, dan de motor
-wassenaar.js              vult de wereld met de inhoud van Wassenaar (gegevens.js en de versies)
 wereld.js                 de wereld waarin de motor draait; wat een wereld niet heeft, staat leeg
 motor.js                  de motor: tonen, loggen, bewaren, navigatie
 embleem.js                rangonderscheidingen naar die van de Landmacht, voor rangen met een embleem
@@ -60,14 +63,15 @@ spel.js                   de spelregels: rang, bonussen, prestaties, missies, ve
 opslag.js                 de opslag op de server: synccode, versleutelen, lezen en schrijven
 opslag.php                de server: bewaart versleutelde voortgang per speler
 bewaard/                  de standaardmap voor opslag.php, buiten git
-gegevens.js               de inhoud van Wassenaar: rangen, eigenschappen, activiteiten, symbolen en meer
+team.js, schermen/team.js teams: versleutelde profielen per lid, en de teampagina
+wassenaar/                Wassenaar Aanzien: gegevens.js (de inhoud), wassenaar.js (vult de wereld),
+                          app.js (de ingang), app.html (de tool), index.html (de landingspagina),
+                          index.php (binnen een site), manifest en iconen
 wijzigingen/versies.js    de versies van Wassenaar, de nieuwste bovenaan; de bovenste is de versie die draait
 veldrang/                 Veldrang: gegevens.js, versies.js, veldrang.js, app.js, app.html, index.html,
                           index.php, thema.css, pagina.css, manifest, iconen en letters
 sw.js                     laat de losse pagina ook zonder internet werken
 .htaccess                 laat de browser bij elk bezoek navragen of een bestand nog klopt (Apache)
-manifest.webmanifest      voor op het beginscherm
-iconen/                   de kroon, als svg en als png
 letters/                  Inter en Playfair Display, met hun licentie
 .github/                  de Action en het script die de app naar Codeberg zetten
 ```
@@ -168,7 +172,8 @@ de voettekst en de pagina met wijzigingen lezen het daar.
 
 ## Draaien
 
-Zet de map op een webserver en open `index.html`, of meteen `app.html`. Een
+Zet de map op een webserver en open `index.html`, of meteen
+`wassenaar/app.html` of `veldrang/app.html`. Een
 module laadt niet vanaf `file:`, dus lokaal: `python3 -m http.server` in de map,
 en dan `http://localhost:8000/`.
 
@@ -178,13 +183,12 @@ from a branch, `main`, map `/ (root)`.
 ### Binnen een site
 
 De map kan ook in een site staan, zoals op hayobethlehem.nl. De parser van de
-site sluit dan `index.php` in. Dat geeft de tool door: alleen het artikel
-`#aanzien` uit `app.html`, met `app.css` en `app.js` erbij. De site zet er kop en
-menu omheen. Wordt `index.php` zelf opgevraagd, dan levert het de
-landingspagina, `index.html`. Zo is `app.html` de enige bron van de tool.
-
-Veldrang heeft een eigen `veldrang/index.php`. Dat geeft ook `../app.css` en
-`thema.css` mee. Op de site staat Veldrang dan onder `status-tracker/veldrang/`.
+site sluit dan `index.php` in. Bovenaan geeft dat de keuzepagina door. In
+`wassenaar/` en `veldrang/` geeft `index.php` de tool door: alleen het artikel
+`#aanzien` uit `app.html`, met `../app.css` en `app.js` erbij (bij Veldrang ook
+`thema.css`). De site zet er kop en menu omheen. Wordt `index.php` zelf
+opgevraagd, dan levert het de landingspagina, `index.html`. Zo is `app.html` de
+enige bron van de tool.
 
 Binnen een site registreert de app geen service worker. Dat doet hij alleen als
 losse pagina, met het manifest in de kop.
@@ -223,7 +227,7 @@ een pull request. Anders botst de volgende update.
 
 ## Activiteiten en symbolen
 
-Alles staat in `gegevens.js`. Alleen gegevens, geen code.
+Alles staat in `wassenaar/gegevens.js` (bij Veldrang: `veldrang/gegevens.js`). Alleen gegevens, geen code.
 
 | Wat | Velden |
 | --- | --- |
