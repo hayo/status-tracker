@@ -5,6 +5,13 @@
 
 export const VERSIES = [
   {
+    versie: '1.4.1',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Ook hoofddeksel en draagsysteem hebben nu een plaatje bij elke keuze, van pet en boonie tot Stahlhelm, en van chest rig tot Smersh.',
+    ],
+  },
+  {
     versie: '1.4',
     datum: '2026-11-08',
     wijzigingen: [
