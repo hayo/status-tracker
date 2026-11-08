@@ -503,8 +503,8 @@ export const PADEN = [
 ];
 
 // De loadout: wat je draagt en waarmee je speelt. Hoe exotischer, hoe meer aanzien op het veld.
-// Een zwart pak met een M4 is het saaist, huurkit nog saaier. Per optie: [id, naam, trede].
-// De factor geldt voor spelen, spelelementen en plekken; bij twee delen het gemiddelde.
+// Een zwart pak met een M4 en een Glock is het saaist, huurkit nog saaier. Per optie: [id, naam, trede].
+// De factor geldt voor spelen, spelelementen en plekken: het gemiddelde van de delen die je koos.
 export const LOADOUT = {
   treden: [
     { naam: 'Huurkit', factor: 0.8 },
@@ -521,11 +521,17 @@ export const LOADOUT = {
       naam: 'Camouflage',
       opties: [
         ['huur', 'Huurkit van het veld', 0],
-        ['zwart', 'Zwart', 1], ['effen', 'Effen groen, tan of coyote', 1],
-        ['multicam', 'Multicam', 2], ['woodland', 'Woodland (M81)', 2], ['flecktarn', 'Flecktarn', 2],
-        ['marpat', 'Marpat', 3], ['nfp', 'NFP (Nederlands)', 3], ['dpm', 'DPM (Brits)', 3], ['mcvariant', 'Multicam Tropic, Arid of Black', 3], ['atacs', 'A-TACS', 3],
-        ['kryptek', 'Kryptek', 4], ['splinter', 'Splittertarn', 4], ['flora', 'Flora of EMR (Russisch)', 4], ['dcu', 'Chocolate chip', 4],
-        ['tiger', 'Tigerstripe', 5], ['rhodesian', 'Rhodesian brushstroke', 5], ['erbsen', 'Erbsentarn', 5], ['berezka', 'Berezka', 5], ['eigen', 'Eigen ghillie of eigen ontwerp', 5],
+        ['zwart', 'Zwart', 1], ['effen', 'Effen groen, tan of coyote', 1], ['ucp', 'UCP (Amerikaans digitaal grijs)', 1],
+        ['multicam', 'Multicam', 2], ['woodland', 'Woodland (M81)', 2], ['flecktarn', 'Flecktarn', 2], ['aor', 'AOR1 of AOR2', 2],
+        ['marpat', 'Marpat', 3], ['nfp', 'NFP (Nederlands)', 3], ['dpm', 'DPM (Brits)', 3], ['mtp', 'MTP (Brits)', 3],
+        ['mcvariant', 'Multicam Tropic, Arid of Black', 3], ['atacs', 'A-TACS', 3], ['pencott', 'PenCott', 3],
+        ['kryptek', 'Kryptek', 4], ['vz95', 'Tsjechisch woodland (vz. 95)', 4], ['m90', 'Zweeds splinter (M90)', 4],
+        ['splinter', 'Duits Splittertarn', 4], ['flora', 'Russisch Flora of EMR', 4], ['partizan', 'Russisch Partizan of SS-Leto', 4],
+        ['m84', 'Deens M/84', 4], ['m05', 'Fins M05', 4], ['wz93', 'Pools wz. 93', 4], ['vegetato', 'Italiaans Vegetato', 4],
+        ['auscam', 'Australisch AUSCAM', 4], ['tropentarn', 'Duits Tropentarn', 4], ['dcu', 'Chocolate chip', 4],
+        ['tiger', 'Tigerstripe', 5], ['rhodesian', 'Rhodesian brushstroke', 5], ['erbsen', 'Erbsentarn', 5], ['berezka', 'Berezka', 5],
+        ['erdl', 'ERDL (Vietnam)', 5], ['frog', 'Frogskin (WO2)', 5], ['lizard', 'Frans Lizard', 5], ['platanen', 'Platanenmuster (WO2)', 5],
+        ['eigen', 'Eigen ghillie of eigen ontwerp', 5],
       ],
     },
     {
@@ -534,10 +540,64 @@ export const LOADOUT = {
       opties: [
         ['huur', 'Huurreplica van het veld', 0],
         ['m4zwart', 'M4 of AR-15, kaal en zwart', 1],
-        ['m4', 'M4 of AR-15 met eigen aankleding', 2], ['hk416', 'HK416', 2], ['ak', 'AK-74 of AKM', 2], ['mp5', 'MP5', 2], ['g36', 'G36', 2],
-        ['c7', 'Diemaco C7 of C8', 3], ['scar', 'SCAR', 3], ['bullpup', 'Bullpup: AUG, Tavor of L85', 3], ['g3', 'G3 of FAL', 3], ['pdw', 'Kriss Vector of P90', 3],
-        ['sniper', 'Bolt-action sniper of DMR', 4], ['svd', 'SVD Dragunov', 4], ['lmg', 'LMG: M249 of Minimi', 4], ['famas', 'FAMAS', 4], ['vz58', 'VZ58 of Galil', 4],
-        ['historisch', 'Historisch: Thompson, MP40, Sten of M1 Garand', 5], ['zwaar', 'Zware MG: PKM of M60', 5], ['grendel', 'Mosin-Nagant of Lee-Enfield', 5], ['shotgun', 'Shotgun of granaatwerper als hoofdwapen', 5],
+        ['m4', 'M4 of AR-15 met eigen aankleding', 2], ['m16', 'M16', 2], ['hk416', 'HK416', 2], ['ak', 'AK-74 of AKM', 2],
+        ['mp5', 'MP5', 2], ['g36', 'G36', 2], ['ump', 'UMP', 2], ['mp7', 'MP7', 2],
+        ['c7', 'Diemaco C7 of C8', 3], ['scar', 'SCAR-L of SCAR-H', 3], ['bullpup', 'Bullpup: AUG, Tavor of L85', 3], ['g3', 'G3 of FAL', 3],
+        ['pdw', 'Kriss Vector of P90', 3], ['mcx', 'SIG MCX', 3], ['acr', 'ACR', 3], ['hk417', 'HK417', 3], ['ak12', 'AK-12', 3], ['sg550', 'SIG 550', 3],
+        ['sniper', 'Bolt-action sniper of DMR', 4], ['svd', 'SVD Dragunov', 4], ['lmg', 'LMG: M249 of Minimi', 4], ['famas', 'FAMAS', 4],
+        ['vz58', 'VZ58 of Galil', 4], ['as', 'AS Val of VSS Vintorez', 4], ['m14', 'M14', 4], ['bizon', 'PP-19 Bizon', 4],
+        ['historisch', 'Historisch: Thompson, MP40, Sten of M1 Garand', 5], ['zwaar', 'Zware MG: PKM of M60', 5], ['grendel', 'Mosin-Nagant of Lee-Enfield', 5],
+        ['shotgun', 'Shotgun of granaatwerper als hoofdwapen', 5], ['stg44', 'StG 44', 5], ['type56', 'AK uit de Koude Oorlog: Type 56 of AKMS met hout', 5],
+      ],
+    },
+    {
+      id: 'pistool',
+      naam: 'Secundair wapen',
+      opties: [
+        ['huur', 'Huurpistool van het veld', 0],
+        ['glock', 'Glock 17 of 19', 1], ['hicapa', 'Hi-Capa', 1],
+        ['p226', 'SIG P226 of P229', 2], ['m9', 'Beretta M9 of 92', 2], ['usp', 'HK USP', 2], ['m1911', '1911', 2], ['glockplus', 'Glock met eigen aanpassingen', 2],
+        ['m18', 'SIG M17 of M18', 3], ['g18', 'Glock 18C, vol automaat', 3], ['fiveseven', 'FN Five-seveN', 3], ['cz', 'CZ P-09 of Shadow 2', 3],
+        ['vp9', 'HK VP9 of HK45', 3], ['mk23', 'HK Mk23', 3], ['p320', 'SIG P320', 3],
+        ['deagle', 'Desert Eagle', 4], ['makarov', 'Makarov PM', 4], ['tokarev', 'Tokarev TT-33', 4], ['revolver', 'Revolver', 4],
+        ['mp9', 'Machinepistool als secundair: MP9 of Skorpion', 4], ['grach', 'MP-443 Grach', 4],
+        ['mauser', 'Mauser C96', 5], ['luger', 'Luger P08', 5], ['stechkin', 'Stechkin APS', 5], ['webley', 'Webley-revolver', 5], ['nambu', 'Nambu', 5],
+      ],
+    },
+    {
+      id: 'hoofd',
+      naam: 'Hoofddeksel',
+      opties: [
+        ['huur', 'Huurmasker of huurhelm van het veld', 0],
+        ['pet', 'Pet', 1], ['bril', 'Alleen een bril', 1],
+        ['boonie', 'Boonie hat', 2], ['fast', 'Fast-helm', 2], ['beanie', 'Muts met een shemagh', 2],
+        ['nvgmount', 'Helm met NVG-mount, cover en counterweight', 3], ['mich', 'MICH of ACH met een cover in je camo', 3], ['headset', 'Helm met een echte headset', 3],
+        ['ratnik', 'Russische 6B47 of Ratnik', 4], ['pasgt', 'PASGT-helm', 4], ['bivak', 'Bivakmuts met een gezichtsmasker van gaas', 4],
+        ['stahlhelm', 'Historische helm: M1, Stahlhelm of SSh-68', 5], ['ghillie', 'Ghillie hood', 5], ['baret', 'Baret van een echte eenheid', 5],
+      ],
+    },
+    {
+      id: 'draag',
+      naam: 'Draagsysteem',
+      opties: [
+        ['huur', 'Huurvest van het veld', 0],
+        ['zwartpc', 'Goedkope plate carrier in het zwart', 1], ['tasjes', 'Alleen een paar tasjes aan je riem', 1],
+        ['pc', 'Plate carrier', 2], ['chestrig', 'Chest rig', 2],
+        ['belt', 'Battle belt met een chest rig', 3], ['modulair', 'Modulair systeem in je eigen camo', 3], ['jpc', 'Lichte plate carrier met een placard', 3],
+        ['smersh', 'Russisch Smersh-systeem', 4], ['plce', 'Brits PLCE-webbing', 4], ['lbv', 'Load bearing vest uit de jaren 90', 4],
+        ['historisch', 'Historisch webbing: M1956, Pattern 37 of Y-straps', 5], ['zelf', 'Zelf genaaid of omgebouwd', 5],
+      ],
+    },
+    {
+      id: 'optiek',
+      naam: 'Richtmiddel',
+      opties: [
+        ['huur', 'Het vizier van de huurreplica', 0],
+        ['reddot', 'Goedkope red dot', 1],
+        ['holo', 'Holosight of red dot met een vergroter', 2], ['scope', 'Richtkijker met vaste vergroting', 2],
+        ['bekend', 'Replica van een bekende optiek: ACOG, Aimpoint of EOTech', 3], ['lpvo', 'LPVO met variabele vergroting', 3],
+        ['pso', 'Russische PSO of Kobra', 4], ['nachtzicht', 'Nachtzicht of warmtezicht op je wapen', 4],
+        ['ijzer', 'Bewust alleen het ijzeren vizier', 5], ['historisch', 'Historische richtkijker', 5],
       ],
     },
   ],

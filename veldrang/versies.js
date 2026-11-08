@@ -5,6 +5,14 @@
 
 export const VERSIES = [
   {
+    versie: '1.0.1',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Je loadout heeft nu zes delen: camouflage, hoofdwapen, secundair wapen, hoofddeksel, draagsysteem en richtmiddel.',
+      'Veel meer keuze per deel, zoals Tsjechisch woodland, Zweeds M90, de SCAR-L en de SIG M18.',
+    ],
+  },
+  {
     versie: '1.0',
     datum: '2026-11-07',
     wijzigingen: [
