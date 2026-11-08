@@ -5,6 +5,14 @@
 
 export const VERSIES = [
   {
+    versie: '1.0.2',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Elk wapen staat nu los in de lijst: 64 hoofdwapens en 32 pistolen, met echte airsoftmodellen zoals de ARP9, de VSR-10, de Novritsch SSG24 en de AAP-01.',
+      'De groepen zijn opgesplitst: de AUG, Tavor en L85 zijn nu elk een eigen keuze, net als de Thompson, MP40 en Sten.',
+    ],
+  },
+  {
     versie: '1.0.1',
     datum: '2026-11-08',
     wijzigingen: [
