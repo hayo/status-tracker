@@ -5,6 +5,14 @@
 
 export const VERSIES = [
   {
+    versie: '1.4',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Elk wapen in je loadout heeft nu een plaatje: alle 75 hoofdwapens en 38 pistolen, in één gamestijl.',
+      'Ook de veertien optics en tien toebehoren hebben een plaatje. Bij toebehoren staat het naast het vinkje.',
+    ],
+  },
+  {
     versie: '1.3.2',
     datum: '2026-11-08',
     wijzigingen: [

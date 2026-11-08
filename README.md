@@ -466,6 +466,9 @@ Animaties (de glans op de XP-balk, het niveauvenster) staan uit bij
   licentie (publiek domein, CC BY-SA, CC0 of de Britse Open Government Licence).
   Maker, licentie en bronpagina staan bij elk staal in de app en in
   `veldrang/camo/BRONNEN.md`. Zet je er een bij, vermeld dan ook de bron.
+- Veldrang, plaatjes van wapens, optics en toebehoren (`veldrang/wapens/`,
+  `veldrang/uitrusting/`): gemaakt met het beeldmodel van Gemini, in één
+  gamestijl, zonder merktekens.
 
 ## Toegankelijkheid
 
