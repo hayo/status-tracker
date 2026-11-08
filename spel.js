@@ -240,7 +240,8 @@ export function erkenning(logboek, vandaag = new Date()) {
   const score = recent.reduce((s, r) => s + r.punten, 0);
   const i = ERKENNING.niveaus.findLastIndex(([vanaf]) => score >= vanaf);
   return {
-    totaal: binnen.reduce((s, r) => s + r.punten, 0),
+    // Erkenning van vóór de app (uit de startvragen) telt mee in het totaal, niet in de laatste dagen.
+    totaal: binnen.reduce((s, r) => s + r.punten, 0) + logboek.filter((r) => r.start).reduce((s, r) => s + (r.ervaringErkenning ?? 0), 0),
     score,
     binnen: recent.length,
     uit,
@@ -316,6 +317,7 @@ export function statistiek(spel) {
   for (const r of spel.logboek.filter(telt)) weekPunten.set(weekVan(r.datum), (weekPunten.get(weekVan(r.datum)) ?? 0) + r.punten);
   return {
     acties: acties.length,
+    ervaring: ervaringsdagen(spel),
     ...loadoutTellers(spel),
     perActiviteit: tel(acties.map((r) => r.activiteit)),
     perTerrein: tel(acties.map(terreinVan)),
@@ -393,6 +395,7 @@ export function voortgang(v, st) {
     erkenning: () => st.erkenning.totaal,
     bekendheid: () => st.erkenning.score,
     verhouding: () => st.erkenning.verhouding,
+    ervaring: () => st.ervaring,
     loadouts: () => st.loadouts,
     camos: () => st.camos,
   }[v.soort];
@@ -417,10 +420,13 @@ export function ontgrendeld(spel, st = statistiek(spel)) {
 /* ---------- Rang ---------- */
 
 // Dagen sinds het begin van deze ronde.
+// Ervaring van vóór de app (uit de startvragen) telt mee, in de eerste ronde.
 export function dagenInSpel(spel, vandaag = new Date()) {
   const eerste = spel.logboek.filter((r) => ronde(r) === spel.ronde).map((r) => r.datum).sort()[0];
-  return eerste ? Math.max(0, dagenTussen(alsDatum(eerste), vandaag)) : 0;
+  return (eerste ? Math.max(0, dagenTussen(alsDatum(eerste), vandaag)) : 0) + ervaringsdagen(spel);
 }
+
+export const ervaringsdagen = (spel) => spel.logboek.find((r) => r.start && ronde(r) === spel.ronde)?.ervaringDagen ?? 0;
 
 // Je rang vraagt PR, tijd en een ritueel. Zonder ritueel of tijd blijf je hangen, hoeveel PR je ook hebt.
 export function rang(spel, st = statistiek(spel)) {

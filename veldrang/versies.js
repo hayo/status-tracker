@@ -5,6 +5,15 @@
 
 export const VERSIES = [
   {
+    versie: '1.7.1',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Promotie werkt nu beter voor wie al lang speelt. Je ervaring uit de startvragen telt mee als tijd in het spel, en lid van een team, de NABV of de krijgsmacht geeft je meteen de patch die erbij hoort.',
+      'Na de startvragen zie je nu de rang die je echt hebt.',
+      'Onder Gegevens kun je de startvragen opnieuw invullen. Je logboek blijft staan.',
+    ],
+  },
+  {
     versie: '1.7.0',
     datum: '2026-11-08',
     wijzigingen: [

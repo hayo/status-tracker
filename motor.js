@@ -9,11 +9,11 @@
 
 import { W } from './wereld.js';
 import {
-  dagSleutel, alsDatum, plusDagen, maandag, dagenTussen, ACTIVITEITEN, telt, rangIndex, rang as rangVan, verval,
+  dagSleutel, alsDatum, plusDagen, maandag, dagenTussen, ACTIVITEITEN, telt, rang as rangVan, verval,
   netwerk, gastvrijheid, opvolgingen, roddel, nationaleDag, komendeNationaleDagen, dossiers,
   kringStand, kosten, energie,
   behaald, perWeek, reeks, event, volgendEvent, pad, bonussen, statistiek, voortgang, ontgrendeld,
-  missies, jaren, jaaroverzicht, samenvoegen, loadout, teamProfiel, actieveLoadout, loadoutNaam, stil, tredeZichtbaar,
+  missies, jaren, jaaroverzicht, samenvoegen, loadout, ervaringsdagen, ronde, teamProfiel, actieveLoadout, loadoutNaam, stil, tredeZichtbaar,
 } from './spel.js';
 import * as opslag from './opslag.js';
 import * as teams from './team.js';
@@ -402,7 +402,7 @@ function toonStatus() {
   el.nodig.textContent = volgende ? (p < volgende.min ? `${getal(volgende.min - p)} PR nodig` : 'PR gehaald') : '';
   el.eisen.replaceChildren(...(volgende ? [
     [volgende.eisen.punten, `${getal(volgende.min)} PR`, `je hebt er ${getal(p)}`],
-    [volgende.eisen.dagen, `${volgende.dagen} ${WERELD.eisDagen}`, `je bent ${nu.dagen} ${nu.dagen === 1 ? 'dag' : 'dagen'} bezig`],
+    [volgende.eisen.dagen, `${volgende.dagen} ${WERELD.eisDagen}`, `je bent ${nu.dagen} ${nu.dagen === 1 ? 'dag' : 'dagen'} bezig${ervaringsdagen(spel) ? `, met ${ervaringsdagen(spel)} dagen ervaring van vóór de app` : ''}`],
     ...(volgende.ritueel ? [[volgende.eisen.ritueel, volgende.ritueel.tekst, volgende.eisen.ritueel ? 'gedaan' : 'nog niet']] : []),
     ...(volgende.erkenning ? [[volgende.eisen.erkenning, `${getal(volgende.erkenning)} erkenning: wat anderen naar jou toe deden`, `je hebt er ${getal(st.erkenning.totaal)}`]] : []),
     ...(volgende.kring ? [[volgende.eisen.kringen, `${kringStand(volgende.kring.vanaf)} in ${volgende.kring.aantal === KRINGEN.length ? 'alle' : volgende.kring.aantal} kringen`,
@@ -1120,20 +1120,46 @@ el.vergeten.addEventListener('change', () => {
   verwerk();
 });
 
+// De startvragen. Een antwoord is [tekst, punten, extra?]: extra kan ervaringsdagen (dagen), erkenning en
+// patches (symbolen) meegeven, zodat wie al jaren speelt niet opnieuw hoeft te wachten of alles opnieuw te loggen.
+// Met startOpnieuw vul je ze later nog eens in: dan vervangt de nieuwe start de oude, en blijft je logboek.
+let startOpnieuw = false;
+
 el.startFormulier.addEventListener('submit', (e) => {
   e.preventDefault();
   const data = new FormData(el.startFormulier);
   const eig = {};
-  let punten = 0;
+  const symbolen = new Set();
+  let punten = 0, dagen = 0, erkend = 0;
   for (const v of STARTVRAGEN) {
-    const p = Number(data.get(v.id));
+    const [, p, extra = {}] = v.antwoorden[Number(data.get(v.id))] ?? v.antwoorden[0];
     punten += p;
     eig[v.eigenschap] = (eig[v.eigenschap] ?? 0) + p * v.deel;
+    dagen = Math.max(dagen, extra.dagen ?? 0);
+    erkend += extra.erkenning ?? 0;
+    for (const s of extra.symbolen ?? []) symbolen.add(s);
+  }
+  const start = { datum: vandaag(), naam: 'Startpunt berekend', punten, eigenschappen: eig, start: true, symbolen: [...symbolen], ervaringDagen: dagen, ervaringErkenning: erkend };
+  if (startOpnieuw && spel) {
+    const oud = spel.logboek.find((r) => r.start && ronde(r) === spel.ronde);
+    if (oud) Object.assign(oud, { ...start, datum: oud.datum });
+    else spel.logboek.push({ id: nieuwId(), tijd: new Date().toISOString(), ronde: spel.ronde, ...start });
+    startOpnieuw = false;
+    bewaar();
+    verwerk();
+    location.hash = '#status';
+    meld('Startpunt bijgewerkt', `Je bent nu ${RANGEN[rangVan(spel).index].naam}. Je logboek is gebleven.`);
+    return;
   }
   spel = leesIn({ versie: 3, logboek: [] });
-  voegToe({ datum: vandaag(), naam: 'Startpunt berekend', punten, eigenschappen: eig, start: true }, true);
+  voegToe(start, true);
   location.hash = '#status';
-  meld(WERELD.welkom, `Je begint je reis als ${RANGEN[rangIndex(punten)].naam}.`);
+  meld(WERELD.welkom, `Je begint je reis als ${RANGEN[rangVan(spel).index].naam}.`);
+});
+
+el.startOpnieuwKnop?.addEventListener('click', () => {
+  startOpnieuw = true;
+  location.hash = '#start';
 });
 
 el.bewaarKnop.addEventListener('click', () => {
@@ -1247,8 +1273,8 @@ function toonVersies() {
 function bouwStart() {
   el.startFormulier.prepend(...STARTVRAGEN.map((v, i) => maak('fieldset', {},
     maak('legend', { tekst: `${i + 1}. ${v.vraag}` }),
-    ...v.antwoorden.map(([tekst, punten], j) => maak('label', { class: 'keuze' },
-      maak('input', { type: 'radio', name: v.id, value: punten, required: true, checked: j === 0 }), maak('span', { tekst: tekst }))))));
+    ...v.antwoorden.map(([tekst], j) => maak('label', { class: 'keuze' },
+      maak('input', { type: 'radio', name: v.id, value: j, required: true, checked: j === 0 }), maak('span', { tekst: tekst }))))));
 }
 
 function verwerk() {
@@ -1272,7 +1298,9 @@ function verwerk() {
 function toon(verplaatsFocus = false) {
   let id = location.hash.slice(1);
   if (!spel) id = 'start';
-  else if (id === 'start' || !WEERGAVEN.includes(id)) id = 'status';
+  else if ((id === 'start' && !startOpnieuw) || !WEERGAVEN.includes(id)) id = 'status';
+  if (id !== 'start') startOpnieuw = false;
+  el.startKoppel.hidden = Boolean(spel);
   for (const w of WEERGAVEN) el[w].hidden = w !== id;
   el.menu.hidden = !spel;
   for (const a of el.menu.querySelectorAll('a')) {

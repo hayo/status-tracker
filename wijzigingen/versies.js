@@ -9,6 +9,14 @@
 
 export const VERSIES = [
   {
+    versie: '3.0.11',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Na de eerste inschatting zie je nu de rang die je echt hebt.',
+      'Onder Gegevens kun je de startvragen opnieuw invullen. Je logboek blijft staan.',
+    ],
+  },
+  {
     versie: '3.0.10',
     datum: '2026-11-08',
     wijzigingen: [

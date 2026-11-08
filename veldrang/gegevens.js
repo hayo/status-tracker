@@ -40,7 +40,7 @@ export const RANGEN = [
   { min: 0, dagen: 0, naam: 'Rekruut', code: 'OR-1', embleem: { schouder: true }, uitleg: 'Net begonnen. Je leert de regels, het veld en je gear.', icoon: 'user' },
   {
     min: 400, dagen: 0, naam: 'Soldaat', code: 'OR-2', embleem: { strepen: 2, visgraat: true }, uitleg: 'Je hebt je eerste games achter de rug en weet waar de safezone is.', icoon: 'person-rifle',
-    ritueel: { tekst: 'Je speelde je eerste game', voorwaarde: { soort: 'terrein', id: 'spelen', aantal: 1 } },
+    ritueel: { tekst: 'Je speelde je eerste game', voorwaarde: { soort: 'een', lijst: [{ soort: 'terrein', id: 'spelen', aantal: 1 }, { soort: 'ervaring', aantal: 1 }] } },
   },
   {
     min: 1200, dagen: 14, erkenning: 40, naam: 'Korporaal', code: 'OR-3', embleem: { strepen: 1, visgraat: true, breed: true }, uitleg: 'Een vaste speler. Men herkent je op het veld.', icoon: 'chevron-up',
@@ -52,15 +52,15 @@ export const RANGEN = [
   },
   {
     min: 6000, dagen: 120, erkenning: 300, naam: 'Sergeant-majoor', code: 'OR-7', embleem: { strepen: 2 }, uitleg: 'Een rots in elk team. Organisatoren kennen je naam.', icoon: 'shield-halved',
-    ritueel: { tekst: 'Je marshalde een game', voorwaarde: { soort: 'activiteit', id: 'o01' } },
+    ritueel: { tekst: 'Je marshalde een game', voorwaarde: { soort: 'een', lijst: [{ soort: 'activiteit', id: 'o01' }, { soort: 'symbool', id: 'm_marshal' }] } },
   },
   {
     min: 10000, dagen: 180, erkenning: 500, naam: 'Luitenant', code: 'OF-1', embleem: { sterren: 1 }, uitleg: 'Je geeft leiding aan meer dan je eigen team.', icoon: 'star',
-    ritueel: { tekst: 'Je organiseerde een game of oefendag', voorwaarde: { soort: 'een', lijst: [{ soort: 'activiteit', id: 'o04' }, { soort: 'dossiers', aantal: 1 }] } },
+    ritueel: { tekst: 'Je organiseerde een game of oefendag', voorwaarde: { soort: 'een', lijst: [{ soort: 'activiteit', id: 'o04' }, { soort: 'dossiers', aantal: 1 }, { soort: 'symbool', id: 'm_organisator' }] } },
   },
   {
     min: 16000, dagen: 270, erkenning: 800, naam: 'Kapitein', code: 'OF-2', embleem: { sterren: 3 }, uitleg: 'Een gezicht van de scene. Je naam staat op de briefing.', icoon: 'medal',
-    ritueel: { tekst: 'Je speelde een milsim van een heel weekend', voorwaarde: { soort: 'activiteit', id: 's04' } },
+    ritueel: { tekst: 'Je speelde een milsim van een heel weekend', voorwaarde: { soort: 'een', lijst: [{ soort: 'activiteit', id: 's04' }, { soort: 'symbool', id: 'm_milsim' }, { soort: 'symbool', id: 'm_24uur' }, { soort: 'symbool', id: 'm_48uur' }] } },
     kring: { aantal: 3, vanaf: 200 },
   },
   {
@@ -542,7 +542,7 @@ export const STARTVRAGEN = [
     vraag: 'Hoe lang speel je al airsoft?',
     eigenschap: 'tactiek',
     deel: 0.5,
-    antwoorden: [['Nog nooit', 0], ['Korter dan een jaar', 100], ['Een tot drie jaar', 400], ['Drie tot tien jaar', 1000], ['Langer dan tien jaar', 2000]],
+    antwoorden: [['Nog nooit', 0], ['Korter dan een jaar', 100, { dagen: 30 }], ['Een tot drie jaar', 400, { dagen: 180, erkenning: 40 }], ['Drie tot tien jaar', 1000, { dagen: 365, erkenning: 120 }], ['Langer dan tien jaar', 2000, { dagen: 730, erkenning: 300 }]],
   },
   {
     id: 'vaak',
@@ -556,21 +556,21 @@ export const STARTVRAGEN = [
     vraag: 'Speel je in een team?',
     eigenschap: 'tactiek',
     deel: 0.5,
-    antwoorden: [['Nee, ik speel alleen', 0], ['Soms met vrienden', 100], ['In een vast team', 300], ['Ik leid een team', 700]],
+    antwoorden: [['Nee, ik speel alleen', 0], ['Soms met vrienden', 100], ['In een vast team', 300, { symbolen: ['m_team'] }], ['Ik leid een team', 700, { symbolen: ['m_team', 'm_teamleider'], erkenning: 100 }]],
   },
   {
     id: 'bond',
     vraag: 'Ben je lid van de NABV?',
     eigenschap: 'tactiek',
     deel: 0.3,
-    antwoorden: [['Nee', 0], ['Ja', 200], ['Ja, en ik doe vrijwilligerswerk', 500]],
+    antwoorden: [['Nee', 0], ['Ja', 200, { symbolen: ['m_nabv'] }], ['Ja, en ik doe vrijwilligerswerk', 500, { symbolen: ['m_nabv', 'm_vrijwilliger'], erkenning: 50 }]],
   },
   {
     id: 'helpen',
     vraag: 'Wat doe je voor anderen op het veld?',
     eigenschap: 'tactiek',
     deel: 0.5,
-    antwoorden: [['Niets bijzonders', 0], ['Ik help nieuwe spelers', 150], ['Ik marshal of help bij de chrono', 400], ['Ik organiseer games', 1000]],
+    antwoorden: [['Niets bijzonders', 0], ['Ik help nieuwe spelers', 150], ['Ik marshal of help bij de chrono', 400, { symbolen: ['m_marshal'], erkenning: 50 }], ['Ik organiseer games', 1000, { symbolen: ['m_marshal', 'm_organisator'], erkenning: 200 }]],
   },
   {
     id: 'militair',
@@ -578,8 +578,9 @@ export const STARTVRAGEN = [
     eigenschap: 'tactiek',
     deel: 0.5,
     antwoorden: [
-      ['Nee', 0], ['Oud-militair of reservist', 300], ['Militair: soldaat of korporaal', 500], ['Militair: onderofficier', 800],
-      ['Militair: officier', 1100], ['Militair met een specialistische functie, zoals instructeur, scherpschutter of special forces', 1400],
+      ['Nee', 0], ['Oud-militair of reservist', 300, { symbolen: ['m_mil'] }], ['Militair: soldaat of korporaal', 500, { symbolen: ['m_mil'] }],
+      ['Militair: onderofficier', 800, { symbolen: ['m_mil', 'm_mil_onder'], erkenning: 50 }], ['Militair: officier', 1100, { symbolen: ['m_mil', 'm_mil_officier'], erkenning: 100 }],
+      ['Militair met een specialistische functie, zoals instructeur, scherpschutter of special forces', 1400, { symbolen: ['m_mil', 'm_mil_special'], erkenning: 100 }],
     ],
   },
   {
@@ -587,7 +588,7 @@ export const STARTVRAGEN = [
     vraag: 'Hoe staat het met je gear?',
     eigenschap: 'techniek',
     deel: 0.5,
-    antwoorden: [['Ik huur', 0], ['Eén eigen replica', 100], ['Meer replica\'s en eigen loadouts', 300], ['Ik bouw en repareer zelf', 600]],
+    antwoorden: [['Ik huur', 0], ['Eén eigen replica', 100, { symbolen: ['m_eigen'] }], ['Meer replica\'s en eigen loadouts', 300, { symbolen: ['m_eigen'] }], ['Ik bouw en repareer zelf', 600, { symbolen: ['m_eigen'] }]],
   },
 ];
 

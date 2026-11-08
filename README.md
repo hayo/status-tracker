@@ -250,7 +250,7 @@ Alles staat in `wassenaar/gegevens.js` (bij Veldrang: `veldrang/gegevens.js`). A
 | `PLEKKEN` | `id`, `naam`, `icoon`: de dorpskaart |
 | `BUURTEN` | de buurten die je bij het loggen kiest |
 | `DOSSIERS` | `id`, `naam`, `icoon`; met `DOSSIER_STAPPEN` en `DOSSIER_BELONING` |
-| `STARTVRAGEN` | `id`, `vraag`, `eigenschap`, `deel` (welk deel van de punten naar de eigenschap gaat), en `antwoorden` als `[tekst, punten]` |
+| `STARTVRAGEN` | `id`, `vraag`, `eigenschap`, `deel` (welk deel van de punten naar de eigenschap gaat), en `antwoorden` als `[tekst, punten, extra?]`; `extra` kan `dagen` (ervaring van vóór de app, telt mee als tijd in het spel), `erkenning` (telt mee in het totaal aan erkenning) en `symbolen` (patches die je dan al hebt) meegeven |
 
 De kenmerken van een activiteit: `uitnodiging` (je werd uitgenodigd), `tegen` (je
 nodigde zelf uit), `bedank` (vraagt om een bedankje) en `nationaal` (extra XP rond

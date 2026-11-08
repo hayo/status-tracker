@@ -618,6 +618,8 @@ export const STARTVRAGEN = [
  * kringen (zo veel kringen op stand vanaf), gunfactor (minstens), rol (id, zo veel mensen in die rol),
  * erkenning (punten aan erkenning, altijd), bekendheid (erkenning in de laatste 90 dagen),
  * verhouding (procent: hoeveel er naar jou toe kwam tegenover wat jij deed, de laatste 90 dagen),
+ * ervaring (dagen ervaring van vóór de app, uit de startvragen), loadouts (complete loadouts),
+ * camos (complete loadouts in verschillende camo's),
  * alle (een lijst die allemaal moet), een (een lijst waarvan er één moet).
  */
 
