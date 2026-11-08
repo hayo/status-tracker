@@ -697,7 +697,8 @@ export const SPEELSTIJLEN = [
 // De factor geldt voor spelen, spelelementen en plekken: het gemiddelde van de delen die je koos.
 // Per optie: [id, naam, trede, beeld?]. Bij camo is het beeld een foto van het echte patroon van
 // Wikimedia Commons (camo/), met maker, licentie en bronpagina; bij wapens een plaatje (wapens/).
-// De bronnen staan ook in camo/BRONNEN.md. Zonder vrij beeld tekende Gemini het patroon na.
+// De bronnen staan ook in camo/BRONNEN.md. PenCott en Kryptek zijn voorlopig een uitsnede van een
+// productfoto (auteursrecht); Partizan en Dubok tekende Gemini na.
 export const LOADOUT = {
   treden: [
     { naam: 'Speedsoft', factor: 0.7 },
@@ -745,12 +746,12 @@ export const LOADOUT = {
         ['zwart', 'Zwart', 2, { kleuren: ['#1e1e1e'] }],
         ['effen', 'Effen groen, tan of coyote', 2, { kleuren: ['#6b6a45'] }],
         ['wolfgrey', 'Effen grijs (wolf grey)', 2, { kleuren: ['#6b6e70'] }],
-        ['grijs', 'Grijs digitaal (urban)', 4, { beeld: 'camo/grijs.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
-        ['nwu', 'Navy NWU Type I (blueberry)', 5, { beeld: 'camo/nwu.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
-        ['mm14', 'Oekraïens MM-14 (pixel)', 5, { beeld: 'camo/mm14.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
+        ['grijs', 'Grijs digitaal (urban)', 4, { beeld: 'camo/grijs.webp', bron: { maker: 'GTRus', licentie: 'CC BY-SA 4.0', link: 'https://commons.wikimedia.org/wiki/File:Type_07_urban.jpg' } }],
+        ['nwu', 'Navy NWU Type I (blueberry)', 5, { beeld: 'camo/nwu.webp', bron: { maker: 'U.S. Navy', licentie: 'publiek domein', link: 'https://commons.wikimedia.org/wiki/File:NWU_Type_I_camouflage_pattern_swatch_%28cropped%29.jpg' } }],
+        ['mm14', 'Oekraïens MM-14 (pixel)', 5, { beeld: 'camo/mm14.webp', bron: { maker: 'Lucas Cavalcante Mesquita', licentie: 'CC BY-SA 4.0', link: 'https://commons.wikimedia.org/wiki/File:MM14.jpg' } }],
         ['dubok', 'Oekraïens Dubok', 5, { beeld: 'camo/dubok.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
-        ['type07', 'Chinees Type 07 (woodland)', 5, { beeld: 'camo/type07.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
-        ['alpenflage', 'Zwitsers Alpenflage (pizza camo)', 6, { beeld: 'camo/alpenflage.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
+        ['type07', 'Chinees Type 07 (woodland)', 5, { beeld: 'camo/type07.webp', bron: { maker: 'GTRus', licentie: 'CC BY-SA 4.0', link: 'https://commons.wikimedia.org/wiki/File:Type_07_universal.jpg' } }],
+        ['alpenflage', 'Zwitsers Alpenflage (pizza camo)', 6, { beeld: 'camo/alpenflage.webp', bron: { maker: 'Bouterolle', licentie: 'CC BY-SA 3.0', link: 'https://commons.wikimedia.org/wiki/File:Alpenflage_%28cropped%29.JPG' } }],
         ['ucp', 'UCP (Amerikaans digitaal grijs)', 2, { beeld: 'camo/ucp.webp', bron: { maker: 'Doubleailes', licentie: 'publiek domein', link: 'https://commons.wikimedia.org/wiki/File:Universal_Camouflage_Pattern_%28UCP%29.jpg' } }],
         ['multicam', 'Multicam', 3, { beeld: 'camo/multicam.webp', bron: { maker: 'Chikumaya', licentie: 'publiek domein', link: 'https://commons.wikimedia.org/wiki/File:Multicam_pattern_%28cropped%29.jpg' } }],
         ['woodland', 'Woodland (M81)', 3, { beeld: 'camo/woodland.webp', bron: { maker: 'U.S. Army', licentie: 'publiek domein', link: 'https://commons.wikimedia.org/wiki/File:%22M81%22_U.S._woodland_camouflage_pattern_swatch.png' } }],
@@ -762,8 +763,8 @@ export const LOADOUT = {
         ['mtp', 'MTP (Brits)', 4, { beeld: 'camo/mtp.webp', bron: { maker: 'Amanda Reynolds, Ministry of Defence photographer', licentie: 'OGL v1.0', link: 'https://commons.wikimedia.org/wiki/File:British_Armed_Forces_Multi_Terrain_Pattern_camouflage.jpg' } }],
         ['mcvariant', 'Multicam Tropic, Arid of Black', 4, { beeld: 'camo/mcvariant.webp', bron: { maker: 'onbekende maker', licentie: 'publiek domein', link: 'https://commons.wikimedia.org/wiki/File:TROPIC_MULTICAM_%28cropped%29.jpg' } }],
         ['atacs', 'A-TACS', 4, { beeld: 'camo/atacs.webp', bron: { maker: 'GTRus', licentie: 'CC BY-SA 4.0', link: 'https://commons.wikimedia.org/wiki/File:A-TACS_AU.jpg' } }],
-        ['pencott', 'PenCott', 4, { beeld: 'camo/pencott.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
-        ['kryptek', 'Kryptek', 5, { beeld: 'camo/kryptek.webp', bron: { maker: 'Gemini, naar het echte patroon', licentie: 'nagetekend' } }],
+        ['pencott', 'PenCott', 4, { beeld: 'camo/pencott.webp', bron: { maker: 'Military1st', licentie: 'productfoto, auteursrecht', link: 'https://www.military1st.nl/catalogsearch/result/?q=pencott+greenzone' } }],
+        ['kryptek', 'Kryptek', 5, { beeld: 'camo/kryptek.webp', bron: { maker: 'Military1st', licentie: 'productfoto, auteursrecht', link: 'https://www.military1st.nl/catalogsearch/result/?q=kryptek+highlander' } }],
         ['vz95', 'Tsjechisch woodland (vz. 95)', 5, { beeld: 'camo/vz95.webp', bron: { maker: 'Chekotay', licentie: 'CC BY-SA 4.0', link: 'https://commons.wikimedia.org/wiki/File:Maskovac%C3%AD_potisk_stejnokroje_95.jpg' } }],
         ['m90', 'Zweeds splinter (M90)', 5, { beeld: 'camo/m90.webp', bron: { maker: 'LEJK', licentie: 'CC BY-SA 4.0', link: 'https://commons.wikimedia.org/wiki/File:M90_Seamless_Camo.png' } }],
         ['splinter', 'Duits Splittertarn', 5, { beeld: 'camo/splinter.webp', bron: { maker: 'Mediatus', licentie: 'CC BY-SA 3.0', link: 'https://commons.wikimedia.org/wiki/File:Buntfarbenmuster_31_%28Splittertarn%29_%28cropped%29.jpg' } }],

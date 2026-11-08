@@ -39,11 +39,28 @@ Per patroon: het bestand, de maker en de licentie.
 
 vz95.webp is alleen de woodland-helft van het bestand.
 
+## Later toegevoegd, van Wikimedia Commons
+
+| Bestand | Bron | Maker | Licentie |
+| --- | --- | --- | --- |
+| `alpenflage.webp` | [Alpenflage_%28cropped%29.JPG](https://commons.wikimedia.org/wiki/File:Alpenflage_%28cropped%29.JPG) | Bouterolle | CC BY-SA 3.0 |
+| `mm14.webp` | [MM14.jpg](https://commons.wikimedia.org/wiki/File:MM14.jpg) | Lucas Cavalcante Mesquita | CC BY-SA 4.0 |
+| `type07.webp` | [Type_07_universal.jpg](https://commons.wikimedia.org/wiki/File:Type_07_universal.jpg) | GTRus | CC BY-SA 4.0 |
+| `nwu.webp` | [NWU_Type_I_camouflage_pattern_swatch_%28cropped%29.jpg](https://commons.wikimedia.org/wiki/File:NWU_Type_I_camouflage_pattern_swatch_%28cropped%29.jpg) | U.S. Navy | publiek domein |
+| `grijs.webp` | [Type_07_urban.jpg](https://commons.wikimedia.org/wiki/File:Type_07_urban.jpg) | GTRus | CC BY-SA 4.0 |
+
+`alpenflage.webp` is een uitsnede zonder het vergrootglas; `grijs.webp` is Type 07 Urban.
+
+## Voorlopig met auteursrecht
+
+`pencott.webp` (PenCott GreenZone) en `kryptek.webp` (Kryptek Highlander) zijn uitsneden van
+productfoto's van Military1st. Daar rust auteursrecht op. Ze staan er voorlopig; regel toestemming of
+vervang ze door een vrij beeld.
+
 ## Nagetekend met Gemini
 
-Van deze patronen is geen vrij beeld te vinden. Het beeldmodel van Gemini tekende ze na, naar het
-echte patroon: `pencott.webp`, `kryptek.webp`, `partizan.webp`, `alpenflage.webp` (pizza camo),
-`mm14.webp`, `dubok.webp`, `type07.webp`, `nwu.webp` en `grijs.webp`.
+Van `partizan.webp` en `dubok.webp` is nog geen beeld gevonden. Het beeldmodel van Gemini tekende
+ze na, naar het echte patroon.
 
 ## De helmen
 
