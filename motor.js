@@ -634,12 +634,15 @@ function bouwLoadout() {
     deel.opties.some((o) => o[3]) ? maak('span', { class: 'loadout-staal', id: `az-loadout-staal-${deel.id}` }) : null)));
   // Alle stalen op een rij, per trede van exotisch naar laag.
   if (el.loadoutStalen) {
-    el.loadoutStalen.replaceChildren(...LOADOUT.delen.flatMap((deel) => deel.opties.filter((o) => o[3])
+    el.loadoutStalen.replaceChildren(...LOADOUT.delen.flatMap((deel) => deel.opties.filter((o) => o[3] && !o[3].plaatje)
       .sort((a, b) => b[2] - a[2])
-      .map(([id, naam, trede, spec]) => maak('li', { class: `staal-kaart trede-${trede}` },
-        staal(`${deel.id}-${id}`, spec),
+      .map(([, naam, trede, spec]) => maak('li', { class: `staal-kaart trede-${trede}` },
+        staal(spec, null, 'helm'),
         maak('span', { class: 'staal-naam', tekst: naam }),
-        maak('span', { class: 'staal-trede', tekst: LOADOUT.treden[trede].naam })))));
+        maak('span', { class: 'staal-trede', tekst: LOADOUT.treden[trede].naam }),
+        spec.bron
+          ? maak('a', { class: 'staal-bron', href: spec.bron.link, tekst: `Foto: ${spec.bron.maker}, ${spec.bron.licentie}` })
+          : spec.geenBeeld ? maak('span', { class: 'staal-bron', tekst: 'Geen vrij beeld van dit patroon' }) : null))));
   }
   for (const s of el.loadout.querySelectorAll('select')) s.addEventListener('change', (e) => kiesLoadout(e.target.id.slice('az-loadout-'.length), e.target.value));
 }
@@ -658,7 +661,12 @@ function toonLoadout() {
     el.loadout.querySelector(`#az-loadout-${deel.id}`).value = id;
     const vak = el.loadout.querySelector(`#az-loadout-staal-${deel.id}`);
     const optie = deel.opties.find((o) => o[0] === id);
-    if (vak) vak.replaceChildren(...(optie?.[3] ? [staal(`${deel.id}-${id}`, optie[3], `${deel.naam}: ${optie[1]}`)] : []));
+    const spec = optie?.[3];
+    if (vak) {
+      vak.replaceChildren(...(!spec ? [] : spec.plaatje
+        ? [maak('img', { class: 'loadout-plaatje', src: spec.plaatje, alt: `${deel.naam}: ${optie[1]}`, width: 480, height: 240, loading: 'lazy' })]
+        : [staal(spec, `${deel.naam}: ${optie[1]}`)]));
+    }
   }
   const l = loadout(spel);
   const namen = LOADOUT.terreinen.map((t) => CATEGORIEEN.find((c) => c.id === t).naam.split(':')[0].toLocaleLowerCase('nl'));

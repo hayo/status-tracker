@@ -5,6 +5,14 @@
 
 export const VERSIES = [
   {
+    versie: '1.1.1',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'De camostalen staan in het overzicht nu in de vorm van een helm. De echte patronen, met hun bron, volgen in de volgende versie.',
+      'Bij hoofdwapen en pistool is ruimte gemaakt voor een plaatje van je wapen.',
+    ],
+  },
+  {
     versie: '1.1',
     datum: '2026-11-08',
     wijzigingen: [
