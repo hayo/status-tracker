@@ -435,6 +435,26 @@ export function rang(spel, st = statistiek(spel)) {
   return { index, punten, dagen, volgende: volgende ? { ...volgende, eisen: eisen(volgende) } : null };
 }
 
+// Wat je met je team deelt: rang, PR, reputatie, skills, loadout, speelstijl, patches, prestaties
+// en je laatste vijf activiteiten. Geen notities, geen namen van anderen en geen plekken.
+export function teamProfiel(spel, st = statistiek(spel)) {
+  const r = rang(spel, st);
+  return {
+    versie: 1,
+    rang: r.index,
+    pr: Math.round(r.punten),
+    reputatie: Math.round(st.erkenning.score),
+    skills: Object.fromEntries(Object.keys(EIGENSCHAPPEN).map((k) => [k, Math.round(st.skills[k] ?? 0)])),
+    stijl: spel.stijl ?? null,
+    loadout: spel.loadout ?? {},
+    symbolen: [...st.symbolen],
+    prestaties: [...ontgrendeld(spel, st).prestaties],
+    laatste: spel.logboek.filter((r) => r.activiteit && ACTIVITEITEN.has(r.activiteit))
+      .sort((a, b) => b.datum.localeCompare(a.datum) || (b.tijd ?? '').localeCompare(a.tijd ?? ''))
+      .slice(0, 5).map((r) => ({ activiteit: r.activiteit, datum: r.datum, punten: Math.round(r.punten) })),
+  };
+}
+
 // De speelstijl: hoe je speelt. Geeft een factor op de XP van activiteiten met bepaalde skills.
 export const speelstijl = (spel) => SPEELSTIJLEN.find((s) => s.id === spel.stijl) ?? null;
 

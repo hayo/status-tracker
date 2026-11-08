@@ -398,3 +398,8 @@
   font-size: 0.85em;
   font-weight: 700;
 }
+
+/* Statusregels in donkergroen: genoeg contrast op stof. */
+#aanzien .sync-status {
+  color: #2f5d1c;
+}

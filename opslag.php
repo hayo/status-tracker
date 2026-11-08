@@ -12,6 +12,13 @@
  * - schrijf: bewaart data als revisie de huidige is. Anders 409 met wat er nu staat.
  * - wis: haalt alles van dit id weg.
  *
+ * Teams: één bestand per team, met per lid een eigen versleuteld profiel. De sleutel komt uit de
+ * teamcode, die alleen de leden kennen. Elk lid heeft een geheim token; de server bewaart alleen de
+ * hash ervan (lid), zodat niemand het profiel van een ander kan overschrijven of weghalen.
+ * - team-lees: geeft { leden: [{ lid, data, bijgewerkt }] }. Zonder team is de lijst leeg.
+ * - team-schrijf: met token en data. Bewaart het profiel van dit lid; een nieuw team ontstaat zo.
+ * - team-verlaat: met token. Haalt dit lid weg; een leeg team verdwijnt.
+ *
  * Instellingen via de omgeving van de webserver:
  * - AANZIEN_OPSLAG: de map voor de bestanden. Zet die buiten de map die bij een update wordt
  *   overschreven. Standaard: bewaard/ naast dit bestand.
@@ -22,6 +29,10 @@ declare(strict_types=1);
 
 const AZ_MAX_DATA = 700_000;      // tekens base64, ruim genoeg voor jaren loggen
 const AZ_MAX_SPELERS = 2_000;     // tegen misbruik als gratis opslag
+const AZ_MAX_PROFIEL = 60_000;   // tekens base64 per lid
+const AZ_MAX_LEDEN = 40;
+const AZ_MAX_TEAMS = 1_000;
+const AZ_LID_VERLOOPT = 365 * 86_400; // een lid dat een jaar niets stuurde, valt weg
 const AZ_HERKOMST = 'https://hayo.github.io,https://hayobethlehem.nl';
 
 (static function (): void {
@@ -57,12 +68,13 @@ const AZ_HERKOMST = 'https://hayo.github.io,https://hayobethlehem.nl';
     $verzoek = json_decode((string) file_get_contents('php://input', false, null, 0, AZ_MAX_DATA + 1_000), true);
     $actie = $verzoek['actie'] ?? null;
     $id = $verzoek['id'] ?? null;
-    if (!is_array($verzoek) || !in_array($actie, ['lees', 'schrijf', 'wis'], true) || !is_string($id) || !preg_match('/^[0-9a-f]{64}$/', $id)) {
+    if (!is_array($verzoek) || !in_array($actie, ['lees', 'schrijf', 'wis', 'team-lees', 'team-schrijf', 'team-verlaat'], true) || !is_string($id) || !preg_match('/^[0-9a-f]{64}$/', $id)) {
         $antwoord(400, ['fout' => 'Ongeldig verzoek.']);
         return;
     }
+    $team = substr($actie, 0, 5) === 'team-';
 
-    $map = rtrim((string) (getenv('AANZIEN_OPSLAG') ?: __DIR__ . '/bewaard'), '/');
+    $map = rtrim((string) (getenv('AANZIEN_OPSLAG') ?: __DIR__ . '/bewaard'), '/') . ($team ? '/teams' : '');
     if (!is_dir($map) && !mkdir($map, 0750, true) && !is_dir($map)) {
         $antwoord(500, ['fout' => 'De opslag is niet beschikbaar.']);
         return;
@@ -78,11 +90,17 @@ const AZ_HERKOMST = 'https://hayo.github.io,https://hayobethlehem.nl';
 
     $opruimen = false;
     try {
+        if ($team) {
+            $opruimen = azTeam($actie, $verzoek, $pad, $map, $antwoord);
+            return;
+        }
+
         $nu = is_file($pad) ? json_decode((string) file_get_contents($pad), true) : null;
         $huidig = is_array($nu) ? (int) ($nu['revisie'] ?? 0) : 0;
 
         if ($actie === 'lees') {
             if ($huidig === 0) {
+                $opruimen = !is_file($pad); // geen leeg slot laten staan voor een code zonder voortgang
                 $antwoord(404, ['fout' => 'Niets gevonden bij deze code.']);
             } else {
                 $antwoord(200, ['revisie' => $huidig, 'data' => $nu['data']]);
@@ -130,3 +148,64 @@ const AZ_HERKOMST = 'https://hayo.github.io,https://hayobethlehem.nl';
         }
     }
 })();
+
+/**
+ * De teamacties. Geeft true als het team weg is, zodat het slot ook weg kan.
+ */
+function azTeam(string $actie, array $verzoek, string $pad, string $map, callable $antwoord): bool
+{
+    $nu = is_file($pad) ? json_decode((string) file_get_contents($pad), true) : null;
+    $leden = is_array($nu) && is_array($nu['leden'] ?? null) ? $nu['leden'] : [];
+    $grens = gmdate('c', time() - AZ_LID_VERLOOPT);
+    $leden = array_filter($leden, static fn ($l): bool => is_array($l) && (string) ($l['bijgewerkt'] ?? '') >= $grens);
+
+    if ($actie === 'team-lees') {
+        $lijst = [];
+        foreach ($leden as $lid => $l) {
+            $lijst[] = ['lid' => (string) $lid, 'data' => $l['data'], 'bijgewerkt' => $l['bijgewerkt']];
+        }
+        $antwoord(200, ['leden' => $lijst]);
+        return !is_file($pad);
+    }
+
+    $token = $verzoek['token'] ?? null;
+    if (!is_string($token) || !preg_match('/^[0-9a-f]{64}$/', $token)) {
+        $antwoord(400, ['fout' => 'Ongeldig verzoek.']);
+        return false;
+    }
+    $lid = hash('sha256', $token);
+
+    if ($actie === 'team-verlaat') {
+        unset($leden[$lid]);
+    } else {
+        $data = $verzoek['data'] ?? null;
+        if (!is_string($data) || strlen($data) > AZ_MAX_PROFIEL || !preg_match('/^[A-Za-z0-9+\/]+=*$/', $data)) {
+            $antwoord(400, ['fout' => 'Ongeldige gegevens.']);
+            return false;
+        }
+        if ($leden === [] && !is_file($pad) && count(glob($map . '/*.json') ?: []) >= AZ_MAX_TEAMS) {
+            $antwoord(507, ['fout' => 'Er kunnen geen teams meer bij.']);
+            return false;
+        }
+        if (!isset($leden[$lid]) && count($leden) >= AZ_MAX_LEDEN) {
+            $antwoord(507, ['fout' => 'Het team is vol.']);
+            return false;
+        }
+        $leden[$lid] = ['data' => $data, 'bijgewerkt' => gmdate('c')];
+    }
+
+    if ($leden === []) {
+        if (is_file($pad)) {
+            unlink($pad);
+        }
+        $antwoord(200, ['leden' => 0]);
+        return true;
+    }
+    $tijdelijk = $pad . '.nieuw';
+    if (file_put_contents($tijdelijk, json_encode(['leden' => $leden])) === false || !rename($tijdelijk, $pad)) {
+        $antwoord(500, ['fout' => 'Opslaan lukte niet.']);
+        return false;
+    }
+    $antwoord(200, ['lid' => $lid, 'leden' => count($leden)]);
+    return false;
+}

@@ -32,21 +32,22 @@ export function leesCode(invoer) {
 
 export const toonCode = (code) => code.match(/.{1,5}/g).join('-');
 
-const hex = (buffer) => [...new Uint8Array(buffer)].map((b) => b.toString(16).padStart(2, '0')).join('');
+export const hex = (buffer) => [...new Uint8Array(buffer)].map((b) => b.toString(16).padStart(2, '0')).join('');
 const naarBase64 = (bytes) => btoa(String.fromCharCode(...bytes));
 const uitBase64 = (s) => Uint8Array.from(atob(s), (t) => t.charCodeAt(0));
 
-async function sleutels(code) {
-  const id = hex(await crypto.subtle.digest('SHA-256', tekst.encode(`${W.WERELD.sync.id}:${code}`)));
+// deel scheidt soorten opslag met dezelfde soort code: '' voor je voortgang, ':team' voor een team.
+export async function sleutels(code, deel = '') {
+  const id = hex(await crypto.subtle.digest('SHA-256', tekst.encode(`${W.WERELD.sync.id}${deel}:${code}`)));
   const basis = await crypto.subtle.importKey('raw', tekst.encode(code), 'HKDF', false, ['deriveKey']);
   const sleutel = await crypto.subtle.deriveKey(
-    { name: 'HKDF', hash: 'SHA-256', salt: tekst.encode(W.WERELD.sync.zout), info: tekst.encode('sleutel') },
+    { name: 'HKDF', hash: 'SHA-256', salt: tekst.encode(`${W.WERELD.sync.zout}${deel}`), info: tekst.encode('sleutel') },
     basis, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt'],
   );
   return { id, sleutel };
 }
 
-async function versleutel(sleutel, waarde) {
+export async function versleutel(sleutel, waarde) {
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const blok = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, sleutel, tekst.encode(JSON.stringify(waarde))));
   const alles = new Uint8Array(iv.length + blok.length);
@@ -55,13 +56,13 @@ async function versleutel(sleutel, waarde) {
   return naarBase64(alles);
 }
 
-async function ontsleutel(sleutel, data) {
+export async function ontsleutel(sleutel, data) {
   const alles = uitBase64(data);
   const klaar = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: alles.slice(0, 12) }, sleutel, alles.slice(12));
   return JSON.parse(new TextDecoder().decode(klaar));
 }
 
-async function vraag(verzoek) {
+export async function vraag(verzoek) {
   const antwoord = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

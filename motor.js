@@ -13,9 +13,11 @@ import {
   netwerk, gastvrijheid, opvolgingen, roddel, nationaleDag, komendeNationaleDagen, dossiers,
   kringStand, kosten, energie,
   behaald, perWeek, reeks, event, volgendEvent, pad, bonussen, statistiek, voortgang, ontgrendeld,
-  missies, jaren, jaaroverzicht, samenvoegen, loadout,
+  missies, jaren, jaaroverzicht, samenvoegen, loadout, teamProfiel,
 } from './spel.js';
 import * as opslag from './opslag.js';
+import * as teams from './team.js';
+import { toonTeam } from './schermen/team.js';
 import { maak, icoon, meter, getal, factor, metTeken } from './ui.js';
 import { staal } from './staal.js';
 import { toonKarakter } from './schermen/karakter.js';
@@ -60,7 +62,7 @@ function laad() {
 // Zet opgeslagen gegevens om naar een spel. Kent ook de formaten van versie 1 en 2.
 function leesIn(ruw) {
   if (!ruw || typeof ruw !== 'object') throw new Error('Geen geldig bestand.');
-  const nieuw = { versie: 3, logboek: [], ronde: 0, titel: null, pad: null, type: null, stijl: null, loadout: {}, vergeten: false, generatie: nieuwId(), bijgewerkt: '', verwijderd: [] };
+  const nieuw = { versie: 3, logboek: [], ronde: 0, titel: null, pad: null, type: null, stijl: null, team: null, loadout: {}, vergeten: false, generatie: nieuwId(), bijgewerkt: '', verwijderd: [] };
   if (ruw.versie >= 2 && Array.isArray(ruw.logboek)) {
     const geldig = ruw.logboek.filter((r) => r && typeof r.datum === 'string' && Number.isFinite(r.punten));
     return {
@@ -71,6 +73,7 @@ function leesIn(ruw) {
       pad: typeof ruw.pad === 'string' ? ruw.pad : null,
       type: TYPEN.some((t) => t.id === ruw.type) ? ruw.type : null,
       stijl: SPEELSTIJLEN.some((t) => t.id === ruw.stijl) ? ruw.stijl : null,
+      team: leesTeam(ruw.team),
       loadout: ruw.loadout && typeof ruw.loadout === 'object'
         ? Object.fromEntries(Object.entries(ruw.loadout).filter(([k, v]) => (k === 'extra' ? Array.isArray(v) : typeof v === 'string'))
           .map(([k, v]) => [k, k === 'extra' ? v.filter((x) => typeof x === 'string') : v]))
@@ -102,6 +105,12 @@ function leesIn(ruw) {
   };
 }
 
+// Je team: { code, token, callsign, naam }. Het token is geheim en zit ook in je savegame en sync.
+function leesTeam(t) {
+  if (!t || typeof t !== 'object' || !opslag.leesCode(t.code) || !/^[0-9a-f]{64}$/.test(t.token)) return null;
+  return { code: opslag.leesCode(t.code), token: t.token, callsign: String(t.callsign ?? '').slice(0, 24), naam: String(t.naam ?? '').slice(0, 40) };
+}
+
 function bewaarLokaal() {
   try { localStorage.setItem(SLEUTEL, JSON.stringify(spel)); } catch { meld('Niet opgeslagen', 'Bewaar je savegame als bestand.', true); }
 }
@@ -114,6 +123,129 @@ function bewaar() {
     bewaarSync();
     planSync();
   }
+  planTeam();
+}
+
+/* ---------- Team ---------- */
+
+const teamStaat = { leden: null, eigen: null, fout: '', bezig: false, gestuurd: '' };
+let teamKlok;
+
+const toonTeamNu = () => toonTeam(el, { ...teamStaat, team: spel?.team ?? null });
+
+function planTeam() {
+  if (!el.team || !spel?.team) return;
+  clearTimeout(teamKlok);
+  teamKlok = setTimeout(stuurTeam, 3000);
+}
+
+const mijnProfiel = () => ({ ...teamProfiel(spel), callsign: spel.team.callsign, teamnaam: spel.team.naam });
+
+// Stuurt je profiel als er iets veranderde, en haalt daarna het team op.
+async function stuurTeam() {
+  const t = spel?.team;
+  if (!el.team || !t) return;
+  const profiel = mijnProfiel();
+  const tekst = JSON.stringify(profiel);
+  try {
+    if (tekst !== teamStaat.gestuurd) {
+      await teams.plaats(t.code, t.token, profiel);
+      teamStaat.gestuurd = tekst;
+    }
+  } catch (fout) {
+    teamStaat.fout = `Je profiel bijwerken lukte niet (${fout.message}). De app probeert het later opnieuw.`;
+    toonTeamNu();
+    return;
+  }
+  await haalTeam();
+}
+
+async function haalTeam() {
+  const t = spel?.team;
+  if (!el.team || !t) return;
+  teamStaat.bezig = true;
+  toonTeamNu();
+  try {
+    teamStaat.eigen ??= await teams.lidVan(t.token);
+    teamStaat.leden = (await teams.lees(t.code)) ?? [];
+    teamStaat.fout = '';
+  } catch {
+    teamStaat.fout = 'De server is niet bereikbaar. Probeer het later opnieuw.';
+  }
+  teamStaat.bezig = false;
+  if (spel?.team === t) toonTeamNu();
+}
+
+async function maakTeam(callsign, naam) {
+  const team = { code: opslag.nieuweCode(), token: teams.nieuwToken(), callsign, naam };
+  try {
+    spel.team = team;
+    await teams.plaats(team.code, team.token, mijnProfiel());
+  } catch (fout) {
+    spel.team = null;
+    meld('Team maken lukte niet', fout.message, true);
+    return;
+  }
+  Object.assign(teamStaat, { leden: null, eigen: null, fout: '', gestuurd: '' });
+  bewaar();
+  meld(`Team ${naam} gemaakt`, 'Deel de teamcode in je teamchat. Wie de code heeft, kan aansluiten.');
+  await haalTeam();
+}
+
+async function sluitAan(callsign, invoer) {
+  const code = opslag.leesCode(invoer);
+  if (!code) { meld('Onbekende code', 'Een teamcode heeft 26 letters en cijfers.', true); return; }
+  let leden;
+  try { leden = await teams.lees(code); } catch { meld('Geen verbinding', 'De server is niet bereikbaar. Probeer het later opnieuw.', true); return; }
+  if (!leden?.length) { meld('Geen team gevonden', 'Bij deze code hoort geen team. Kijk de code nog eens na.', true); return; }
+  const naam = String([...leden].sort((a, b) => a.bijgewerkt.localeCompare(b.bijgewerkt)).at(-1).profiel?.teamnaam ?? '').slice(0, 40) || 'zonder naam';
+  const team = { code, token: teams.nieuwToken(), callsign, naam };
+  try {
+    spel.team = team;
+    await teams.plaats(code, team.token, mijnProfiel());
+  } catch (fout) {
+    spel.team = null;
+    meld('Aansluiten lukte niet', fout.message, true);
+    return;
+  }
+  Object.assign(teamStaat, { leden: null, eigen: null, fout: '', gestuurd: '' });
+  bewaar();
+  meld(`Welkom bij team ${naam}`, 'Je profiel staat nu op de teampagina.');
+  await haalTeam();
+}
+
+function verlaatTeam() {
+  const t = spel.team;
+  vraag(`Team ${t.naam} verlaten?`, 'Je profiel verdwijnt van de teampagina. Met de teamcode kun je later weer aansluiten.', 'Verlaat het team', async () => {
+    try { await teams.verlaat(t.code, t.token); } catch { meld('Geen verbinding', 'De server is niet bereikbaar. Probeer het later opnieuw.', true); return; }
+    spel.team = null;
+    Object.assign(teamStaat, { leden: null, eigen: null, fout: '', gestuurd: '' });
+    bewaar();
+    toonTeamNu();
+    meld('Team verlaten', `Je staat niet meer op de pagina van team ${t.naam}.`);
+  });
+}
+
+function bouwTeam() {
+  if (!el.team) return;
+  el.teamFormulier.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const callsign = el.teamCallsign.value.trim();
+    if (!callsign) { meld('Callsign nodig', 'Vul eerst je callsign in. Zo herkennen je teamleden je.', true); el.teamCallsign.focus(); return; }
+    if (e.submitter?.value === 'sluit') sluitAan(callsign, el.teamInvoer.value);
+    else if (el.teamTeamnaam.value.trim()) maakTeam(callsign, el.teamTeamnaam.value.trim().slice(0, 40));
+    else { meld('Teamnaam nodig', 'Vul de naam van je team in.', true); el.teamTeamnaam.focus(); }
+  });
+  el.teamKopieer.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(opslag.toonCode(spel.team.code));
+      meld('Gekopieerd', 'De teamcode staat op je klembord.');
+    } catch {
+      meld('Kopiëren lukte niet', 'Schrijf de code over.', true);
+    }
+  });
+  el.teamVervers.addEventListener('click', stuurTeam);
+  el.teamVerlaat.addEventListener('click', verlaatTeam);
 }
 
 /* ---------- Opslag op de server ---------- */
@@ -714,7 +846,7 @@ function keuzeTitel(id, naam, uitleg) {
 }
 
 function toonJaar(jaar) {
-  if (!jaar) { el.jaaroverzicht.replaceChildren(maak('p', { class: 'leeg', tekst: 'Nog niets gelogd.' })); return; }
+  if (!jaar) { el.jaaroverzicht.replaceChildren(maak('div', {}, maak('dt', { tekst: 'Je jaar' }), maak('dd', { class: 'leeg', tekst: 'Nog niets gelogd.' }))); return; }
   const j = jaaroverzicht(spel, jaar);
   el.jaarTitel.textContent = WERELD.jaar.replace('{jaar}', jaar);
   el.jaaroverzicht.replaceChildren(...[
@@ -1063,6 +1195,7 @@ function verwerk() {
   toonQuiz();
   toonNationaleDagen();
   toonLoadout();
+  toonTeamNu();
   el.vergeten.checked = spel.vergeten;
 }
 
@@ -1079,7 +1212,10 @@ function toon(verplaatsFocus = false) {
   if (verplaatsFocus) el[`${id}Kop`].focus();
 }
 
-window.addEventListener('hashchange', () => toon(true));
+window.addEventListener('hashchange', () => {
+  toon(true);
+  if (location.hash === '#erelijst') haalTeam();
+});
 
 // Rangen met een embleem krijgen een eigen icoon in de sprite.
 const sprite = app.querySelector('svg.sprite');
@@ -1096,6 +1232,7 @@ bouwActiviteiten();
 bouwQuiz();
 bouwKaart(el, (a) => vraagLog(a));
 bouwLoadout();
+bouwTeam();
 el.logRol.append(...ROLLEN.map((r) => maak('option', { value: r }, r)));
 el.logBuurt.append(...BUURTEN.map((b) => maak('option', { value: b }, b)));
 el.logDossier.append(...dossiers([]).map((d) => maak('option', { value: d.id }, d.naam)));
@@ -1112,6 +1249,7 @@ if (startFout) {
   el.laden.textContent = `Er ging iets mis bij het openen van je voortgang (${startFout.message}). Je gegevens zijn niet weg. Bewaar je savegame onder Gegevens en stuur deze melding door.`;
 }
 haalOp();
+if (spel?.team) stuurTeam();
 
 // Alleen als losse pagina. Binnen een site gaat de site over het offline werken.
 if (document.querySelector('link[rel="manifest"]') && 'serviceWorker' in navigator) {

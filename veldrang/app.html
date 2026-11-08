@@ -439,6 +439,57 @@
     <section class="weergave" id="az-erelijst" aria-labelledby="az-erelijst-kop" hidden>
       <h2 class="verborgen" id="az-erelijst-kop" tabindex="-1">Erelijst</h2>
 
+      <section class="paneel team" id="az-team" aria-labelledby="az-team-kop">
+        <h3 id="az-team-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-people-group"/></svg> <span id="az-team-titel">Je team</span></h3>
+        <div id="az-team-uit">
+          <p class="zacht">Vergelijk je met je teamleden: rang, PR, skills, loadout en patches. Maak een team en deel de teamcode in je teamchat, of sluit aan met de code die je kreeg. Alleen wie de code heeft, ziet de teampagina. Alles is versleuteld: de server kan niets lezen.</p>
+          <form class="team-formulier" id="az-team-formulier" novalidate>
+            <p class="veld">
+              <label for="az-team-callsign">Je callsign</label>
+              <input type="text" id="az-team-callsign" maxlength="24" autocomplete="nickname" spellcheck="false">
+            </p>
+            <div class="team-keuzes">
+              <fieldset>
+                <legend>Nieuw team</legend>
+                <label for="az-team-teamnaam">Naam van je team</label>
+                <input type="text" id="az-team-teamnaam" maxlength="40" autocomplete="off">
+                <button type="submit" class="knop" value="maak"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-plus"/></svg> Maak een team</button>
+              </fieldset>
+              <fieldset>
+                <legend>Bestaand team</legend>
+                <label for="az-team-invoer">Teamcode</label>
+                <input type="text" id="az-team-invoer" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-X">
+                <button type="submit" class="knop knop-licht" value="sluit"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-link"/></svg> Sluit aan</button>
+              </fieldset>
+            </div>
+          </form>
+        </div>
+        <div id="az-team-aan" hidden>
+          <p class="synccode"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-key"/></svg> <code id="az-team-code"></code>
+            <button type="button" class="knop knop-licht knop-klein" id="az-team-kopieer"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-copy"/></svg> Kopieer</button></p>
+          <p class="zacht">De teamcode. Deel hem alleen met je team: wie de code heeft, ziet de teampagina.</p>
+          <p class="sync-status" id="az-team-status" role="status"></p>
+          <h4>Ranglijst</h4>
+          <section class="tabel-vak" tabindex="0" aria-label="Ranglijst">
+            <table class="tabel team-tabel">
+              <caption class="verborgen">Ranglijst van je team, op prestigepunten</caption>
+              <thead><tr><th scope="col">#</th><th scope="col">Callsign</th><th scope="col">Rang</th><th scope="col">PR</th><th scope="col">Reputatie</th><th scope="col">Speelstijl</th></tr></thead>
+              <tbody id="az-team-rijen"></tbody>
+            </table>
+          </section>
+          <h4>Skills naast elkaar</h4>
+          <section class="tabel-vak" tabindex="0" aria-label="Skills naast elkaar">
+            <table class="tabel team-tabel" id="az-team-skills"></table>
+          </section>
+          <h4>Profielen</h4>
+          <ul class="team-leden" id="az-team-leden"></ul>
+          <p class="knoppen">
+            <button type="button" class="knop knop-licht" id="az-team-ververs"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-arrows-rotate"/></svg> Nu bijwerken</button>
+            <button type="button" class="knop knop-licht" id="az-team-verlaat">Verlaat het team</button>
+          </p>
+        </div>
+      </section>
+
       <section class="paneel" aria-labelledby="az-paden-kop">
         <h3 id="az-paden-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-star"/></svg> Jouw pad</h3>
         <p class="zacht" id="az-pad-uitleg"></p>

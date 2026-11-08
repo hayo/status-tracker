@@ -116,6 +116,8 @@ verschil met Wassenaar zit alleen in de gegevens en het thema:
   richtmiddel, granaat en mes, elk in een trede van speedsoft tot exotisch,
   plus toebehoren. Het gemiddelde geeft een factor op spelen, spelelementen en
   plekken;
+- teams: maak een team of sluit aan met een teamcode, en vergelijk rang, PR,
+  skills, loadout, patches en prestaties met je teamleden (zie Teams);
 - een speelstijl (`SPEELSTIJLEN`), zoals sneaky, tactical of spray and pray:
   per skill een factor op de XP;
 - militaire status: een startvraag en patches naar rang en functie;
@@ -123,6 +125,25 @@ verschil met Wassenaar zit alleen in de gegevens en het thema:
   dertien plekken.
 
 Geen energie, quiz, nationale dagen of kapitaal.
+
+### Teams
+
+Een team staat op de server in `opslag.php`, net als de sync. De teamcode
+(26 tekens) is het geheim: daaruit komen het id van het team en de sleutel
+(`team.js`, met `sleutels(code, ':team')` uit `opslag.js`). Elk lid versleutelt
+een eigen profiel (`teamProfiel` in `spel.js`): callsign, teamnaam, rang, PR,
+reputatie, skills, loadout, speelstijl, patches, prestaties en de laatste vijf
+activiteiten. Geen notities en geen namen van anderen.
+
+Elk lid heeft een geheim token in zijn savegame. De server bewaart alleen de
+hash ervan, zodat niemand het profiel van een ander kan overschrijven. Een team
+heeft hoogstens 40 leden; wie een jaar niets stuurde, valt weg. De app stuurt
+je profiel na een wijziging en haalt het team op als je de Erelijst opent.
+Profielen van anderen worden gecontroleerd (`schoon` in `schermen/team.js`)
+en alleen als tekst getoond.
+
+Het paneel staat alleen in `veldrang/app.html`. Een wereld zonder `#az-team`
+heeft geen teams.
 
 ## Versies
 

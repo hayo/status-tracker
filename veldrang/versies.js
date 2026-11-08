@@ -5,6 +5,15 @@
 
 export const VERSIES = [
   {
+    versie: '1.6.0',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Nieuw: teams. Maak een team op de Erelijst en deel de teamcode in je teamchat, of sluit aan met een code die je kreeg.',
+      'Op de teampagina zie je je teamleden naast elkaar: een ranglijst op PR, alle skills in een tabel, en per lid de loadout, speelstijl, patches, prestaties en laatste activiteiten.',
+      'Alles is versleuteld met de teamcode. De server kan niets lezen, en alleen jij kunt je eigen profiel bijwerken of weghalen.',
+    ],
+  },
+  {
     versie: '1.5.0',
     datum: '2026-11-08',
     wijzigingen: [

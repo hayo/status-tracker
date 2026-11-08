@@ -3195,3 +3195,123 @@
     animation: none !important;
   }
 }
+
+/* ---------- Team ---------- */
+
+#aanzien .team-formulier label {
+  display: block;
+  margin-bottom: 0.3em;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+#aanzien .team-keuzes {
+  display: grid;
+  gap: 1em;
+  margin-top: 0.8em;
+}
+
+@media (width >= 40em) {
+  #aanzien .team-keuzes {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+#aanzien .team-keuzes fieldset {
+  display: grid;
+  align-content: start;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0.8em 1em 1em;
+  border: 1px solid var(--lijn);
+  border-radius: 0.6em;
+}
+
+#aanzien .team-keuzes legend {
+  padding: 0 0.3em;
+  font-weight: 700;
+}
+
+#aanzien .tabel-vak {
+  overflow-x: auto;
+}
+
+#aanzien .team-tabel th[scope="row"] {
+  text-align: left;
+}
+
+#aanzien .team-tabel tr.jij {
+  background: var(--goud-licht);
+}
+
+#aanzien .team-tabel .beste {
+  color: var(--goud-tekst);
+}
+
+#aanzien .team-rang {
+  white-space: nowrap;
+}
+
+#aanzien .team-leden {
+  display: grid;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .team-lid details {
+  padding: 0 0.9em 0.6em;
+  border: 1px solid var(--lijn);
+  border-radius: 0.6em;
+}
+
+#aanzien .team-lid h5 {
+  margin: 1em 0 0.4em;
+  font-size: 0.95em;
+}
+
+#aanzien .team-kit {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7em, 1fr));
+  gap: 0.8em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85em;
+}
+
+#aanzien .team-stuk {
+  display: grid;
+  align-content: start;
+  gap: 0.25em;
+}
+
+#aanzien .team-kit :is(img, svg) {
+  width: 100%;
+  height: auto;
+  border-radius: 0.3em;
+}
+
+#aanzien .team-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85em;
+}
+
+#aanzien .team-chip {
+  padding: 0.2em 0.6em;
+  border: 1px solid var(--lijn);
+  border-radius: 1em;
+  background: var(--vlak);
+}
+
+#aanzien .team-laatste {
+  margin: 0;
+  padding-left: 1.1em;
+  font-size: 0.9em;
+}
