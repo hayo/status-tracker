@@ -13,7 +13,7 @@ import {
   netwerk, gastvrijheid, opvolgingen, roddel, nationaleDag, komendeNationaleDagen, dossiers,
   kringStand, kosten, energie,
   behaald, perWeek, reeks, event, volgendEvent, pad, bonussen, statistiek, voortgang, ontgrendeld,
-  missies, jaren, jaaroverzicht, samenvoegen, loadout, teamProfiel,
+  missies, jaren, jaaroverzicht, samenvoegen, loadout, teamProfiel, actieveLoadout, loadoutNaam,
 } from './spel.js';
 import * as opslag from './opslag.js';
 import * as teams from './team.js';
@@ -62,7 +62,7 @@ function laad() {
 // Zet opgeslagen gegevens om naar een spel. Kent ook de formaten van versie 1 en 2.
 function leesIn(ruw) {
   if (!ruw || typeof ruw !== 'object') throw new Error('Geen geldig bestand.');
-  const nieuw = { versie: 3, logboek: [], ronde: 0, titel: null, pad: null, type: null, stijl: null, team: null, loadout: {}, vergeten: false, generatie: nieuwId(), bijgewerkt: '', verwijderd: [] };
+  const nieuw = { versie: 3, logboek: [], ronde: 0, titel: null, pad: null, type: null, stijl: null, team: null, loadouts: [], loadoutNr: 0, vergeten: false, generatie: nieuwId(), bijgewerkt: '', verwijderd: [] };
   if (ruw.versie >= 2 && Array.isArray(ruw.logboek)) {
     const geldig = ruw.logboek.filter((r) => r && typeof r.datum === 'string' && Number.isFinite(r.punten));
     return {
@@ -74,10 +74,9 @@ function leesIn(ruw) {
       type: TYPEN.some((t) => t.id === ruw.type) ? ruw.type : null,
       stijl: SPEELSTIJLEN.some((t) => t.id === ruw.stijl) ? ruw.stijl : null,
       team: leesTeam(ruw.team),
-      loadout: ruw.loadout && typeof ruw.loadout === 'object'
-        ? Object.fromEntries(Object.entries(ruw.loadout).filter(([k, v]) => (k === 'extra' ? Array.isArray(v) : typeof v === 'string'))
-          .map(([k, v]) => [k, k === 'extra' ? v.filter((x) => typeof x === 'string') : v]))
-        : {},
+      // Eerst was er één loadout (ruw.loadout); die wordt de eerste.
+      loadouts: (Array.isArray(ruw.loadouts) ? ruw.loadouts : ruw.loadout ? [ruw.loadout] : []).slice(0, LOADOUT?.aantal ?? 1).map(leesLoadout),
+      loadoutNr: Number.isInteger(ruw.loadoutNr) && ruw.loadoutNr >= 0 && ruw.loadoutNr < (LOADOUT?.aantal ?? 1) ? ruw.loadoutNr : 0,
       vergeten: ruw.vergeten === true,
       generatie: typeof ruw.generatie === 'string' ? ruw.generatie : nieuw.generatie,
       bijgewerkt: typeof ruw.bijgewerkt === 'string' ? ruw.bijgewerkt : '',
@@ -103,6 +102,13 @@ function leesIn(ruw) {
       eigenschappen: ruw.skills ?? {}, symbolen: Array.isArray(ruw.milestones) ? ruw.milestones : [], start: true,
     }],
   };
+}
+
+// Een loadout: per deel een id, toebehoren als lijst, en een eigen naam.
+function leesLoadout(l) {
+  if (!l || typeof l !== 'object') return {};
+  return Object.fromEntries(Object.entries(l).filter(([k, v]) => (k === 'extra' ? Array.isArray(v) : typeof v === 'string'))
+    .map(([k, v]) => [k, k === 'extra' ? v.filter((x) => typeof x === 'string') : k === 'naam' ? v.slice(0, 30) : v]));
 }
 
 // Je team: { code, token, callsign, naam }. Het token is geheim en zit ook in je savegame en sync.
@@ -800,28 +806,77 @@ function bouwLoadout() {
         maak('span', {}, naam, maak('span', { class: 'zacht', tekst: ` · ${LOADOUT.treden[trede].naam}` }))))));
   }
   for (const s of el.loadout.querySelectorAll('select')) s.addEventListener('change', (e) => kiesLoadout(e.target.id.slice('az-loadout-'.length), e.target.value));
+  // Meer loadouts: kies welke je draagt, en geef hem een naam.
+  if ((LOADOUT.aantal ?? 1) > 1) {
+    el.loadout.prepend(maak('fieldset', { class: 'loadout-sets' },
+      maak('legend', { tekst: `Welke loadout draag je? Je hebt er ${LOADOUT.aantal}.` }),
+      maak('div', { class: 'loadout-set-keuzes' }, ...Array.from({ length: LOADOUT.aantal }, (_, nr) => maak('label', { class: 'keuze' },
+        maak('input', { type: 'radio', name: 'az-loadout-nr', value: nr, bij: () => kiesSet(nr) }),
+        maak('span', { class: 'loadout-set-tekst' })))),
+      maak('p', { class: 'loadout-set-naam' },
+        maak('label', { for: 'az-loadout-naam', tekst: 'Naam van deze loadout' }),
+        maak('input', { type: 'text', id: 'az-loadout-naam', maxlength: 30, autocomplete: 'off', placeholder: 'Bijvoorbeeld: Woodland of CQB' }))));
+    el.loadout.querySelector('#az-loadout-naam').addEventListener('change', (e) => noemSet(e.target.value));
+  }
+}
+
+// Past de loadout aan die je nu draagt. Een nieuwe prestatie (zoals drie loadouts) krijgt een venster.
+function pasLoadoutAan(wijzig) {
+  const voor = momentopname();
+  const nr = spel.loadoutNr ?? 0;
+  const sets = [...(spel.loadouts ?? [])];
+  while (sets.length <= nr) sets.push({});
+  sets[nr] = wijzig({ ...sets[nr] });
+  spel.loadouts = sets;
+  bewaar();
+  verwerk();
+  toonBeloningen(beloningen(voor, momentopname()));
 }
 
 function kiesLoadout(deel, id) {
-  spel.loadout = { ...spel.loadout, [deel]: id };
-  if (!id) delete spel.loadout[deel];
-  bewaar();
-  verwerk();
+  pasLoadoutAan((l) => {
+    if (id) l[deel] = id; else delete l[deel];
+    return l;
+  });
 }
 
 function kiesExtra(id, aan) {
-  const nu = new Set(spel.loadout?.extra ?? []);
-  if (aan) nu.add(id); else nu.delete(id);
-  spel.loadout = { ...spel.loadout, extra: [...nu] };
+  pasLoadoutAan((l) => {
+    const nu = new Set(l.extra ?? []);
+    if (aan) nu.add(id); else nu.delete(id);
+    return { ...l, extra: [...nu] };
+  });
+}
+
+function kiesSet(nr) {
+  spel.loadoutNr = nr;
   bewaar();
   verwerk();
+  meld('Loadout gekozen', `Je draagt nu ${loadoutNaam(spel, nr)}.`);
+}
+
+function noemSet(naam) {
+  pasLoadoutAan((l) => {
+    const n = naam.trim().slice(0, 30);
+    if (n) l.naam = n; else delete l.naam;
+    return l;
+  });
 }
 
 function toonLoadout() {
   if (!LOADOUT || !el.loadout) return;
-  for (const v of el.loadout.querySelectorAll('.loadout-extra input')) v.checked = (spel.loadout?.extra ?? []).includes(v.value);
+  const kit = actieveLoadout(spel);
+  const nr = spel.loadoutNr ?? 0;
+  el.loadout.querySelectorAll('.loadout-sets input[type=radio]').forEach((r, i) => {
+    r.checked = i === nr;
+    const l = loadout({ loadout: spel.loadouts?.[i] ?? {} });
+    r.nextElementSibling.replaceChildren(maak('strong', { tekst: loadoutNaam(spel, i) }), maak('span', { class: 'zacht', tekst: ` · ${l ? l.naam : 'leeg'}` }));
+  });
+  const naamVeld = el.loadout.querySelector('#az-loadout-naam');
+  if (naamVeld) naamVeld.value = kit.naam ?? '';
+  for (const v of el.loadout.querySelectorAll('.loadout-extra input')) v.checked = (kit.extra ?? []).includes(v.value);
   for (const deel of LOADOUT.delen) {
-    const id = spel.loadout?.[deel.id] ?? '';
+    const id = kit[deel.id] ?? '';
     el.loadout.querySelector(`#az-loadout-${deel.id}`).value = id;
     const vak = el.loadout.querySelector(`#az-loadout-staal-${deel.id}`);
     const optie = deel.opties.find((o) => o[0] === id);
@@ -835,7 +890,7 @@ function toonLoadout() {
   const l = loadout(spel);
   const namen = LOADOUT.terreinen.map((t) => CATEGORIEEN.find((c) => c.id === t).naam.split(':')[0].toLocaleLowerCase('nl'));
   el.loadoutStand.textContent = l
-    ? `Uitstraling: ${l.naam}. ${l.factor === 1 ? 'Geen bonus of malus' : `${factor(l.factor)} XP`} op ${namen.join(', ')}.${l.kerstboom ? ` Kerstboom: ${l.toebehoren} toebehoren is te veel, ${factor(LOADOUT.extra.malus)}.` : ''}`
+    ? `${(LOADOUT.aantal ?? 1) > 1 ? `${loadoutNaam(spel, nr)}. ` : ''}Uitstraling: ${l.naam}. ${l.factor === 1 ? 'Geen bonus of malus' : `${factor(l.factor)} XP`} op ${namen.join(', ')}.${l.kerstboom ? ` Kerstboom: ${l.toebehoren} toebehoren is te veel, ${factor(LOADOUT.extra.malus)}.` : ''}`
     : 'Kies je camouflage en je hoofdwapen. Hoe exotischer, hoe meer aanzien. Huurkit is het saaist.';
 }
 

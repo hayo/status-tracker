@@ -8,6 +8,8 @@ export const VERSIES = [
     versie: '1.6.0',
     datum: '2026-11-08',
     wijzigingen: [
+      'Nieuw: drie loadouts, bijvoorbeeld voor woodland, CQB en nacht. Geef elke loadout een naam en kies welke je draagt. De bonus komt van de loadout die je draagt.',
+      'Twee nieuwe prestaties: Arsenaal (drie complete loadouts) en Kameleon (drie loadouts in drie verschillende camo\'s).',
       'Nieuw: teams. Maak een team op de Erelijst en deel de teamcode in je teamchat, of sluit aan met een code die je kreeg.',
       'Op de teampagina zie je je teamleden naast elkaar: een ranglijst op PR, alle skills in een tabel, en per lid de loadout, speelstijl, patches, prestaties en laatste activiteiten.',
       'Alles is versleuteld met de teamcode. De server kan niets lezen, en alleen jij kunt je eigen profiel bijwerken of weghalen.',

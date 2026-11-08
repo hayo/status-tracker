@@ -34,6 +34,7 @@ export function schoon(p, lid) {
     skills: Object.fromEntries(Object.keys(EIGENSCHAPPEN).map((k) => [k, Math.max(0, heel(v.skills?.[k]))])),
     stijl: W.SPEELSTIJLEN.find((s) => s.id === v.stijl) ?? null,
     loadout: {
+      ...(typeof kit.naam === 'string' && kit.naam.trim() ? { naam: kit.naam.trim().slice(0, 30) } : {}),
       ...Object.fromEntries((W.LOADOUT?.delen ?? []).map((d) => [d.id, d.opties.find((o) => o[0] === kit[d.id])?.[0]]).filter(([, o]) => o)),
       extra: Array.isArray(kit.extra) ? kit.extra.map(String).slice(0, 30) : [],
     },
@@ -96,7 +97,7 @@ function profiel(l, eigen) {
       ['Prestigepunten', `${getal(l.pr)} PR`],
       [W.WERELD.bekendheid, getal(l.reputatie)],
       ['Speelstijl', l.stijl?.naam ?? 'nog niet gekozen'],
-      ...(uitstraling ? [['Loadout', uitstraling.naam]] : []),
+      ...(uitstraling ? [['Loadout', `${l.loadout.naam ? `${l.loadout.naam}: ` : ''}${uitstraling.naam}`]] : []),
     ].map(([dt, dd]) => maak('div', {}, maak('dt', { tekst: dt }), maak('dd', { tekst: dd })))),
     maak('h5', { tekst: 'Loadout' }), kit(l),
     ...lijstje(W.WERELD.symbolen ?? 'Patches', l.symbolen),

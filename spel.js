@@ -316,6 +316,7 @@ export function statistiek(spel) {
   for (const r of spel.logboek.filter(telt)) weekPunten.set(weekVan(r.datum), (weekPunten.get(weekVan(r.datum)) ?? 0) + r.punten);
   return {
     acties: acties.length,
+    ...loadoutTellers(spel),
     perActiviteit: tel(acties.map((r) => r.activiteit)),
     perTerrein: tel(acties.map(terreinVan)),
     verschillend: new Set(acties.map((r) => r.activiteit)).size,
@@ -392,6 +393,8 @@ export function voortgang(v, st) {
     erkenning: () => st.erkenning.totaal,
     bekendheid: () => st.erkenning.score,
     verhouding: () => st.erkenning.verhouding,
+    loadouts: () => st.loadouts,
+    camos: () => st.camos,
   }[v.soort];
   if (v.soort === 'alle') {
     return { nu: v.lijst.filter((d) => gehaald(d, st)).length, doel: v.lijst.length };
@@ -446,7 +449,7 @@ export function teamProfiel(spel, st = statistiek(spel)) {
     reputatie: Math.round(st.erkenning.score),
     skills: Object.fromEntries(Object.keys(EIGENSCHAPPEN).map((k) => [k, Math.round(st.skills[k] ?? 0)])),
     stijl: spel.stijl ?? null,
-    loadout: spel.loadout ?? {},
+    loadout: actieveLoadout(spel),
     symbolen: [...st.symbolen],
     prestaties: [...ontgrendeld(spel, st).prestaties],
     laatste: spel.logboek.filter((r) => r.activiteit && ACTIVITEITEN.has(r.activiteit))
@@ -463,14 +466,28 @@ export const speelstijl = (spel) => SPEELSTIJLEN.find((s) => s.id === spel.stijl
 // Meer dan extra.max toebehoren is een kerstboom: de hele factor gaat dan maal extra.malus.
 export function loadout(spel) {
   if (!LOADOUT) return null;
-  const treden = LOADOUT.delen.map((d) => d.opties.find(([id]) => id === spel.loadout?.[d.id])?.[2]).filter((t) => t !== undefined);
-  const extra = LOADOUT.extra ? (spel.loadout?.extra ?? []).map((id) => LOADOUT.extra.opties.find(([x]) => x === id)?.[2]).filter((t) => t !== undefined) : [];
+  const kit = actieveLoadout(spel);
+  const treden = LOADOUT.delen.map((d) => d.opties.find(([id]) => id === kit[d.id])?.[2]).filter((t) => t !== undefined);
+  const extra = LOADOUT.extra ? (kit.extra ?? []).map((id) => LOADOUT.extra.opties.find(([x]) => x === id)?.[2]).filter((t) => t !== undefined) : [];
   if (extra.length) treden.push(Math.round(extra.reduce((s, t) => s + t, 0) / extra.length));
   if (!treden.length) return null;
   const trede = Math.round(treden.reduce((s, t) => s + t, 0) / treden.length);
   const kerstboom = Boolean(LOADOUT.extra && extra.length > LOADOUT.extra.max);
   const f = (treden.reduce((s, t) => s + LOADOUT.treden[t].factor, 0) / treden.length) * (kerstboom ? LOADOUT.extra.malus : 1);
-  return { trede, naam: LOADOUT.treden[trede].naam, factor: Math.round(f * 100) / 100, kerstboom, toebehoren: extra.length };
+  return { trede, naam: LOADOUT.treden[trede].naam, factor: Math.round(f * 100) / 100, kerstboom, toebehoren: extra.length, set: kit.naam ?? null };
+}
+
+// Je hebt tot LOADOUT.aantal loadouts (spel.loadouts) en draagt er één (spel.loadoutNr). De factor komt
+// van die ene. Een profiel van een teamlid heeft alleen spel.loadout.
+export const actieveLoadout = (spel) => spel.loadouts?.[spel.loadoutNr ?? 0] ?? spel.loadout ?? {};
+export const loadoutNaam = (spel, nr) => spel.loadouts?.[nr]?.naam || `Loadout ${nr + 1}`;
+
+// Hoeveel loadouts compleet zijn (minstens LOADOUT.compleet delen), en in hoeveel verschillende camo's.
+function loadoutTellers(spel) {
+  if (!LOADOUT) return { loadouts: 0, camos: 0 };
+  const sets = (spel.loadouts ?? []).slice(0, LOADOUT.aantal ?? 1);
+  const compleet = sets.filter((l) => LOADOUT.delen.filter((d) => l[d.id]).length >= (LOADOUT.compleet ?? 1));
+  return { loadouts: compleet.length, camos: new Set(compleet.map((l) => l.camo).filter(Boolean)).size };
 }
 
 // Je kapitaal per soort, zoals in KAPITAAL: de som van een paar skills, of de punten van je symbolen.

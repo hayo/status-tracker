@@ -590,6 +590,8 @@ export const PRESTATIES = [
   { id: 'p_mes', naam: 'Stil en dichtbij', uitleg: 'Vijf knife kills.', icoon: 'skull', voorwaarde: { soort: 'activiteit', id: 'k01', aantal: 5 } },
   { id: 'p_ninja', naam: 'Ninja', uitleg: 'Drie keer twee knife kills in één ronde.', icoon: 'user-ninja', voorwaarde: { soort: 'activiteit', id: 'k20', aantal: 3 } },
   { id: 'p_granaat', naam: 'Grenadier', uitleg: 'Tien kills met een granaat of mijn.', icoon: 'bomb', voorwaarde: { soort: 'activiteit', id: 'k13', aantal: 10 } },
+  { id: 'p_arsenaal', naam: 'Arsenaal', uitleg: 'Drie complete loadouts, elk met minstens vijf delen.', icoon: 'vest', voorwaarde: { soort: 'loadouts', aantal: 3 } },
+  { id: 'p_kameleon', naam: 'Kameleon', uitleg: 'Drie complete loadouts, elk in een andere camo.', icoon: 'leaf', voorwaarde: { soort: 'camos', aantal: 3 } },
   { id: 'p_havik', naam: 'Oog van de havik', uitleg: 'Tien keer iemand uitgeschakeld van grote afstand.', icoon: 'crosshairs', voorwaarde: { soort: 'activiteit', id: 'k02', aantal: 10 } },
   { id: 'p_counter', naam: 'Countersniper', uitleg: 'Drie snipers van de tegenpartij uitgeschakeld.', icoon: 'bullseye', voorwaarde: { soort: 'activiteit', id: 'k03', aantal: 3 } },
   { id: 'p_geest', naam: 'Geest', uitleg: 'Drie games zonder geraakt te worden.', icoon: 'user-secret', voorwaarde: { soort: 'activiteit', id: 'k11', aantal: 3 } },
@@ -686,6 +688,10 @@ export const LOADOUT = {
     { naam: 'Exotisch', factor: 1.2 },
   ],
   terreinen: ['spelen', 'acties', 'veld'],
+  // Je hebt tot drie loadouts, bijvoorbeeld voor woodland, CQB en milsim, en draagt er één.
+  // Een loadout is compleet met minstens vijf delen; dat telt voor de prestaties Arsenaal en Kameleon.
+  aantal: 3,
+  compleet: 5,
   // Toebehoren: aanvinken wat er op je wapen zit. Samen tellen ze als één deel. Meer dan max is een
   // kerstboom: dan gaat je hele factor maal malus.
   extra: {

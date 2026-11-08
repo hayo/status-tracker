@@ -114,7 +114,8 @@ verschil met Wassenaar zit alleen in de gegevens en het thema:
   scene, online en de NABV;
 - een loadout (`LOADOUT`): camouflage, wapens, hoofddeksel, draagsysteem,
   richtmiddel, granaat en mes, elk in een trede van speedsoft tot exotisch,
-  plus toebehoren. Het gemiddelde geeft een factor op spelen, spelelementen en
+  plus toebehoren. Je hebt tot drie loadouts met een eigen naam en draagt er
+  één. Het gemiddelde van die ene geeft een factor op spelen, spelelementen en
   plekken;
 - teams: maak een team of sluit aan met een teamcode, en vergelijk rang, PR,
   skills, loadout, patches en prestaties met je teamleden (zie Teams);
@@ -234,7 +235,7 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 | `KRINGEN` | `id`, `naam`, `kort` (op de radar), `icoon`; met `KRING_STANDEN` en `KRING_SYMBOOL` |
 | `RODDEL` | per soort `punten`, `tekst` en `kring` (wie er bij kritiek over praat) |
 | `KAPITAAL` | per soort `naam`, `icoon` en `skills` (de som) of `symbolen: true` |
-| `LOADOUT` | `treden` (`naam`, `factor`), `terreinen` waar de factor geldt, `extra?` (toebehoren: `naam`, `max`, `malus`, `opties`) en `delen` met `opties` als `[id, naam, trede, beeld?]` |
+| `LOADOUT` | `treden` (`naam`, `factor`), `terreinen` waar de factor geldt, `aantal?` (zo veel loadouts, standaard 1), `compleet?` (zo veel delen maken een loadout compleet, voor de soorten `loadouts` en `camos` in een voorwaarde), `extra?` (toebehoren: `naam`, `max`, `malus`, `opties`) en `delen` met `opties` als `[id, naam, trede, beeld?]` |
 | `SPEELSTIJLEN` | `id`, `naam`, `uitleg` en `factoren` (skill => factor op de XP van activiteiten met die skill) |
 | `KAART` | de kaart in een vlak van 1000 bij 700: `titel`, `label` (voor schermlezers), `zeeNaam` en `zeeLabel` (plek), `zeegezicht` (schip en zeeslang), `raster?` (vakgrootte van een stafkaart), `schaal`, `tekst` (`gebied`, `mist`, `kies`, `hulp`, `buurt`), zee, kust en duinen (paden), `duinNamen`, `bossen` en `buurten` (hoekpunten die rijken delen; de kaart tekent de grenzen grillig; een buurt heeft een `titel` als rijk en een `kleur` voor zijn wapen), `wegen` (pad, soort en waar de naam staat) en per plek een punt en een tekening (`kasteel`, `molen`, `tempel`, `koepel`, `huis`, `herberg`, `markt`, `school`, `tent`, `vuurtoren`, `boom`, `berg`, `uitkijk`, `vlag`, `bunker`, `hal`, `wrak` of `kist`) |
 | `ERKENNING` | `dagen` voor de bekendheid, de `niveaus`, en `verhoudingVanaf` |

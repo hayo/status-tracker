@@ -4,7 +4,7 @@
  */
 
 import { W } from '../wereld.js';
-import { rang, kringen, kringStand, gunfactor, gunLabel, energie, kapitaal, ontgrendeld, pad, dagenInSpel, openTerreinen, loadout, speelstijl } from '../spel.js';
+import { rang, kringen, kringStand, gunfactor, gunLabel, energie, kapitaal, ontgrendeld, pad, dagenInSpel, openTerreinen, loadout, loadoutNaam, speelstijl } from '../spel.js';
 import { maak, icoon, meter, getal } from '../ui.js';
 import { radar, boog, ring } from '../grafieken.js';
 
@@ -33,7 +33,7 @@ export function toonKarakter(el, spel, st, vandaag) {
     ['Pad', gekozenPad?.naam ?? 'nog niet gekozen'],
     ...(TYPEN.length ? [['Type', type?.naam ?? 'nog niet gekozen']] : []),
     ...(W.SPEELSTIJLEN.length ? [['Speelstijl', speelstijl(spel)?.naam ?? 'nog niet gekozen']] : []),
-    ...(W.LOADOUT ? [['Loadout', loadout(spel)?.naam ?? 'nog niet gekozen']] : []),
+    ...(W.LOADOUT ? [['Loadout', loadout(spel) ? `${(W.LOADOUT.aantal ?? 1) > 1 ? `${loadoutNaam(spel, spel.loadoutNr ?? 0)}: ` : ''}${loadout(spel).naam}` : 'nog niet gekozen']] : []),
     [WERELD.bezig, `${getal(dagenInSpel(spel))} ${dagenInSpel(spel) === 1 ? 'dag' : 'dagen'}`],
     ['New Game+', spel.ronde ? `${spel.ronde} keer` : 'nog niet'],
   ].map(([dt, dd]) => maak('div', {}, maak('dt', { tekst: dt }), maak('dd', { tekst: dd }))));

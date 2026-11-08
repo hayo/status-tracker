@@ -403,3 +403,36 @@
 #aanzien .sync-status {
   color: #2f5d1c;
 }
+
+/* Meer loadouts: kies welke je draagt. */
+#aanzien .loadout-sets {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 0.6em;
+  margin: 0 0 0.5em;
+  padding: 0.8em 1em;
+  border: 1px solid var(--steek);
+  border-radius: 0.4em;
+}
+
+#aanzien .loadout-sets legend {
+  padding: 0 0.3em;
+  font-weight: 700;
+}
+
+#aanzien .loadout-set-keuzes {
+  display: grid;
+  gap: 0.4em;
+}
+
+@media (width >= 40em) {
+  #aanzien .loadout-set-keuzes {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+#aanzien .loadout-set-naam {
+  display: grid;
+  gap: 0.3em;
+  margin: 0;
+}
