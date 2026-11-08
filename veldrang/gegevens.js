@@ -596,7 +596,7 @@ export const LOADOUT = {
         ['m4', 'M4 met eigen aankleding', 3], ['m16', 'M16A4', 3], ['hk416', 'HK416', 3], ['mk18', 'Mk18', 3], ['amoeba', 'Ares Amoeba', 3],
         ['ak', 'AK-74', 3], ['akm', 'AKM', 3], ['mp5', 'MP5', 3], ['g36', 'G36', 3], ['ump', 'UMP', 3], ['mp7', 'MP7', 3], ['vsr', 'VSR-10', 3],
         ['c7', 'Diemaco C7', 4], ['c8', 'Diemaco C8', 4], ['scar', 'SCAR-L', 4], ['scarh', 'SCAR-H', 4],
-        ['bullpup', 'Steyr AUG', 4], ['tavor', 'Tavor', 4], ['l85', 'L85 (SA80)', 4], ['g3', 'G3', 4], ['fal', 'FAL', 4],
+        ['bullpup', 'Steyr AUG', 5], ['tavor', 'Tavor', 4], ['l85', 'L85 (SA80)', 4], ['g3', 'G3', 4], ['fal', 'FAL', 4],
         ['pdw', 'Kriss Vector', 4], ['p90', 'P90', 4], ['mcx', 'SIG MCX', 4], ['acr', 'ACR', 4], ['hk417', 'HK417', 4],
         ['ak12', 'AK-12', 4], ['sg550', 'SIG 550', 4], ['aks74u', 'AKS-74U', 4], ['l96', 'L96 (AWP)', 4], ['ssg24', 'Novritsch SSG24', 4],
         ['svd', 'SVD Dragunov', 5], ['lmg', 'M249', 5], ['mg4', 'MG4', 5], ['famas', 'FAMAS', 5], ['vz58', 'VZ58', 5], ['galil', 'Galil', 5],
@@ -606,7 +606,7 @@ export const LOADOUT = {
         ['ppsh', 'PPSh-41', 6], ['m3', 'M3 Grease Gun', 6], ['stg44', 'StG 44', 6], ['mg42', 'MG42 (zoals die van S&T of AGM)', 6], ['zwaar', 'PKM (zoals die van LCT)', 6], ['m60', 'M60', 6],
         ['grendel', 'Mosin-Nagant', 6], ['leeenfield', 'Lee-Enfield', 6], ['type56', 'Type 56 met bajonet', 6],
         ['shotgun', 'Pompgun als hoofdwapen', 6], ['m79', 'Granaatwerper als hoofdwapen (M79)', 6], 
-        ['aa12', 'Tokyo Marui AA-12, elektrische shotgun', 6], ['barrett', 'Barrett M82A1 (Snow Wolf)', 6], ['sv98', 'SV-98 (Snow Wolf)', 6], ['hulzen', 'AR die hulzen uitwerpt', 6],
+        ['aa12', 'Tokyo Marui AA-12, elektrische shotgun', 6], ['barrett', 'Barrett M82A1 (Snow Wolf)', 6], ['sv98', 'SV-98 (Snow Wolf)', 6], ['hulzen', 'AR die hulzen uitwerpt', 6], ['hefboom', 'Lever action-geweer', 6], ['dubbelloops', 'Dubbelloops shotgun', 6], ['flintlock', 'Vuursteengeweer (flintlock)', 6],
       ],
     },
     {
@@ -621,7 +621,7 @@ export const LOADOUT = {
         ['shadow', 'CZ Shadow 2', 4], ['vp9', 'HK VP9', 4], ['mk23', 'HK Mk23', 4], ['p320', 'SIG P320', 4],
         ['deagle', 'Desert Eagle', 5], ['makarov', 'Makarov PM', 5], ['tokarev', 'Tokarev TT-33', 5], ['revolver', 'Revolver: Colt Python of S&W', 5],
         ['mp9', 'B&T MP9', 5], ['skorpion', 'Skorpion vz. 61', 5], ['grach', 'MP-443 Grach', 5],
-        ['mauser', 'Mauser C96', 6], ['luger', 'Luger P08', 6], ['stechkin', 'Stechkin APS', 6], ['webley', 'Webley-revolver', 6], ['nambu', 'Nambu', 6], ['mateba', 'Mateba Unica 6', 6],
+        ['mauser', 'Mauser C96', 6], ['luger', 'Luger P08', 6], ['stechkin', 'Stechkin APS', 6], ['webley', 'Webley-revolver', 6], ['nambu', 'Nambu', 6], ['mateba', 'Mateba Unica 6', 6], ['afgezaagd', 'Afgezaagde dubbelloops shotgun als backup', 6], ['vuursteen', 'Vuursteenpistool (flintlock)', 6],
       ],
     },
     {

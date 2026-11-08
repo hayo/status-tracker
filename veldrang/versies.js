@@ -5,6 +5,14 @@
 
 export const VERSIES = [
   {
+    versie: '1.3.1',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Nieuw en exotisch: het lever action-geweer, de dubbelloops shotgun, het vuursteengeweer, en als backup een afgezaagde dubbelloops of een vuursteenpistool.',
+      'De Steyr AUG gaat een trede omhoog, naar Bijzonder.',
+    ],
+  },
+  {
     versie: '1.3',
     datum: '2026-11-08',
     wijzigingen: [
