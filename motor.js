@@ -70,7 +70,10 @@ function leesIn(ruw) {
       titel: typeof ruw.titel === 'string' ? ruw.titel : null,
       pad: typeof ruw.pad === 'string' ? ruw.pad : null,
       type: TYPEN.some((t) => t.id === ruw.type) ? ruw.type : null,
-      loadout: ruw.loadout && typeof ruw.loadout === 'object' ? Object.fromEntries(Object.entries(ruw.loadout).filter(([, v]) => typeof v === 'string')) : {},
+      loadout: ruw.loadout && typeof ruw.loadout === 'object'
+        ? Object.fromEntries(Object.entries(ruw.loadout).filter(([k, v]) => (k === 'extra' ? Array.isArray(v) : typeof v === 'string'))
+          .map(([k, v]) => [k, k === 'extra' ? v.filter((x) => typeof x === 'string') : v]))
+        : {},
       vergeten: ruw.vergeten === true,
       generatie: typeof ruw.generatie === 'string' ? ruw.generatie : nieuw.generatie,
       bijgewerkt: typeof ruw.bijgewerkt === 'string' ? ruw.bijgewerkt : '',
@@ -644,6 +647,14 @@ function bouwLoadout() {
           ? maak('a', { class: 'staal-bron', href: spec.bron.link, tekst: `Foto: ${spec.bron.maker}, ${spec.bron.licentie}` })
           : spec.geenBeeld ? maak('span', { class: 'staal-bron', tekst: 'Geen vrij beeld van dit patroon' }) : null))));
   }
+  // Toebehoren: een vinkje per stuk, van exotisch naar laag.
+  if (LOADOUT.extra) {
+    el.loadout.append(maak('fieldset', { class: 'loadout-extra' },
+      maak('legend', { tekst: `${LOADOUT.extra.naam} (meer dan ${LOADOUT.extra.max} is een kerstboom)` }),
+      ...[...LOADOUT.extra.opties].sort((a, b) => b[2] - a[2]).map(([id, naam, trede]) => maak('label', { class: 'keuze' },
+        maak('input', { type: 'checkbox', value: id, bij: (e) => kiesExtra(id, e.target.checked) }),
+        maak('span', {}, naam, maak('span', { class: 'zacht', tekst: ` · ${LOADOUT.treden[trede].naam}` }))))));
+  }
   for (const s of el.loadout.querySelectorAll('select')) s.addEventListener('change', (e) => kiesLoadout(e.target.id.slice('az-loadout-'.length), e.target.value));
 }
 
@@ -654,8 +665,17 @@ function kiesLoadout(deel, id) {
   verwerk();
 }
 
+function kiesExtra(id, aan) {
+  const nu = new Set(spel.loadout?.extra ?? []);
+  if (aan) nu.add(id); else nu.delete(id);
+  spel.loadout = { ...spel.loadout, extra: [...nu] };
+  bewaar();
+  verwerk();
+}
+
 function toonLoadout() {
   if (!LOADOUT || !el.loadout) return;
+  for (const v of el.loadout.querySelectorAll('.loadout-extra input')) v.checked = (spel.loadout?.extra ?? []).includes(v.value);
   for (const deel of LOADOUT.delen) {
     const id = spel.loadout?.[deel.id] ?? '';
     el.loadout.querySelector(`#az-loadout-${deel.id}`).value = id;
@@ -671,7 +691,7 @@ function toonLoadout() {
   const l = loadout(spel);
   const namen = LOADOUT.terreinen.map((t) => CATEGORIEEN.find((c) => c.id === t).naam.split(':')[0].toLocaleLowerCase('nl'));
   el.loadoutStand.textContent = l
-    ? `Uitstraling: ${l.naam}. ${l.factor === 1 ? 'Geen bonus of malus' : `${factor(l.factor)} XP`} op ${namen.join(', ')}.`
+    ? `Uitstraling: ${l.naam}. ${l.factor === 1 ? 'Geen bonus of malus' : `${factor(l.factor)} XP`} op ${namen.join(', ')}.${l.kerstboom ? ` Kerstboom: ${l.toebehoren} toebehoren is te veel, ${factor(LOADOUT.extra.malus)}.` : ''}`
     : 'Kies je camouflage en je hoofdwapen. Hoe exotischer, hoe meer aanzien. Huurkit is het saaist.';
 }
 

@@ -5,6 +5,15 @@
 
 export const VERSIES = [
   {
+    versie: '1.3',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Toebehoren: vink aan wat er op je wapen zit, van zaklamp en PEQ tot tracer unit en IR-laser. Elk stuk heeft een trede. Meer dan vijf is een kerstboom, en dat kost je wat.',
+      'Nieuwe exotische modellen: de AA-12 van Tokyo Marui, de Barrett M82A1 en SV-98 van Snow Wolf, een AR die hulzen uitwerpt en de Mateba Unica 6.',
+      'Speedsoft-modellen met minpunten: Wolverine MTW, Heretic Labs Article I, ARP9 met HPA, en Hi-Capa en AAP-01 als speedsoft-build.',
+    ],
+  },
+  {
     versie: '1.2.1',
     datum: '2026-11-08',
     wijzigingen: [

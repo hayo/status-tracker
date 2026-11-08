@@ -434,13 +434,18 @@ export function rang(spel, st = statistiek(spel)) {
 }
 
 // De loadout: de trede van elk gekozen deel, en samen een naam en een factor (het gemiddelde).
+// Toebehoren (LOADOUT.extra) tellen samen als één deel: de gemiddelde trede van wat je aanvinkte.
+// Meer dan extra.max toebehoren is een kerstboom: de hele factor gaat dan maal extra.malus.
 export function loadout(spel) {
   if (!LOADOUT) return null;
   const treden = LOADOUT.delen.map((d) => d.opties.find(([id]) => id === spel.loadout?.[d.id])?.[2]).filter((t) => t !== undefined);
+  const extra = LOADOUT.extra ? (spel.loadout?.extra ?? []).map((id) => LOADOUT.extra.opties.find(([x]) => x === id)?.[2]).filter((t) => t !== undefined) : [];
+  if (extra.length) treden.push(Math.round(extra.reduce((s, t) => s + t, 0) / extra.length));
   if (!treden.length) return null;
   const trede = Math.round(treden.reduce((s, t) => s + t, 0) / treden.length);
-  const f = treden.reduce((s, t) => s + LOADOUT.treden[t].factor, 0) / treden.length;
-  return { trede, naam: LOADOUT.treden[trede].naam, factor: Math.round(f * 100) / 100 };
+  const kerstboom = Boolean(LOADOUT.extra && extra.length > LOADOUT.extra.max);
+  const f = (treden.reduce((s, t) => s + LOADOUT.treden[t].factor, 0) / treden.length) * (kerstboom ? LOADOUT.extra.malus : 1);
+  return { trede, naam: LOADOUT.treden[trede].naam, factor: Math.round(f * 100) / 100, kerstboom, toebehoren: extra.length };
 }
 
 // Je kapitaal per soort, zoals in KAPITAAL: de som van een paar skills, of de punten van je symbolen.

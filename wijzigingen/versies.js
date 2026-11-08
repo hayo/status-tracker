@@ -9,6 +9,13 @@
 
 export const VERSIES = [
   {
+    versie: '3.0.3',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Achter de schermen: de motor kan nu ook een lijst om aan te vinken tonen, voor Veldrang. Voor jou verandert er niets.',
+    ],
+  },
+  {
     versie: '3.0.2',
     datum: '2026-11-08',
     wijzigingen: [

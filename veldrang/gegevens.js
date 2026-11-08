@@ -524,6 +524,23 @@ export const LOADOUT = {
     { naam: 'Exotisch', factor: 1.2 },
   ],
   terreinen: ['spelen', 'acties', 'veld'],
+  // Toebehoren: aanvinken wat er op je wapen zit. Samen tellen ze als één deel. Meer dan max is een
+  // kerstboom: dan gaat je hele factor maal malus.
+  extra: {
+    naam: 'Toebehoren',
+    max: 5,
+    malus: 0.95,
+    opties: [
+      ['speedrig', 'Speedsoft-aanpassingen: magwell, lichte stock, snelle trekker', 0],
+      ['zaklamp', 'Zaklamp', 2], ['handgreep', 'Handgreep of handstop', 2], ['sling', 'Tweepuntsling', 2],
+      ['peqdummy', 'PEQ-box als dummy of batterijbox', 2], ['demper', 'Demper (dummy)', 2],
+      ['surefire', 'Replica van een bekende zaklamp, zoals een Surefire', 3], ['peq', 'PEQ-box met werkende lamp en laser', 3],
+      ['vergroter', 'Vergroter achter je red dot', 3], ['offset', 'Offset red dot of vizier op 45 graden', 3],
+      ['drukschakelaar', 'Drukschakelaar voor lamp en laser', 3], ['bipod', 'Bipod', 3],
+      ['tracer', 'Tracer unit', 4], ['tracerdemper', 'Demper met ingebouwde tracer unit', 4], ['drum', 'Drummagazijn of box mag', 4],
+      ['peqir', 'PEQ met IR-laser, voor nachtzicht', 5], ['ir', 'IR-illuminator', 5],
+    ],
+  },
   delen: [
     {
       id: 'camo',
@@ -573,7 +590,7 @@ export const LOADOUT = {
       id: 'wapen',
       naam: 'Hoofdwapen',
       opties: [
-        ['speed', 'Speedsoft-build: lichte M4 of SMG met hoge vuursnelheid', 0],
+        ['speed', 'Speedsoft-build: lichte M4 of SMG met hoge vuursnelheid', 0], ['mtw', 'Wolverine MTW als speedsoft-build', 0], ['article1', 'Heretic Labs Article I', 0], ['arp9hpa', 'ARP9 met HPA-engine (PolarStar)', 0],
         ['huur', 'Huurreplica van het veld', 1],
         ['m4zwart', 'M4, kaal en zwart', 2], ['arp9', 'ARP9', 2], ['instap', 'Instap-M4 van een budgetmerk', 2],
         ['m4', 'M4 met eigen aankleding', 3], ['m16', 'M16A4', 3], ['hk416', 'HK416', 3], ['mk18', 'Mk18', 3], ['amoeba', 'Ares Amoeba', 3],
@@ -586,16 +603,17 @@ export const LOADOUT = {
         ['as', 'AS Val', 5], ['vss', 'VSS Vintorez', 5], ['m14', 'M14', 5], ['bizon', 'PP-19 Bizon', 5], ['srs', 'Silverback SRS', 5],
         ['uzi', 'Uzi', 5], ['sniper', 'Novritsch SSG10 of een andere zware bolt-action', 5],
         ['historisch', 'Thompson', 6], ['mp40', 'MP40', 6], ['sten', 'Sten', 6], ['garand', 'M1 Garand', 6], ['m1carbine', 'M1 Carbine', 6],
-        ['ppsh', 'PPSh-41', 6], ['m3', 'M3 Grease Gun', 6], ['stg44', 'StG 44', 6], ['mg42', 'MG42', 6], ['zwaar', 'PKM', 6], ['m60', 'M60', 6],
+        ['ppsh', 'PPSh-41', 6], ['m3', 'M3 Grease Gun', 6], ['stg44', 'StG 44', 6], ['mg42', 'MG42 (zoals die van S&T of AGM)', 6], ['zwaar', 'PKM (zoals die van LCT)', 6], ['m60', 'M60', 6],
         ['grendel', 'Mosin-Nagant', 6], ['leeenfield', 'Lee-Enfield', 6], ['type56', 'Type 56 met bajonet', 6],
-        ['shotgun', 'Pompgun als hoofdwapen', 6], ['m79', 'Granaatwerper als hoofdwapen (M79)', 6],
+        ['shotgun', 'Pompgun als hoofdwapen', 6], ['m79', 'Granaatwerper als hoofdwapen (M79)', 6], 
+        ['aa12', 'Tokyo Marui AA-12, elektrische shotgun', 6], ['barrett', 'Barrett M82A1 (Snow Wolf)', 6], ['sv98', 'SV-98 (Snow Wolf)', 6], ['hulzen', 'AR die hulzen uitwerpt', 6],
       ],
     },
     {
       id: 'pistool',
       naam: 'Secundair wapen',
       opties: [
-        ['speed', 'Speedsoft-pistool: Hi-Capa met hoge vuursnelheid', 0],
+        ['speed', 'Speedsoft-pistool: Hi-Capa met hoge vuursnelheid', 0], ['capaspeed', 'Hi-Capa 5.1 als speedsoft-build', 0], ['aapspeed', 'AAP-01 als speedsoft-build', 0],
         ['huur', 'Huurpistool van het veld', 1],
         ['glock', 'Glock 17', 2], ['glock19', 'Glock 19', 2], ['hicapa', 'Hi-Capa', 2], ['aap01', 'AAP-01', 2],
         ['p226', 'SIG P226', 3], ['m9', 'Beretta M9', 3], ['usp', 'HK USP', 3], ['m1911', '1911', 3], ['glockplus', 'Glock met eigen aanpassingen', 3], ['hicapaplus', 'Hi-Capa met eigen aanpassingen', 3],
@@ -603,7 +621,7 @@ export const LOADOUT = {
         ['shadow', 'CZ Shadow 2', 4], ['vp9', 'HK VP9', 4], ['mk23', 'HK Mk23', 4], ['p320', 'SIG P320', 4],
         ['deagle', 'Desert Eagle', 5], ['makarov', 'Makarov PM', 5], ['tokarev', 'Tokarev TT-33', 5], ['revolver', 'Revolver: Colt Python of S&W', 5],
         ['mp9', 'B&T MP9', 5], ['skorpion', 'Skorpion vz. 61', 5], ['grach', 'MP-443 Grach', 5],
-        ['mauser', 'Mauser C96', 6], ['luger', 'Luger P08', 6], ['stechkin', 'Stechkin APS', 6], ['webley', 'Webley-revolver', 6], ['nambu', 'Nambu', 6],
+        ['mauser', 'Mauser C96', 6], ['luger', 'Luger P08', 6], ['stechkin', 'Stechkin APS', 6], ['webley', 'Webley-revolver', 6], ['nambu', 'Nambu', 6], ['mateba', 'Mateba Unica 6', 6],
       ],
     },
     {

@@ -358,3 +358,25 @@
   border-radius: 0.4em;
   background: #f3eedc;
 }
+
+/* Toebehoren: vinkjes in twee kolommen, over de hele breedte. */
+#aanzien .loadout-extra {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 0.3em 1em;
+  margin: 0.5em 0 0;
+  padding: 0.8em 1em;
+  border: 1px solid var(--steek);
+  border-radius: 0.4em;
+}
+
+@media (width >= 40em) {
+  #aanzien .loadout-extra {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+#aanzien .loadout-extra legend {
+  padding: 0 0.3em;
+  font-weight: 700;
+}
