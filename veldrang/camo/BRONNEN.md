@@ -12,6 +12,7 @@ Per patroon: het bestand, de maker en de licentie.
 | `dcu.webp` | [Six-Color_Desert_Pattern.jpg](https://commons.wikimedia.org/wiki/File:Six-Color_Desert_Pattern.jpg) | Pretzelpaws | CC BY-SA 3.0 |
 | `dpm.webp` | [DPM_Combat_95_Camouflage_Material_MOD_45149982_(cropped).jpg](https://commons.wikimedia.org/wiki/File:DPM_Combat_95_Camouflage_Material_MOD_45149982_%28cropped%29.jpg) | Cpl Adrian Harlen RLC | OGL v1.0 |
 | `eigen.webp` | [Marine_sniper_ghillie_suit.JPG](https://commons.wikimedia.org/wiki/File:Marine_sniper_ghillie_suit.JPG) | U.S. Marine Corps | publiek domein |
+| `erbsen.webp` | [Erbsenmuster.jpg](https://commons.wikimedia.org/wiki/File:Erbsenmuster.jpg) | Germina | publiek domein |
 | `erdl.webp` | [Green-dominant_"lowland"_ERDL_camouflage_pattern_swatch.svg](https://commons.wikimedia.org/wiki/File:Green-dominant_%22lowland%22_ERDL_camouflage_pattern_swatch.svg) | ERDL | publiek domein |
 | `flecktarn.webp` | [Flecktarn_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Flecktarn_%28cropped%29.jpg) | pixelFire | CC BY-SA 3.0 |
 | `flora.webp` | [Flora_cam.jpg](https://commons.wikimedia.org/wiki/File:Flora_cam.jpg) | GTRus | CC BY-SA 4.0 |
@@ -24,9 +25,10 @@ Per patroon: het bestand, de maker en de licentie.
 | `mcvariant.webp` | [TROPIC_MULTICAM_(cropped).jpg](https://commons.wikimedia.org/wiki/File:TROPIC_MULTICAM_%28cropped%29.jpg) | onbekende maker | publiek domein |
 | `mtp.webp` | [British_Armed_Forces_Multi_Terrain_Pattern_camouflage.jpg](https://commons.wikimedia.org/wiki/File:British_Armed_Forces_Multi_Terrain_Pattern_camouflage.jpg) | Amanda Reynolds, Ministry of Defence photographer | OGL v1.0 |
 | `multicam.webp` | [Multicam_pattern_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Multicam_pattern_%28cropped%29.jpg) | Chikumaya | publiek domein |
-| `nfp.webp` | [NFP-Green.jpg](https://commons.wikimedia.org/wiki/File:NFP-Green.jpg) | Ministerie van Defensie | CC BY-SA 4.0 |
+| `nfp.webp` | [NFP_Groen.png](https://commons.wikimedia.org/wiki/File:NFP_Groen.png) | Ministerie van Defensie | CC BY-SA 4.0 |
 | `platanen.webp` | [SS_Platanenmuster_Sommer_(cropped).jpg](https://commons.wikimedia.org/wiki/File:SS_Platanenmuster_Sommer_%28cropped%29.jpg) | Mediatus | CC BY-SA 3.0 |
 | `rhodesian.webp` | [Rhodesian_Brushstroke_pattern_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Rhodesian_Brushstroke_pattern_%28cropped%29.jpg) | Katangais | CC BY-SA 3.0 |
+| `splinter.webp` | [Buntfarbenmuster_31_(Splittertarn)_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Buntfarbenmuster_31_%28Splittertarn%29_%28cropped%29.jpg) | Mediatus | CC BY-SA 3.0 |
 | `tiger.webp` | [Tigerstripehat_(cropped).JPG](https://commons.wikimedia.org/wiki/File:Tigerstripehat_%28cropped%29.JPG) | Trios2007 | publiek domein |
 | `tropentarn.webp` | [Tropentarn_Fabric_(cropped).jpg](https://commons.wikimedia.org/wiki/File:Tropentarn_Fabric_%28cropped%29.jpg) | Murchison-Eye | CC BY-SA 4.0 |
 | `ucp.webp` | [Universal_Camouflage_Pattern_(UCP).jpg](https://commons.wikimedia.org/wiki/File:Universal_Camouflage_Pattern_%28UCP%29.jpg) | Doubleailes | publiek domein |

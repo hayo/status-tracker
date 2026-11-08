@@ -5,6 +5,13 @@
 
 export const VERSIES = [
   {
+    versie: '1.2.1',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Splittertarn en Erbsentarn hebben nu ook een echte foto, en NFP een betere.',
+    ],
+  },
+  {
     versie: '1.2',
     datum: '2026-11-08',
     wijzigingen: [
