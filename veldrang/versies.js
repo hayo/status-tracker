@@ -5,6 +5,14 @@
 
 export const VERSIES = [
   {
+    versie: '1.4.2',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'De rangemblemen zijn nu naar de echte onderscheidingen van de Landmacht getekend: de juiste V-strepen per rang, visgraat bij soldaat en korporaal, zes-puntige sterren, een sierbalk en de krans van de generaal.',
+      'De korporaal heeft nu NAVO-code OR-3.',
+    ],
+  },
+  {
     versie: '1.4.1',
     datum: '2026-11-08',
     wijzigingen: [

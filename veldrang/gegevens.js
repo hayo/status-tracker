@@ -31,26 +31,26 @@ export const WERELD = {
   quizSkill: 'tactiek',
 };
 
-// Rangen zoals bij de landmacht, met hun NAVO-code (OR voor manschappen en onderofficieren, OF voor
-// officieren). Het embleem tekent de motor zelf (embleem.js): strepen, een boog, sterren, een balk of
-// een krans. Een rang vraagt PR (min), dagen actief, erkenning en een ritueel.
+// Rangen zoals bij de Koninklijke Landmacht, met hun NAVO-code (OR voor manschappen en onderofficieren,
+// OF voor officieren). Het embleem tekent de motor zelf (embleem.js), naar de echte onderscheidingen:
+// V-strepen (glad of visgraat), zes-puntige sterren, een sierbalk of een krans. Een rang vraagt PR (min), dagen actief, erkenning en een ritueel.
 // De hoogste rangen vragen ook een goede stand in meerdere kringen (kring: aantal, vanaf welke stand).
 export const RANGEN = [
-  { min: 0, dagen: 0, naam: 'Rekruut', code: 'OR-1', embleem: { strepen: 0 }, uitleg: 'Net begonnen. Je leert de regels, het veld en je gear.', icoon: 'user' },
+  { min: 0, dagen: 0, naam: 'Rekruut', code: 'OR-1', embleem: { schouder: true }, uitleg: 'Net begonnen. Je leert de regels, het veld en je gear.', icoon: 'user' },
   {
-    min: 400, dagen: 0, naam: 'Soldaat', code: 'OR-2', embleem: { strepen: 1 }, uitleg: 'Je hebt je eerste games achter de rug en weet waar de safezone is.', icoon: 'person-rifle',
+    min: 400, dagen: 0, naam: 'Soldaat', code: 'OR-2', embleem: { strepen: 2, visgraat: true }, uitleg: 'Je hebt je eerste games achter de rug en weet waar de safezone is.', icoon: 'person-rifle',
     ritueel: { tekst: 'Je speelde je eerste game', voorwaarde: { soort: 'terrein', id: 'spelen', aantal: 1 } },
   },
   {
-    min: 1200, dagen: 14, erkenning: 40, naam: 'Korporaal', code: 'OR-4', embleem: { strepen: 2 }, uitleg: 'Een vaste speler. Men herkent je op het veld.', icoon: 'chevron-up',
+    min: 1200, dagen: 14, erkenning: 40, naam: 'Korporaal', code: 'OR-3', embleem: { strepen: 1, visgraat: true, breed: true }, uitleg: 'Een vaste speler. Men herkent je op het veld.', icoon: 'chevron-up',
     ritueel: { tekst: 'Je werd lid van de NABV of van een team', voorwaarde: { soort: 'een', lijst: [{ soort: 'symbool', id: 'm_nabv' }, { soort: 'symbool', id: 'm_team' }] } },
   },
   {
-    min: 3000, dagen: 60, erkenning: 120, naam: 'Sergeant', code: 'OR-5', embleem: { strepen: 3 }, uitleg: 'Je neemt verantwoordelijkheid: anderen volgen je in een squad.', icoon: 'angles-up',
+    min: 3000, dagen: 60, erkenning: 120, naam: 'Sergeant', code: 'OR-5', embleem: { strepen: 1 }, uitleg: 'Je neemt verantwoordelijkheid: anderen volgen je in een squad.', icoon: 'angles-up',
     ritueel: { tekst: 'Je leidde een squad, gaf een briefing of bent militair', voorwaarde: { soort: 'een', lijst: [{ soort: 'activiteit', id: 'e05' }, { soort: 'activiteit', id: 'o02' }, { soort: 'symbool', id: 'm_mil' }] } },
   },
   {
-    min: 6000, dagen: 120, erkenning: 300, naam: 'Sergeant-majoor', code: 'OR-7', embleem: { strepen: 3, boog: 1 }, uitleg: 'Een rots in elk team. Organisatoren kennen je naam.', icoon: 'shield-halved',
+    min: 6000, dagen: 120, erkenning: 300, naam: 'Sergeant-majoor', code: 'OR-7', embleem: { strepen: 2 }, uitleg: 'Een rots in elk team. Organisatoren kennen je naam.', icoon: 'shield-halved',
     ritueel: { tekst: 'Je marshalde een game', voorwaarde: { soort: 'activiteit', id: 'o01' } },
   },
   {

@@ -51,7 +51,7 @@ app.js                    de ingang van Wassenaar: laadt eerst wassenaar.js, dan
 wassenaar.js              vult de wereld met de inhoud van Wassenaar (gegevens.js en de versies)
 wereld.js                 de wereld waarin de motor draait; wat een wereld niet heeft, staat leeg
 motor.js                  de motor: tonen, loggen, bewaren, navigatie
-embleem.js                rangonderscheidingen in NAVO-stijl, voor rangen met een embleem
+embleem.js                rangonderscheidingen naar die van de Landmacht, voor rangen met een embleem
 ui.js                     hulpjes voor de pagina: maak, icoon, meter, getal, svgKnop
 grafieken.js              radar, boog en ring, als SVG
 schermen/karakter.js      het karakterblad
@@ -105,8 +105,10 @@ Veldrang draait op `veldrang/app.html`, met een eigen landingspagina
 verschil met Wassenaar zit alleen in de gegevens en het thema:
 
 - tien rangen zoals bij de landmacht, van Rekruut (OR-1) tot Generaal (OF-9).
-  Elke rang heeft een `code` en een `embleem`: strepen en een boog, of sterren,
-  een balk en een krans. `embleem.js` tekent die als icoon;
+  Elke rang heeft een NAVO-`code` en een `embleem`, getekend naar de echte
+  onderscheidingen van de Koninklijke Landmacht: V-strepen (glad of in
+  visgraatmotief), zes-puntige sterren, een sierbalk of een krans, en een lege
+  schouderstrook voor de rekruut. `embleem.js` tekent die als icoon;
 - zes skills voor de spelelementen, twaalf terreinen, patches als symbolen,
   reputatie, sportiviteit (de gunfactor) en vijf kringen: team, organisatoren,
   scene, online en de NABV;
@@ -201,7 +203,7 @@ Alles staat in `gegevens.js`. Alleen gegevens, geen code.
 | Wat | Velden |
 | --- | --- |
 | `WERELD` | de teksten en namen per wereld: `naam`, `sleutel` en `sync` (nooit veranderen), `bestand`, `welkom`, `jaar`, `eisDagen`, `bezig`, `symbool`, `symbolen`, `symboolGeclaimd`, `geenSymbolen`, `bekendheid`, `bekendTop`, `bekendLeeg`, `teLaat`, `bedankje` (id), `discretie` (skill), `dossier`, `dossierSkill`, `quiz`, `quizSkill` |
-| `RANGEN` | `code?` (zoals OR-2, in plaats van het niveau) en `embleem?` (`strepen`, `boog`, `sterren`, `balk`, `krans`; in plaats van `icoon`), `min` (punten vanaf), `dagen` (tijd in het spel), `ritueel` (`tekst` en `voorwaarde`), `kring?` (`aantal` kringen vanaf stand `vanaf`), `erkenning?` (punten aan erkenning), `naam`, `uitleg`, `icoon` |
+| `RANGEN` | `code?` (zoals OR-2, in plaats van het niveau) en `embleem?` (`schouder`, of `strepen` met `visgraat` en `breed`, of `sterren` met `balk` of `krans`; in plaats van `icoon`), `min` (punten vanaf), `dagen` (tijd in het spel), `ritueel` (`tekst` en `voorwaarde`), `kring?` (`aantal` kringen vanaf stand `vanaf`), `erkenning?` (punten aan erkenning), `naam`, `uitleg`, `icoon` |
 | `EIGENSCHAPPEN` | sleutel => `naam`, `kort` (op de radar) en `icoon`. `EIGENSCHAP_MAX` is het aantal punten waarbij de balk vol is |
 | `CATEGORIEEN` | `id`, `kringen` (gewicht per kring), `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |
 | `SYMBOLEN` | `id`, `punten`, `naam`, `icoon`, `stijl?` (`opzichtig` of `ingetogen`), `kringen?`, `eigenschap` |

@@ -1073,7 +1073,7 @@ window.addEventListener('hashchange', () => toon(true));
 const sprite = app.querySelector('svg.sprite');
 RANGEN.forEach((r, i) => {
   if (!r.embleem) return;
-  sprite.append(maak('svg:symbol', { id: `az-i-rang-${i}`, viewBox: '0 0 64 64' }, ...embleem(r.embleem).map((d) => maak('svg:path', { d }))));
+  sprite.append(maak('svg:symbol', { id: `az-i-rang-${i}`, viewBox: '0 0 64 64' }, ...embleem(r.embleem).map((d) => maak('svg:path', { d, 'fill-rule': 'evenodd' }))));
   r.icoon = `rang-${i}`;
 });
 
