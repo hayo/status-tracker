@@ -5,6 +5,15 @@
 
 export const VERSIES = [
   {
+    versie: '1.1',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Elk camopatroon heeft nu een staal: een stukje van het patroon naast je keuze, en alle 38 patronen op een rij op je karakterblad.',
+      'Speedsoft is de laagste trede, nog onder huurkit: ×0,7. Speedsoft-kit telt in elk deel van je loadout.',
+      'Alles speedsoft geeft minpunten: een speedsoft-game, een speedsoft-build, een speedsoft-video, en in speedsoft-kit naar een milsim komen.',
+    ],
+  },
+  {
     versie: '1.0.2',
     datum: '2026-11-08',
     wijzigingen: [

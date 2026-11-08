@@ -243,6 +243,7 @@
 
 #aanzien .loadout-deel {
   display: grid;
+  align-content: start;
   gap: 0.3em;
   margin: 0;
 }
@@ -264,4 +265,63 @@
 
 #aanzien .blad .loadout {
   grid-column: 1 / -1;
+}
+
+/* Camostalen: bij de keuze, en alle patronen op een rij. */
+#aanzien .loadout-staal svg {
+  display: block;
+  width: 100%;
+  height: 2.6em;
+  border: 1px solid var(--steek);
+  border-radius: 0.4em;
+}
+
+#aanzien .stalen {
+  margin-top: 1em;
+}
+
+#aanzien .stalen summary {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#aanzien .stalen-lijst {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5em, 1fr));
+  gap: 0.8em;
+  margin: 0.8em 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .staal-kaart {
+  display: grid;
+  gap: 0.2em;
+  font-size: 0.85em;
+}
+
+#aanzien .staal-kaart svg {
+  width: 100%;
+  height: auto;
+  border: 2px solid #6b6a40;
+  border-radius: 0.4em;
+}
+
+#aanzien .staal-naam {
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+#aanzien .staal-trede {
+  color: var(--zacht);
+}
+
+#aanzien .trede-6 svg {
+  border-color: var(--goud-donker);
+  box-shadow: 0 0 0 2px var(--goud);
+}
+
+#aanzien .trede-0 .staal-trede {
+  color: var(--rood);
+  font-weight: 700;
 }

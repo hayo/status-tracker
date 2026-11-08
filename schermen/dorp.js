@@ -8,7 +8,7 @@
 
 import { W } from '../wereld.js';
 import { ACTIVITEITEN } from '../spel.js';
-import { maak, icoon, getal, svgKnop } from '../ui.js';
+import { maak, icoon, getal, svgKnop, metTeken } from '../ui.js';
 
 const { KAART, PLEKKEN, BUURTEN } = W;
 
@@ -352,5 +352,5 @@ function toonInfo(el, plek, buurt) {
     maak('p', { class: n ? 'plek-status ontdekt' : 'plek-status', tekst: n ? `Ontdekt · ${getal(n)} keer` : 'Nog niet ontdekt: je eerste bezoek geeft ×2' }),
     maak('p', { class: 'zacht', tekst: 'Wat deed je hier?' }),
     maak('ul', { class: 'acties' }, ...acties.map((a) => maak('li', {}, maak('button', { type: 'button', class: a.punten >= 100 ? 'actie groot' : 'actie', bij: () => opActiviteit(a) },
-      maak('span', { class: 'actie-naam', tekst: a.naam }), maak('span', { class: 'actie-punten', tekst: `+${getal(a.punten)}` }))))));
+      maak('span', { class: 'actie-naam', tekst: a.naam }), maak('span', { class: a.punten < 0 ? 'actie-punten min' : 'actie-punten', tekst: metTeken(a.punten) }))))));
 }

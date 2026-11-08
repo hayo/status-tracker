@@ -20,6 +20,8 @@ export function maak(tag, eigen = {}, ...kinderen) {
 export const icoon = (naam, klasse = 'icoon') => maak('svg:svg', { class: klasse, 'aria-hidden': 'true', focusable: 'false' }, maak('svg:use', { href: `#az-i-${naam}` }));
 export const meter = (id, deel) => maak('span', { class: 'spoor' }, maak('meter', { id, min: 0, max: 1, value: Math.min(1, Math.max(0, deel)) }));
 export const getal = (n) => Math.round(n).toLocaleString('nl');
+// Punten met hun teken: +30 of −30.
+export const metTeken = (n) => `${n < 0 ? '−' : '+'}${getal(Math.abs(n))}`;
 export const factor = (f) => `×${f.toLocaleString('nl', { maximumFractionDigits: 2 })}`;
 
 // Een SVG-element dat met Enter en spatie werkt als knop.

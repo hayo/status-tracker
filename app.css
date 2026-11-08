@@ -1225,6 +1225,12 @@
   white-space: nowrap;
 }
 
+/* Minpunten, zoals voor speedsoft in Veldrang. */
+#aanzien .actie-punten.min {
+  background: #fde8e6;
+  color: var(--rood);
+}
+
 #aanzien .symbool .actie-icoon {
   display: grid;
   place-items: center;

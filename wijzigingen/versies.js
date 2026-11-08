@@ -9,6 +9,13 @@
 
 export const VERSIES = [
   {
+    versie: '3.0.1',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Achter de schermen: de motor kan nu ook minpunten tonen en stukjes camouflage tekenen, voor Veldrang. Voor jou verandert er niets.',
+    ],
+  },
+  {
     versie: '3.0',
     datum: '2026-11-07',
     wijzigingen: [

@@ -16,7 +16,8 @@ import {
   missies, jaren, jaaroverzicht, samenvoegen, loadout,
 } from './spel.js';
 import * as opslag from './opslag.js';
-import { maak, icoon, meter, getal, factor } from './ui.js';
+import { maak, icoon, meter, getal, factor, metTeken } from './ui.js';
+import { staal } from './staal.js';
 import { toonKarakter } from './schermen/karakter.js';
 import { embleem } from './embleem.js';
 import { bouwKaart, toonKaart } from './schermen/dorp.js';
@@ -434,7 +435,7 @@ function toonWeken(weken) {
 function actieKnop(a, bij, info, voor = null) {
   return maak('li', {}, maak('button', { type: 'button', class: a.punten >= 100 ? 'actie groot' : 'actie', bij }, voor,
     maak('span', { class: 'actie-naam' }, a.naam, info ? maak('span', { class: 'actie-info', tekst: info }) : null),
-    maak('span', { class: 'actie-punten', tekst: `+${getal(a.punten)}` })));
+    maak('span', { class: a.punten < 0 ? 'actie-punten min' : 'actie-punten', tekst: metTeken(a.punten) })));
 }
 
 function bouwActiviteiten() {
@@ -629,7 +630,17 @@ function bouwLoadout() {
     maak('select', { id: `az-loadout-${deel.id}` },
       maak('option', { value: '' }, 'Nog niet gekozen'),
       ...LOADOUT.treden.map((t, n) => [t, n]).reverse().map(([t, n]) => maak('optgroup', { label: t.naam },
-        ...deel.opties.filter(([, , trede]) => trede === n).map(([id, naam]) => maak('option', { value: id }, naam))))))));
+        ...deel.opties.filter(([, , trede]) => trede === n).map(([id, naam]) => maak('option', { value: id }, naam))))),
+    deel.opties.some((o) => o[3]) ? maak('span', { class: 'loadout-staal', id: `az-loadout-staal-${deel.id}` }) : null)));
+  // Alle stalen op een rij, per trede van exotisch naar laag.
+  if (el.loadoutStalen) {
+    el.loadoutStalen.replaceChildren(...LOADOUT.delen.flatMap((deel) => deel.opties.filter((o) => o[3])
+      .sort((a, b) => b[2] - a[2])
+      .map(([id, naam, trede, spec]) => maak('li', { class: `staal-kaart trede-${trede}` },
+        staal(`${deel.id}-${id}`, spec),
+        maak('span', { class: 'staal-naam', tekst: naam }),
+        maak('span', { class: 'staal-trede', tekst: LOADOUT.treden[trede].naam })))));
+  }
   for (const s of el.loadout.querySelectorAll('select')) s.addEventListener('change', (e) => kiesLoadout(e.target.id.slice('az-loadout-'.length), e.target.value));
 }
 
@@ -642,7 +653,13 @@ function kiesLoadout(deel, id) {
 
 function toonLoadout() {
   if (!LOADOUT || !el.loadout) return;
-  for (const deel of LOADOUT.delen) el.loadout.querySelector(`#az-loadout-${deel.id}`).value = spel.loadout?.[deel.id] ?? '';
+  for (const deel of LOADOUT.delen) {
+    const id = spel.loadout?.[deel.id] ?? '';
+    el.loadout.querySelector(`#az-loadout-${deel.id}`).value = id;
+    const vak = el.loadout.querySelector(`#az-loadout-staal-${deel.id}`);
+    const optie = deel.opties.find((o) => o[0] === id);
+    if (vak) vak.replaceChildren(...(optie?.[3] ? [staal(`${deel.id}-${id}`, optie[3], `${deel.naam}: ${optie[1]}`)] : []));
+  }
   const l = loadout(spel);
   const namen = LOADOUT.terreinen.map((t) => CATEGORIEEN.find((c) => c.id === t).naam.split(':')[0].toLocaleLowerCase('nl'));
   el.loadoutStand.textContent = l
@@ -753,9 +770,9 @@ function berekening() {
 function toonBonus() {
   const { item, symbool } = teLoggen;
   const b = berekening();
-  el.logInfo.textContent = `+${getal(item.punten)} PR & XP · ${EIGENSCHAPPEN[item.eigenschap].naam}${symbool ? ` · ${WERELD.symbool.toLocaleLowerCase('nl')}` : ''}`;
+  el.logInfo.textContent = `${metTeken(item.punten)} PR & XP · ${EIGENSCHAPPEN[item.eigenschap].naam}${symbool ? ` · ${WERELD.symbool.toLocaleLowerCase('nl')}` : ''}`;
   el.logBonus.replaceChildren(...(b.lijst.length
-    ? [icoon('fire'), maak('span', { tekst: `${b.lijst.map(([n, f]) => `${n} ${factor(f)}`).join(' · ')} → +${getal(b.punten)} PR` })]
+    ? [icoon('fire'), maak('span', { tekst: `${b.lijst.map(([n, f]) => `${n} ${factor(f)}`).join(' · ')} → ${metTeken(b.punten)} PR` })]
     : []));
   el.logBonus.hidden = !b.lijst.length;
   const a = ACTIVITEITEN.get(item.id);
@@ -805,7 +822,7 @@ el.logVenster.addEventListener('close', () => {
     ...(!symbool ? { energie: kosten(spel, item) } : {}),
   });
   if (symbool) meld(WERELD.symboolGeclaimd, `${item.naam}: geclaimd!`);
-  else meld('Activiteit gelogd', `+${getal(b.punten)} PR & XP verdiend!`);
+  else meld('Activiteit gelogd', b.punten < 0 ? `${metTeken(b.punten)} PR & XP. Dat kost je aanzien.` : `${metTeken(b.punten)} PR & XP verdiend!`);
 });
 
 function vraag(titel, tekst, knop, ja) {
