@@ -3554,3 +3554,41 @@
     grid-column: 1 / -1;
   }
 }
+
+/* ---------- Lintjesbalk ---------- */
+
+#aanzien .lintjes {
+  display: grid;
+  width: max-content;
+  max-width: 100%;
+  justify-items: center;
+  gap: 2px;
+  margin-top: 0.7em;
+}
+
+#aanzien .lintjes-rij {
+  display: flex;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .lint {
+  display: block;
+  width: 2.7em;
+  height: auto;
+  box-shadow: 0 1px 1.5px rgb(0 0 0 / 35%);
+}
+
+#aanzien .lint-rand {
+  fill: none;
+  stroke: rgb(0 0 0 / 35%);
+  stroke-width: 0.5;
+}
+
+#aanzien .lint-ster {
+  fill: #e8c45a;
+  stroke: #7a5c12;
+  stroke-width: 0.4;
+}

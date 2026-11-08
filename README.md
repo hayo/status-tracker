@@ -55,6 +55,7 @@ standalone.css            de achtergrond en de groene balk van de losse pagina
 wereld.js                 de wereld waarin de motor draait; wat een wereld niet heeft, staat leeg
 motor.js                  de motor: tonen, loggen, bewaren, navigatie
 embleem.js                rangonderscheidingen naar die van de Landmacht, voor rangen met een embleem
+lint.js                   lintjes: elke patch als gestreept lint, en een lintjesbalk
 ui.js                     hulpjes voor de pagina: maak, icoon, meter, getal, svgKnop
 grafieken.js              radar, boog en ring, als SVG
 schermen/karakter.js      het karakterblad
@@ -240,7 +241,7 @@ Alles staat in `wassenaar/gegevens.js` (bij Veldrang: `veldrang/gegevens.js`). A
 
 | Wat | Velden |
 | --- | --- |
-| `WERELD` | de teksten en namen per wereld: `naam`, `sleutel` en `sync` (nooit veranderen), `bestand`, `welkom`, `jaar`, `eisDagen`, `bezig`, `symbool`, `symbolen`, `symboolGeclaimd`, `geenSymbolen`, `bekendheid`, `stilleMinpunten` (vooraf geen minpunten of malus tonen), `bekendTop`, `bekendLeeg`, `teLaat`, `bedankje` (id), `discretie` (skill), `dossier`, `dossierSkill`, `quiz`, `quizSkill` |
+| `WERELD` | de teksten en namen per wereld: `naam`, `sleutel` en `sync` (nooit veranderen), `bestand`, `welkom`, `jaar`, `eisDagen`, `bezig`, `symbool`, `symbolen`, `symboolGeclaimd`, `geenSymbolen`, `bekendheid`, `stilleMinpunten` (vooraf geen minpunten of malus tonen), `lintjes` (patches als lintjesbalk onder je rang in plaats van een boog rond de avatar), `bekendTop`, `bekendLeeg`, `teLaat`, `bedankje` (id), `discretie` (skill), `dossier`, `dossierSkill`, `quiz`, `quizSkill` |
 | `RANGEN` | `code?` (zoals OR-2, in plaats van het niveau) en `embleem?` (`schouder`, of `strepen` met `visgraat` en `breed`, of `sterren` met `balk` of `krans`; in plaats van `icoon`), `min` (punten vanaf), `dagen` (tijd in het spel), `ritueel` (`tekst` en `voorwaarde`), `kring?` (`aantal` kringen vanaf stand `vanaf`), `erkenning?` (punten aan erkenning), `naam`, `uitleg`, `icoon` |
 | `EIGENSCHAPPEN` | sleutel => `naam`, `kort` (op de radar) en `icoon`. `EIGENSCHAP_MAX` is het aantal punten waarbij de balk vol is |
 | `CATEGORIEEN` | `id`, `kringen` (gewicht per kring), `naam`, `icoon`, `kleur`, en `activiteiten` als `[id, naam, punten, eigenschap, kenmerken?]` |

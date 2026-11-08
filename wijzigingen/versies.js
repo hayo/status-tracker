@@ -9,6 +9,13 @@
 
 export const VERSIES = [
   {
+    versie: '3.0.13',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Achter de schermen: de motor kan patches ook als lintjesbalk tonen. Voor Wassenaar verandert er niets.',
+    ],
+  },
+  {
     versie: '3.0.12',
     datum: '2026-11-08',
     wijzigingen: [

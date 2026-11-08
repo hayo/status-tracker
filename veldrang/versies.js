@@ -5,6 +5,13 @@
 
 export const VERSIES = [
   {
+    versie: '1.8.1',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'Je patches staan nu als lintjesbalk onder je rang, zoals op een uniform. Elke patch is een eigen lint, de hoogste staan bovenaan, en de grote patches hebben een gouden ster. Ze lopen niet meer door de rest van het scherm.',
+    ],
+  },
+  {
     versie: '1.8.0',
     datum: '2026-11-08',
     wijzigingen: [

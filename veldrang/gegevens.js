@@ -20,6 +20,7 @@ export const WERELD = {
   symboolGeclaimd: 'Patch verdiend',
   geenSymbolen: 'Nog geen patches verdiend.',
   bekendheid: 'Reputatie',
+  lintjes: true, // patches als lintjesbalk onder je rang, zoals op een uniform
   stilleMinpunten: true, // vooraf geen minpunten of malus tonen: speedsoft, huurkit en spray and pray kiest dan niemand meer
   bekendTop: 'Hoger kan niet: je bent een legende in de scene',
   bekendLeeg: 'Noteer wat er naar jou toe komt: iemand kent je callsign, vraagt je in een squad of om advies. Dat is de echte maat voor reputatie.',

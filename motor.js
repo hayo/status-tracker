@@ -20,6 +20,7 @@ import * as teams from './team.js';
 import { toonTeam, teamNaam } from './schermen/team.js';
 import { maak, icoon, meter, getal, factor, metTeken } from './ui.js';
 import { staal } from './staal.js';
+import { lintjesbalk } from './lint.js';
 import { toonKarakter } from './schermen/karakter.js';
 import { embleem } from './embleem.js';
 import { bouwKaart, toonKaart } from './schermen/dorp.js';
@@ -421,9 +422,15 @@ function toonStatus() {
   el.verval.textContent = val.punten ? `Vergeten worden: −${getal(val.punten)} PR na ${val.weken + 4} weken stilte` : '';
   el.verval.hidden = !val.punten;
 
-  const symbolen = SYMBOLEN.filter((s) => st.symbolen.has(s.id)).sort((a, b) => b.punten - a.punten).slice(0, UITRUSTING);
+  // Patches: als lintjesbalk onder je rang (WERELD.lintjes), of de duurste acht in een boog rond de avatar.
+  const verdiend = SYMBOLEN.filter((s) => st.symbolen.has(s.id)).sort((a, b) => b.punten - a.punten);
+  const symbolen = WERELD.lintjes ? [] : verdiend.slice(0, UITRUSTING);
   el.uitrusting.replaceChildren(...symbolen.map((s, n) => maak('li', { class: `uitrusting-${n}`, title: s.naam }, icoon(s.icoon), maak('span', { class: 'verborgen', tekst: s.naam }))));
   el.uitrusting.hidden = !symbolen.length;
+  if (el.lintjes) {
+    el.lintjes.replaceChildren(...(WERELD.lintjes ? lintjesbalk(verdiend) : []));
+    el.lintjes.hidden = !(WERELD.lintjes && verdiend.length);
+  }
 
   el.voortgang.value = volgende ? Math.min(100, ((p - rang.min) / (volgende.min - rang.min)) * 100) : 100;
   el.volgende.textContent = volgende ? volgende.naam : 'maximale rang bereikt';
