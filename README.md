@@ -462,6 +462,10 @@ Animaties (de glans op de XP-balk, het niveauvenster) staan uit bij
 - Letters: Inter, Playfair Display en IM Fell English (voor de kaart), SIL Open
   Font License 1.1. De licenties staan in `letters/`.
 - Veldrang: Black Ops One, SIL Open Font License 1.1, in `veldrang/letters/`.
+- Veldrang, camopatronen: foto's van Wikimedia Commons, elk met een eigen vrije
+  licentie (publiek domein, CC BY-SA, CC0 of de Britse Open Government Licence).
+  Maker, licentie en bronpagina staan bij elk staal in de app en in
+  `veldrang/camo/BRONNEN.md`. Zet je er een bij, vermeld dan ook de bron.
 
 ## Toegankelijkheid
 

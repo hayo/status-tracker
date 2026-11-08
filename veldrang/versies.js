@@ -5,6 +5,14 @@
 
 export const VERSIES = [
   {
+    versie: '1.2',
+    datum: '2026-11-08',
+    wijzigingen: [
+      'De camostalen zijn nu echte patronen: foto\'s van Wikimedia Commons, in de vorm van een helm. Onder elk patroon staan de maker en de licentie.',
+      'Patronen zonder vrij beeld, zoals PenCott, Kryptek en Partizan, krijgen geen verzonnen staal.',
+    ],
+  },
+  {
     versie: '1.1.1',
     datum: '2026-11-08',
     wijzigingen: [
