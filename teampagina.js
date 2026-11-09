@@ -32,7 +32,7 @@ function kitVan(l) {
   const wapen = W.LOADOUT?.delen.find((d) => d.id === 'wapen')?.opties.find((o) => o[0] === l.loadout.wapen);
   return [
     camo?.[3] && !camo[3].geenBeeld ? staal(camo[3], `Camo: ${camo[1]}`, 'helm') : null,
-    wapen?.[3]?.plaatje ? maak('img', { src: wapen[3].plaatje, alt: `Hoofdwapen: ${wapen[1]}`, width: 480, height: 240, loading: 'lazy' }) : null,
+    wapen?.[3]?.plaatje ? maak('img', { class: 'tp-wapen', src: wapen[3].plaatje, alt: `Hoofdwapen: ${wapen[1]}`, width: 480, height: 240, loading: 'lazy' }) : null,
   ].filter(Boolean);
 }
 

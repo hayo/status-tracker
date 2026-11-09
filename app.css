@@ -3290,6 +3290,7 @@
 #aanzien .team-kit :is(img, svg) {
   width: 100%;
   height: auto;
+  object-fit: contain;
   border-radius: 0.3em;
 }
 
@@ -3670,12 +3671,22 @@
 }
 
 #aanzien .tp-trede .tp-kit {
+  flex-wrap: nowrap;
   justify-content: center;
+  width: 100%;
   margin-top: 0.6em;
 }
 
+/* Helm en wapen naast elkaar, en samen kleiner als de kaart smal is. */
 #aanzien .tp-trede .tp-kit :is(img, svg) {
-  width: 6.5em;
+  width: 38%;
+  max-width: 6.5em;
+  min-width: 0;
+}
+
+#aanzien .tp-trede .tp-kit .tp-wapen {
+  width: 58%;
+  max-width: 10em;
 }
 
 /* Wie daarna komt: een rij per lid. */
@@ -3732,12 +3743,19 @@
 #aanzien .tp-kit {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.4em;
 }
 
+/* Breedte vast, hoogte uit het plaatje: een helm is bijna vierkant, een wapen twee keer zo breed als hoog. */
 #aanzien .tp-kit :is(img, svg) {
   width: 4.5em;
   height: auto;
+  object-fit: contain;
+}
+
+#aanzien .tp-kit .tp-wapen {
+  width: 7.5em;
 }
 
 @media (width < 36em) {

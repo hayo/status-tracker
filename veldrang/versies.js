@@ -5,6 +5,13 @@
 
 export const VERSIES = [
   {
+    versie: '1.8.3',
+    datum: '2026-11-09',
+    wijzigingen: [
+      'Op de teampagina worden de wapens niet meer platgedrukt. Helm en wapen houden hun eigen vorm en staan in balans naast elkaar.',
+    ],
+  },
+  {
     versie: '1.8.2',
     datum: '2026-11-09',
     wijzigingen: [
