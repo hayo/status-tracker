@@ -5,6 +5,14 @@
 
 export const VERSIES = [
   {
+    versie: '1.9.2',
+    datum: '2026-11-09',
+    wijzigingen: [
+      'De link naar je teampagina is veel korter. Hij werkt net zo: wie de link heeft, kan je team zien, maar niet aansluiten.',
+      'De server kan je team nog steeds niet lezen. Oude, lange links blijven werken.',
+    ],
+  },
+  {
     versie: '1.9.1',
     datum: '2026-11-09',
     wijzigingen: [

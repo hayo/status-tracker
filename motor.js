@@ -177,7 +177,11 @@ async function haalTeam() {
     const sleutels = await teams.uitCode(t.code);
     const r = await teams.lees(sleutels);
     teamStaat.openbaar = r?.openbaar ?? null;
-    teamStaat.link = teamStaat.openbaar ? openbareLink(teamStaat.openbaar) : new URL(`team.html#${teams.kijklink(sleutels, t.naam)}`, location.href).href;
+    // De korte link zetten we één keer op de server. Lukt dat niet, dan blijft de lange link.
+    let kort = r?.link ?? false;
+    if (r && !kort) kort = await teams.zetKorteLink(t.code, t.token).then(() => true, () => false);
+    teamStaat.link = teamStaat.openbaar ? openbareLink(teamStaat.openbaar)
+      : new URL(`team.html#${teams.kijklink(kort ? sleutels : { ...sleutels, kort: null }, t.naam)}`, location.href).href;
     teamStaat.leden = r?.leden ?? [];
     if (teamStaat.badge) URL.revokeObjectURL(teamStaat.badge);
     teamStaat.badge = teams.badgeUrl(r?.badge);

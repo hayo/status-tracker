@@ -153,7 +153,14 @@ function toon(team, data) {
   el.tpInhoud.hidden = false;
 }
 async function start() {
-  const team = await teams.uitKijklink(vast ? vast.content : location.hash.slice(1));
+  let team;
+  try {
+    team = await teams.uitKijklink(vast ? vast.content : location.hash.slice(1));
+  } catch {
+    el.tpStatus.textContent = 'De server is niet bereikbaar. Probeer het later opnieuw.';
+    el.tpStatus.classList.add('fout');
+    return;
+  }
   if (!team) {
     el.tpStatus.textContent = vast
       ? 'Deze teampagina is niet openbaar, of de naam klopt niet. Vraag een teamlid om de link.'

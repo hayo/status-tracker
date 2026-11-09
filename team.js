@@ -5,6 +5,8 @@
  * - een schrijfbewijs: wie dat heeft, kan aansluiten. De server bewaart alleen de hash ervan.
  * Een kijklink (teampagina) bevat alleen het id en de sleutel. Wie de link heeft, kan het team zien,
  * maar niet aansluiten; daarvoor is de code nodig. De server kan niets lezen.
+ * De korte kijklink bevat alleen een linkgeheim (16 bytes), ook uit de teamcode. Onder de hash daarvan
+ * bewaart de server het id en de sleutel, versleuteld met dat geheim. Ook dat kan de server niet lezen.
  * Elk lid heeft ook een eigen geheim token. De server bewaart daarvan alleen de hash (lid), zodat alleen
  * jij je eigen profiel kunt bijwerken of weghalen.
  */
@@ -27,21 +29,48 @@ export async function uitCode(code) {
   const basis = await crypto.subtle.importKey('raw', tekst.encode(code), 'HKDF', false, ['deriveBits']);
   const ruw = new Uint8Array(await crypto.subtle.deriveBits(
     { name: 'HKDF', hash: 'SHA-256', salt: tekst.encode(`${W.WERELD.sync.zout}:team`), info: tekst.encode('sleutel') }, basis, 256));
-  return { id, sleutel: await aes(ruw), kijk: naarB64url(ruw), schrijf: await sha(`schrijf:${code}`) };
+  const kort = naarB64url(new Uint8Array(await crypto.subtle.deriveBits(
+    { name: 'HKDF', hash: 'SHA-256', salt: tekst.encode(`${W.WERELD.sync.zout}:team`), info: tekst.encode('link') }, basis, 128)));
+  return { id, sleutel: await aes(ruw), kijk: naarB64url(ruw), schrijf: await sha(`schrijf:${code}`), kort };
 }
+
+// Uit het linkgeheim: het id waaronder de server de korte link bewaart, en de sleutel ervoor.
+const uitKort = async (kort) => ({ id: await sha(`${W.WERELD.sync.id}:link:${kort}`), sleutel: await aes(uitB64url(kort)) });
 
 // Een leesbaar stukje van de teamnaam voor in de link: 'Delta Wolves' wordt 'delta-wolves'.
 export const slug = (naam) => String(naam ?? '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
   .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40).replace(/-+$/, '');
 
-// De kijklink: de naam als slug, dan id en sleutel. Alles achter het #, zodat de server niets ziet,
-// ook de naam niet. Zonder naam blijft alleen id.sleutel over, zoals de eerste links.
-export const kijklink = (team, naam) => [slug(naam), `${team.id}.${team.kijk}`].filter(Boolean).join('/');
+// De kijklink: de naam als slug, dan het linkgeheim (kort), of anders id en sleutel. Alles achter het #,
+// zodat de server niets ziet, ook de naam niet. Zonder naam blijft alleen het laatste deel over.
+export const kijklink = (team, naam) => [slug(naam), team.kort ?? `${team.id}.${team.kijk}`].filter(Boolean).join('/');
 
+// Het team uit een kijklink: { id, kijk, sleutel, kort? }, of null als de link niet klopt of de korte
+// link niet (meer) bestaat. Een korte link vraagt de server om het id en de sleutel.
 export async function uitKijklink(deel) {
-  const [id, kijk] = String(deel).split('/').at(-1).split('.');
+  const laatste = String(deel).split('/').at(-1);
+  if (/^[A-Za-z0-9_-]{22}$/.test(laatste)) {
+    const link = await uitKort(laatste);
+    const a = await vraag({ actie: 'team-link-lees', id: link.id });
+    if (a.status === 404) return null;
+    if (a.status !== 200) throw new Error(a.fout ?? `De server gaf ${a.status}.`);
+    let kijk;
+    try { kijk = await ontsleutel(link.sleutel, a.data); } catch { return null; }
+    if (!/^[0-9a-f]{64}$/.test(a.id ?? '') || !/^[A-Za-z0-9_-]{43}$/.test(kijk ?? '')) return null;
+    return { id: a.id, kijk, sleutel: await aes(uitB64url(kijk)), kort: laatste };
+  }
+  const [id, kijk] = laatste.split('.');
   if (!/^[0-9a-f]{64}$/.test(id ?? '') || !/^[A-Za-z0-9_-]{43}$/.test(kijk ?? '')) return null;
   return { id, kijk, sleutel: await aes(uitB64url(kijk)) };
+}
+
+// Zet de korte link op de server: onder de hash van het linkgeheim het id en de sleutel, versleuteld
+// met dat geheim. Alleen leden kunnen dat. Elk lid maakt dezelfde link, want hij volgt uit de code.
+export async function zetKorteLink(code, token) {
+  const team = await uitCode(code);
+  const link = await uitKort(team.kort);
+  const a = await vraag({ actie: 'team-link', id: team.id, token, schrijf: team.schrijf, link: link.id, data: await versleutel(link.sleutel, team.kijk) });
+  if (a.status !== 200) throw new Error(a.fout ?? `De server gaf ${a.status}.`);
 }
 
 // Het team: { leden: [{ lid, profiel, bijgewerkt }], badge: { type, data } | null, info }, of null als er
@@ -56,7 +85,7 @@ export async function lees(team) {
   let badge, info;
   try { badge = a.badge ? await ontsleutel(team.sleutel, a.badge) : null; } catch { badge = null; }
   try { info = a.info ? await ontsleutel(team.sleutel, a.info) : null; } catch { info = null; }
-  return { leden: leden.filter(Boolean), badge, info: schoneInfo(info), openbaar: typeof a.openbaar === 'string' ? a.openbaar : null };
+  return { leden: leden.filter(Boolean), badge, info: schoneInfo(info), openbaar: typeof a.openbaar === 'string' ? a.openbaar : null, link: a.link === true };
 }
 
 async function schrijf(actie, code, token, waarde) {
