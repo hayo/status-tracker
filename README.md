@@ -65,7 +65,7 @@ opslag.js                 de opslag op de server: synccode, versleutelen, lezen 
 opslag.php                de server: bewaart versleutelde voortgang per speler
 bewaard/                  de standaardmap voor opslag.php, buiten git
 team.js, schermen/team.js teams: versleutelde profielen per lid, badge, kijklink en het teampaneel
-teampagina.js             de teampagina om te bekijken, met een link (veldrang/team.html)
+teampagina.js             de teampagina om te bekijken, met een link (veldrang/team.html#naam/id.sleutel)
 wassenaar/                Wassenaar Aanzien: gegevens.js (de inhoud), wassenaar.js (vult de wereld),
                           app.js (de ingang), app.html (de tool), index.html (de landingspagina),
                           index.php (binnen een site), manifest en iconen

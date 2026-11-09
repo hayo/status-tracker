@@ -175,7 +175,7 @@ async function haalTeam() {
   try {
     teamStaat.eigen ??= await teams.lidVan(t.token);
     const sleutels = await teams.uitCode(t.code);
-    teamStaat.link = new URL(`team.html#${teams.kijklink(sleutels)}`, location.href).href;
+    teamStaat.link = new URL(`team.html#${teams.kijklink(sleutels, t.naam)}`, location.href).href;
     const r = await teams.lees(sleutels);
     teamStaat.leden = r?.leden ?? [];
     if (teamStaat.badge) URL.revokeObjectURL(teamStaat.badge);

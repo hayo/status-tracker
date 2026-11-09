@@ -180,30 +180,47 @@
     <p class="tp-kop-link"><a class="tp-app-link" href="app.html">Open de app</a></p>
   </header>
 
-  <section class="paneel tp-held" aria-labelledby="az-tp-naam">
-    <span id="az-tp-badge" class="tp-badge" hidden></span>
-    <div>
-      <p class="tp-label">Teampagina</p>
-      <h2 id="az-tp-naam" tabindex="-1">Team</h2>
-      <p class="sync-status" id="az-tp-status" role="status">Bezig met ophalen…</p>
-      <dl class="tp-cijfers" id="az-tp-cijfers"></dl>
+  <section class="tp-held" aria-labelledby="az-tp-naam">
+    <div class="tp-held-binnen">
+      <span id="az-tp-badge" class="tp-badge"><svg class="icoon tp-schild" aria-hidden="true" focusable="false"><use href="#az-i-shield"/></svg></span>
+      <div class="tp-held-tekst">
+        <p class="tp-label">Teampagina</p>
+        <h2 id="az-tp-naam" tabindex="-1">Team</h2>
+        <p class="sync-status" id="az-tp-status" role="status">Bezig met ophalen…</p>
+        <p class="tp-delen"><button type="button" class="knop knop-licht" id="az-tp-kopieer" hidden><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-link"/></svg> Kopieer de link</button></p>
+      </div>
     </div>
+    <dl class="tp-cijfers" id="az-tp-cijfers"></dl>
   </section>
 
-  <section class="paneel" aria-labelledby="az-tp-rang-kop" id="az-tp-inhoud" hidden>
-    <h3 id="az-tp-rang-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-trophy"/></svg> Ranglijst</h3>
-    <ol class="tp-leden" id="az-tp-leden"></ol>
-    <h3 id="az-tp-skills-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-chart-pie"/></svg> Skills naast elkaar</h3>
-    <section class="tabel-vak" tabindex="0" aria-labelledby="az-tp-skills-kop">
-      <table class="tabel team-tabel" id="az-tp-skills"></table>
+  <div id="az-tp-inhoud" hidden>
+    <section class="paneel" aria-labelledby="az-tp-rang-kop">
+      <h3 id="az-tp-rang-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-trophy"/></svg> Ranglijst</h3>
+      <ol class="tp-podium" id="az-tp-podium"></ol>
+      <ol class="tp-leden" id="az-tp-leden"></ol>
     </section>
-    <h3><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-id-card"/></svg> Profielen</h3>
-    <ul class="team-leden" id="az-tp-profielen"></ul>
-  </section>
 
-  <section class="paneel tp-mee" aria-labelledby="az-tp-mee-kop">
-    <h3 id="az-tp-mee-kop">Zelf meedoen?</h3>
-    <p>Veldrang is een game voor airsofters: log wat je doet, verdien patches en stijg in rang, van Rekruut tot Generaal. <a href="index.html">Lees hoe het werkt</a> of <a href="app.html">open de app</a>. Vraag je teamleider om de teamcode om bij dit team aan te sluiten.</p>
+    <section class="paneel" aria-labelledby="az-tp-skills-kop">
+      <h3 id="az-tp-skills-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-chart-pie"/></svg> Skills</h3>
+      <ul class="tp-specialisten" id="az-tp-specialisten"></ul>
+      <section class="tabel-vak" tabindex="0" aria-label="Skills naast elkaar">
+        <table class="tabel team-tabel tp-skills" id="az-tp-skills"></table>
+      </section>
+    </section>
+
+    <section class="paneel" aria-labelledby="az-tp-profielen-kop">
+      <h3 id="az-tp-profielen-kop"><svg class="icoon goud" aria-hidden="true" focusable="false"><use href="#az-i-id-card"/></svg> Profielen</h3>
+      <ul class="team-leden tp-profielen" id="az-tp-profielen"></ul>
+    </section>
+  </div>
+
+  <section class="tp-mee" aria-labelledby="az-tp-mee-kop">
+    <svg class="icoon tp-mee-icoon" aria-hidden="true" focusable="false"><use href="#az-i-crosshairs"/></svg>
+    <div>
+      <h3 id="az-tp-mee-kop">Zelf meedoen?</h3>
+      <p>Veldrang is een game voor airsofters: log wat je doet, verdien patches en stijg in rang, van Rekruut tot Generaal. Vraag je teamleider om de teamcode om bij dit team aan te sluiten.</p>
+      <p class="tp-mee-knoppen"><a class="knop" href="app.html">Open de app</a> <a class="knop knop-licht" href="index.html">Lees hoe het werkt</a></p>
+    </div>
   </section>
 </article>
 </main>

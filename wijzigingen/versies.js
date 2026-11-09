@@ -9,6 +9,13 @@
 
 export const VERSIES = [
   {
+    versie: '3.0.14',
+    datum: '2026-11-09',
+    wijzigingen: [
+      'Achter de schermen: de motor heeft een nieuwe teampagina en zet de teamnaam in de link. Voor Wassenaar verandert er niets.',
+    ],
+  },
+  {
     versie: '3.0.13',
     datum: '2026-11-08',
     wijzigingen: [

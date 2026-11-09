@@ -5,6 +5,17 @@
 
 export const VERSIES = [
   {
+    versie: '1.8.2',
+    datum: '2026-11-09',
+    wijzigingen: [
+      'De teampagina is opnieuw vormgegeven. Bovenaan staan de badge en de naam van je team op camo, met de cijfers van het team eronder.',
+      'De beste drie staan op een podium, met hun rang, punten, camo en wapen. De rest staat eronder in een rij.',
+      'Bij Skills zie je per skill wie de beste van het team is. De tabel heeft nu balkjes, zodat je de verschillen in één oogopslag ziet.',
+      'De link naar de teampagina begint nu met de naam van je team, zoals team.html#delta-wolves/… Oude links blijven werken.',
+      'Met de knop Kopieer de link deel je de pagina makkelijk.',
+    ],
+  },
+  {
     versie: '1.8.1',
     datum: '2026-11-08',
     wijzigingen: [

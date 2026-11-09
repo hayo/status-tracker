@@ -3421,138 +3421,480 @@
   font-weight: 700;
 }
 
+/* De kop van het team: badge, naam en cijfers op camo. */
 #aanzien .tp-held {
+  margin-bottom: 1.5em;
+  padding: 2em 1.5em 1.5em;
+  border-radius: 1em;
+  background:
+    radial-gradient(ellipse 30% 60% at 8% 20%, rgb(85 98 56 / 70%) 60%, transparent 62%),
+    radial-gradient(ellipse 22% 50% at 40% 90%, rgb(43 51 28 / 80%) 60%, transparent 62%),
+    radial-gradient(ellipse 26% 70% at 80% 10%, rgb(107 106 64 / 60%) 60%, transparent 62%),
+    radial-gradient(ellipse 18% 45% at 95% 85%, rgb(43 51 28 / 80%) 60%, transparent 62%),
+    var(--groen-donker, #2b331c);
+  box-shadow: var(--schaduw);
+  color: var(--goud-licht, #f3eedc);
+}
+
+#aanzien .tp-held-binnen {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 1.2em 2em;
 }
 
+#aanzien .tp-badge {
+  display: grid;
+  place-items: center;
+  width: 9em;
+  height: 9em;
+  flex: none;
+  border: 3px solid var(--goud, #c9a44c);
+  border-radius: 50%;
+  background: rgb(0 0 0 / 25%);
+  box-shadow: 0 0 0 6px rgb(201 164 76 / 20%), 0 6px 16px rgb(0 0 0 / 35%);
+}
+
+#aanzien .tp-badge.met-beeld {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
 #aanzien .tp-badge img {
   display: block;
-  width: 10em;
-  height: 10em;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 3px 6px rgb(0 0 0 / 30%));
+  filter: drop-shadow(0 4px 8px rgb(0 0 0 / 45%));
+}
+
+#aanzien .tp-schild {
+  width: 4em;
+  height: 4em;
+  color: var(--goud, #c9a44c);
+}
+
+#aanzien .tp-held-tekst {
+  flex: 1 1 16em;
+  min-width: 0;
 }
 
 #aanzien .tp-label {
   margin: 0;
-  color: var(--zacht);
+  color: var(--goud, #c9a44c);
   font-size: 0.85em;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 #aanzien .tp-held h2 {
-  margin: 0.1em 0 0.3em;
+  margin: 0.15em 0 0.2em;
+  color: #fff;
   font-family: var(--serif);
-  font-size: 2.2em;
-  line-height: 1.1;
+  font-size: clamp(2em, 6vw, 3.2em);
+  line-height: 1.05;
+  text-shadow: 0 2px 6px rgb(0 0 0 / 40%);
+  overflow-wrap: anywhere;
+}
+
+#aanzien .tp-held .sync-status {
+  margin: 0;
+  color: inherit;
+}
+
+#aanzien .tp-held .sync-status.fout {
+  color: #ffc9bd;
+  font-weight: 600;
+}
+
+#aanzien .tp-held .sync-status:empty {
+  display: none;
+}
+
+#aanzien .tp-delen {
+  margin: 0.8em 0 0;
+}
+
+#aanzien .tp-held .knop-licht {
+  border-color: rgb(243 238 220 / 50%);
+  background: rgb(0 0 0 / 20%);
+  color: inherit;
+}
+
+#aanzien .tp-held .knop-licht:hover {
+  border-color: var(--goud, #c9a44c);
+  background: rgb(0 0 0 / 35%);
 }
 
 #aanzien .tp-cijfers {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6em 1.8em;
-  margin: 0.4em 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9em, 1fr));
+  gap: 0.6em;
+  margin: 1.5em 0 0;
+}
+
+#aanzien .tp-cijfers:empty {
+  display: none;
+}
+
+#aanzien .tp-cijfers > div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0 0.7em;
+  padding: 0.7em 0.9em;
+  border: 1px solid rgb(243 238 220 / 15%);
+  border-radius: 0.6em;
+  background: rgb(0 0 0 / 28%);
+}
+
+#aanzien .tp-cijfer-icoon {
+  grid-row: span 2;
+  width: 1.8em;
+  height: 1.8em;
+  color: var(--goud, #c9a44c);
 }
 
 #aanzien .tp-cijfers dt {
-  color: var(--zacht);
-  font-size: 0.8em;
+  color: rgb(243 238 220 / 75%);
+  font-size: 0.75em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 #aanzien .tp-cijfers dd {
   margin: 0;
-  font-size: 1.25em;
+  color: #fff;
+  font-size: 1.15em;
   font-weight: 700;
 }
 
+/* Het podium: de eerste drie. */
+#aanzien .tp-podium {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13em, 1fr));
+  align-items: end;
+  gap: 1em;
+  margin: 1em 0;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .tp-trede {
+  --medaille: #b0773c;
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.2em;
+  padding: 1.6em 1em 1.2em;
+  border: 1px solid var(--lijn);
+  border-top: 0.4em solid var(--medaille);
+  border-radius: 0.8em;
+  background: var(--vlak);
+  text-align: center;
+}
+
+#aanzien .tp-plek-1 {
+  --medaille: #c9a44c;
+  padding-top: 2.4em;
+  background: linear-gradient(var(--goud-licht, #f3eedc), var(--vlak));
+  box-shadow: 0 6px 18px rgb(0 0 0 / 12%);
+}
+
+#aanzien .tp-plek-2 {
+  --medaille: #a7a9ac;
+}
+
+@media (width >= 44em) {
+  #aanzien .tp-podium:has(> :nth-child(3)) {
+    grid-template-columns: 1fr 1.15fr 1fr;
+  }
+
+  #aanzien .tp-podium .tp-plek-1 {
+    order: 2;
+  }
+
+  #aanzien .tp-podium .tp-plek-2 {
+    order: 1;
+  }
+
+  #aanzien .tp-podium .tp-plek-3 {
+    order: 3;
+  }
+}
+
+#aanzien .tp-medaille {
+  position: absolute;
+  top: -1.1em;
+  display: grid;
+  place-items: center;
+  width: 2.2em;
+  height: 2.2em;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--medaille);
+  box-shadow: 0 2px 5px rgb(0 0 0 / 30%);
+  color: #fff;
+  font-weight: 800;
+}
+
+#aanzien .tp-trede .tp-embleem {
+  width: 4.5em;
+  height: 4.5em;
+  margin-bottom: 0.3em;
+}
+
+#aanzien .tp-plek-1 .tp-embleem {
+  width: 5.5em;
+  height: 5.5em;
+}
+
+#aanzien .tp-trede .tp-callsign {
+  font-family: var(--serif);
+  font-size: 1.4em;
+  overflow-wrap: anywhere;
+}
+
+#aanzien .tp-rangnaam,
+#aanzien .tp-stijl {
+  color: var(--zacht);
+  font-size: 0.9em;
+}
+
+#aanzien .tp-trede .tp-pr {
+  margin: 0.2em 0;
+  font-size: 1.25em;
+}
+
+#aanzien .tp-trede .tp-kit {
+  justify-content: center;
+  margin-top: 0.6em;
+}
+
+#aanzien .tp-trede .tp-kit :is(img, svg) {
+  width: 6.5em;
+}
+
+/* Wie daarna komt: een rij per lid. */
 #aanzien .tp-leden {
   display: grid;
-  gap: 0.8em;
-  margin: 0.8em 0 1.5em;
+  gap: 0.5em;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 #aanzien .tp-lid {
   display: grid;
-  grid-template-columns: 2em 3.2em 1fr auto;
+  grid-template-columns: 2em 2.8em 1fr auto auto;
   align-items: center;
   gap: 0.4em 0.9em;
-  padding: 0.8em 1em;
+  padding: 0.6em 1em;
   border: 1px solid var(--lijn);
-  border-left: 0.35em solid var(--lijn);
   border-radius: 0.6em;
   background: var(--vlak);
 }
 
-#aanzien .tp-plek-1 {
-  border-left-color: #c9a44c;
-}
-
-#aanzien .tp-plek-2 {
-  border-left-color: #a7a9ac;
-}
-
-#aanzien .tp-plek-3 {
-  border-left-color: #b0773c;
-}
-
 #aanzien .tp-plek {
   color: var(--zacht);
-  font-size: 1.3em;
+  font-size: 1.2em;
   font-weight: 700;
   text-align: center;
 }
 
 #aanzien .tp-embleem {
-  width: 3.2em;
-  height: 3.2em;
+  width: 2.8em;
+  height: 2.8em;
   color: var(--goud);
 }
 
 #aanzien .tp-wie {
   display: grid;
-  gap: 0.1em;
+  gap: 0.05em;
+  min-width: 0;
 }
 
 #aanzien .tp-callsign {
-  font-size: 1.15em;
+  font-size: 1.1em;
 }
 
 #aanzien .tp-pr {
-  font-size: 1.1em;
   white-space: nowrap;
 }
 
+#aanzien .tp-pr strong {
+  font-size: 1.15em;
+}
+
 #aanzien .tp-kit {
-  grid-column: 3 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+}
+
+#aanzien .tp-kit :is(img, svg) {
+  width: 4.5em;
+  height: auto;
+}
+
+@media (width < 36em) {
+  #aanzien .tp-lid {
+    grid-template-columns: 1.6em 2.4em 1fr auto;
+  }
+
+  #aanzien .tp-lid .tp-kit {
+    grid-column: 3 / -1;
+    grid-row: 2;
+  }
+}
+
+/* De skills: per skill de beste, en de tabel met balkjes. */
+#aanzien .tp-specialisten {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
+  gap: 0.6em;
+  margin: 1em 0 1.4em;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .tp-specialist {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.2em 0.5em;
+  padding: 0.7em 0.8em;
+  border: 1px solid var(--lijn);
+  border-radius: 0.6em;
+  background: var(--vlak);
+}
+
+#aanzien .tp-skill-icoon {
+  width: 1.3em;
+  height: 1.3em;
+  color: var(--cat, var(--goud));
+}
+
+#aanzien .tp-skill-naam {
+  color: var(--zacht);
+  font-size: 0.8em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+#aanzien .tp-skill-getal {
+  font-weight: 700;
+}
+
+#aanzien .tp-specialist strong {
+  grid-column: 1 / -1;
+  font-size: 1.1em;
+  overflow-wrap: anywhere;
+}
+
+#aanzien .tp-specialist .tp-balk {
+  grid-column: 1 / -1;
+}
+
+#aanzien .tp-balk {
+  display: block;
+  height: 0.35em;
+  margin-top: 0.25em;
+  overflow: hidden;
+  border-radius: 1em;
+  background: var(--lijn);
+}
+
+#aanzien .tp-balk > span {
+  display: block;
+  width: calc(var(--p, 0) * 1%);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cat, var(--goud));
+}
+
+#aanzien .tp-skills td {
+  min-width: 4.5em;
+}
+
+/* De profielen: twee naast elkaar als er plek is. */
+#aanzien .tp-profielen {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22em), 1fr));
+  align-items: start;
+  gap: 0.7em;
+}
+
+#aanzien .tp-profielen .team-lid details {
+  padding: 0 1em;
+  background: var(--vlak);
+}
+
+#aanzien .tp-profielen .team-lid details[open] {
+  padding-bottom: 1em;
+}
+
+#aanzien .tp-profielen summary {
+  min-height: 0;
+  padding: 0.8em 0;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Zelf meedoen. */
+#aanzien .tp-mee {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1em 1.6em;
+  margin-bottom: 1.5em;
+  padding: 1.6em 1.5em;
+  border-radius: 1em;
+  background: var(--groen, #3f4a2a);
+  box-shadow: var(--schaduw);
+  color: var(--goud-licht, #f3eedc);
+}
+
+#aanzien .tp-mee > div {
+  flex: 1 1 18em;
+}
+
+#aanzien .tp-mee-icoon {
+  width: 3.5em;
+  height: 3.5em;
+  color: var(--goud, #c9a44c);
+}
+
+#aanzien .tp-mee h3 {
+  margin: 0 0 0.3em;
+  padding: 0;
+  border: 0;
+  color: #fff;
+}
+
+#aanzien .tp-mee p {
+  margin: 0 0 0.8em;
+}
+
+#aanzien .tp-mee-knoppen {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6em;
 }
 
-#aanzien .tp-kit :is(img, svg) {
-  width: 8em;
-  height: auto;
+#aanzien .tp-mee .knop {
+  border-color: var(--goud, #c9a44c);
+  background: var(--goud, #c9a44c);
+  color: var(--groen-donker, #2b331c);
 }
 
-@media (width < 32em) {
-  #aanzien .tp-lid {
-    grid-template-columns: 1.6em 2.6em 1fr;
-  }
-
-  #aanzien .tp-pr {
-    grid-column: 3;
-  }
-
-  #aanzien .tp-kit {
-    grid-column: 1 / -1;
-  }
+#aanzien .tp-mee .knop-licht {
+  border-color: rgb(243 238 220 / 50%);
+  background: transparent;
+  color: inherit;
 }
 
 /* ---------- Lintjesbalk ---------- */

@@ -68,7 +68,8 @@ function ranglijst(leden, eigen) {
     maak('td', { tekst: l.stijl?.naam ?? '–' })));
 }
 
-export function skilltabel(leden, eigen) {
+// Met balken: onder elk getal een balkje, voor de teampagina.
+export function skilltabel(leden, eigen, balken = false) {
   const sleutels = Object.keys(EIGENSCHAPPEN);
   const beste = Object.fromEntries(sleutels.map((k) => [k, Math.max(...leden.map((l) => procent(l.skills[k])))]));
   return [
@@ -78,7 +79,9 @@ export function skilltabel(leden, eigen) {
       maak('th', { scope: 'row', tekst: l.callsign }),
       ...sleutels.map((k) => {
         const p = procent(l.skills[k]);
-        return maak('td', {}, p > 0 && p === beste[k] ? maak('strong', { class: 'beste' }, `${p}`, maak('span', { class: 'verborgen', tekst: ' (hoogste)' })) : `${p}`);
+        const balk = balken ? maak('span', { class: 'tp-balk' }, maak('span', {})) : null;
+        balk?.firstChild.style.setProperty('--p', p);
+        return maak('td', { class: balken ? `skill-${k}` : null }, p > 0 && p === beste[k] ? maak('strong', { class: 'beste' }, `${p}`, maak('span', { class: 'verborgen', tekst: ' (hoogste)' })) : `${p}`, balk);
       })))),
   ];
 }

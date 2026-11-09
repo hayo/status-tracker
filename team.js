@@ -30,13 +30,18 @@ export async function uitCode(code) {
   return { id, sleutel: await aes(ruw), kijk: naarB64url(ruw), schrijf: await sha(`schrijf:${code}`) };
 }
 
-// De kijklink: id en sleutel, achter het # zodat de server ze nooit ziet.
-export const kijklink = (team) => `${team.id}.${team.kijk}`;
+// Een leesbaar stukje van de teamnaam voor in de link: 'Delta Wolves' wordt 'delta-wolves'.
+export const slug = (naam) => String(naam ?? '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40).replace(/-+$/, '');
+
+// De kijklink: de naam als slug, dan id en sleutel. Alles achter het #, zodat de server niets ziet,
+// ook de naam niet. Zonder naam blijft alleen id.sleutel over, zoals de eerste links.
+export const kijklink = (team, naam) => [slug(naam), `${team.id}.${team.kijk}`].filter(Boolean).join('/');
 
 export async function uitKijklink(deel) {
-  const [id, kijk] = String(deel).split('.');
+  const [id, kijk] = String(deel).split('/').at(-1).split('.');
   if (!/^[0-9a-f]{64}$/.test(id ?? '') || !/^[A-Za-z0-9_-]{43}$/.test(kijk ?? '')) return null;
-  return { id, sleutel: await aes(uitB64url(kijk)) };
+  return { id, kijk, sleutel: await aes(uitB64url(kijk)) };
 }
 
 // Het team: { leden: [{ lid, profiel, bijgewerkt }], badge: { type, data } | null }, of null als er geen
