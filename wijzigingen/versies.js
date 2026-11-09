@@ -9,6 +9,13 @@
 
 export const VERSIES = [
   {
+    versie: '3.0.18',
+    datum: '2026-11-09',
+    wijzigingen: [
+      'Achter de schermen: nieuwe versies gaan nu naar de repo van hayobethlehem.nl op GitHub, in plaats van naar Codeberg.',
+    ],
+  },
+  {
     versie: '3.0.17',
     datum: '2026-11-09',
     wijzigingen: [

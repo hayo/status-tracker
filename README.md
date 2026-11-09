@@ -77,7 +77,7 @@ veldrang/                 Veldrang: gegevens.js, versies.js, veldrang.js, app.js
 sw.js                     laat de losse pagina ook zonder internet werken
 .htaccess                 laat de browser bij elk bezoek navragen of een bestand nog klopt (Apache)
 letters/                  Inter en Playfair Display, met hun licentie
-.github/                  de Action en het script die de app naar Codeberg zetten
+.github/                  de Action en het script die de app naar de repo van de site zetten
 ```
 
 ## Motor en werelden
@@ -232,19 +232,18 @@ melding staan dat je de pagina moet herladen. Gaat het verwerken van je
 voortgang mis, dan opent de app toch, met de foutmelding erbij.
 
 De code is in deze repo en in de site gelijk. Deze repo is de bron. Na elke
-push naar `main` zet de GitHub Action `naar-codeberg.yml` de map ook in de repo
-van de site op Codeberg, met `git subtree`. Het werk zelf doet
-`.github/naar-codeberg.sh`, dat ook lokaal draait. Zo zet je het aan:
+push naar `main` zet de GitHub Action `naar-site.yml` de map ook in de repo
+van de site, met `git subtree`. Het werk zelf doet `.github/naar-site.sh`, dat
+ook lokaal draait. Zo zet je het aan:
 
-1. Maak op Codeberg een token met schrijfrechten op repositories, onder
-   Instellingen, Applicaties. Het token van de Cisomatic kan ook.
+1. Maak op GitHub een fine-grained token voor alleen de repo van de site, met
+   Contents op lezen en schrijven. Het token van de Cisomatic kan ook.
 2. Zet dat op GitHub onder Settings, Secrets and variables, Actions, als geheim
-   `CODEBERG_TOKEN`.
-3. Optioneel, als variabelen op dezelfde plek: `CODEBERG_REPO` (standaard
-   `hayo/codeberg-hayobethlehem.nl`), `CODEBERG_PAD` (standaard
-   `hb2025/content/forge/status-tracker`), `CODEBERG_TAK` (standaard de
-   standaardbranch) en `CODEBERG_GEBRUIKER`, als de repo bij een organisatie
-   hoort. Zonder het geheim slaat de Action zichzelf over.
+   `SITE_TOKEN`.
+3. Optioneel, als variabelen op dezelfde plek: `SITE_REPO` (standaard
+   `hayo/hayobethlehem.nl`), `SITE_PAD` (standaard
+   `hb2025/content/forge/status-tracker`) en `SITE_TAK` (standaard de
+   standaardbranch). Zonder het geheim slaat de Action zichzelf over.
 4. Start de Action één keer met de hand, onder Actions, met "eerste keer" aan.
    Die zet de map op de site neer als subtree. Wat al in die map stond, valt
    weg.
