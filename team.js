@@ -85,7 +85,7 @@ export async function lees(team) {
   let badge, info;
   try { badge = a.badge ? await ontsleutel(team.sleutel, a.badge) : null; } catch { badge = null; }
   try { info = a.info ? await ontsleutel(team.sleutel, a.info) : null; } catch { info = null; }
-  return { leden: leden.filter(Boolean), badge, info: schoneInfo(info), openbaar: typeof a.openbaar === 'string' ? a.openbaar : null, link: a.link === true };
+  return { leden: leden.filter(Boolean), badge, info: schoneInfo(info), openbaar: typeof a.openbaar === 'string' ? a.openbaar : null, link: a.link === true, besloten: a.besloten === true };
 }
 
 async function schrijf(actie, code, token, waarde) {

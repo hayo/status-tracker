@@ -177,9 +177,11 @@ async function haalTeam() {
     const sleutels = await teams.uitCode(t.code);
     const r = await teams.lees(sleutels);
     teamStaat.openbaar = r?.openbaar ?? null;
-    // De korte link zetten we één keer op de server. Lukt dat niet, dan blijft de lange link.
+    // Een team krijgt vanzelf een link met de naam erin (openbaar), tenzij een lid het besloten maakte.
+    if (r && !teamStaat.openbaar && !r.besloten) teamStaat.openbaar = await teams.zetOpenbaar(t.code, t.token, t.naam).catch(() => null);
+    // Besloten: de geheime link. Die zetten we één keer op de server. Lukt dat niet, dan blijft de lange link.
     let kort = r?.link ?? false;
-    if (r && !kort) kort = await teams.zetKorteLink(t.code, t.token).then(() => true, () => false);
+    if (r && !teamStaat.openbaar && !kort) kort = await teams.zetKorteLink(t.code, t.token).then(() => true, () => false);
     teamStaat.link = teamStaat.openbaar ? openbareLink(teamStaat.openbaar)
       : new URL(`team.html#${teams.kijklink(kort ? sleutels : { ...sleutels, kort: null }, t.naam)}`, location.href).href;
     teamStaat.leden = r?.leden ?? [];
@@ -245,7 +247,7 @@ function verlaatTeam() {
   });
 }
 
-// De korte link van een openbare teampagina, op de server waar de opslag staat (zie veldrang/team.php).
+// De link van een openbare teampagina, met de naam erin, op de server waar de opslag staat (zie veldrang/team.php).
 function openbareLink(slug) {
   const hier = new URL(opslag.url).origin === location.origin ? location.href
     : new URL(`${location.pathname.split('/').at(-2)}/`, opslag.url).href;
@@ -256,8 +258,8 @@ function zetOpenbaar() {
   const t = spel.team;
   const aan = !teamStaat.openbaar;
   vraag(aan ? 'Teampagina openbaar maken?' : 'Teampagina besloten maken?',
-    aan ? `Je team krijgt een korte link met de naam erin, zoals …/team/${teams.slug(t.naam) || 'jullie-team'}. In WhatsApp zie je dan meteen de badge en de naam. Daarvoor krijgt de server de sleutel van je team, en kan hij je team lezen. Je kunt het altijd weer uitzetten.`
-      : 'De korte link werkt dan niet meer, en de server gooit de sleutel van je team weg. De lange link blijft werken.',
+    aan ? `Je team krijgt een link met de naam erin, zoals …/team/${teams.slug(t.naam) || 'jullie-team'}. In WhatsApp zie je dan meteen de badge en de naam. Daarvoor krijgt de server de sleutel van je team, en kan hij je team lezen. Je kunt het altijd weer uitzetten.`
+      : 'De link met de naam werkt dan niet meer, en de server gooit de sleutel van je team weg. Je krijgt een geheime link: alleen wie die heeft, kan kijken.',
     aan ? 'Maak openbaar' : 'Maak besloten', async () => {
       try {
         teamStaat.openbaar = await teams.zetOpenbaar(t.code, t.token, aan ? t.naam : null);
@@ -265,7 +267,7 @@ function zetOpenbaar() {
         meld('Dat lukte niet', fout.message, true);
         return;
       }
-      meld(aan ? 'Teampagina is openbaar' : 'Teampagina is besloten', aan ? 'Deel de korte link maar.' : 'Alleen wie de lange link heeft, kan nog kijken.');
+      meld(aan ? 'Teampagina is openbaar' : 'Teampagina is besloten', aan ? 'Deel de link maar.' : 'Alleen wie de geheime link heeft, kan nog kijken.');
       await haalTeam();
     });
 }

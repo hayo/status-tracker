@@ -166,14 +166,17 @@ regio en hoogstens vijf links. Ook die zijn versleuteld met de teamcode
 (`team-info` in `opslag.php`). `schoneInfo` in `team.js` controleert ze voor het
 tonen; links mogen alleen http of https zijn.
 
-Een lid kan de teampagina ook openbaar maken. Dan krijgt de server de
-leessleutel van dat ene team, met een naam voor de link (`openbaar.php`). De
+Een team is vanzelf openbaar: de app geeft de server de leessleutel van dat
+ene team, met een naam voor de link (`openbaar.php`). De
 pagina staat dan op `veldrang/team/delta-wolves`: `veldrang/.htaccess` stuurt
 dat naar `team.php`, dat `team.html` geeft met het id en de sleutel in de kop,
 en met een titel, omschrijving en badge voor het voorbeeld in WhatsApp en
 andere apps. Zonder mod_rewrite werkt `team.php?naam=delta-wolves`. Is een naam
-al bezet, dan komt er een cijfer achter. Maakt een lid de pagina weer besloten,
-dan gooit de server de sleutel en de naam weg. Lange links blijven werken.
+al bezet, dan komt er een cijfer achter. Maakt een lid de pagina besloten, dan
+gooit de server de sleutel en de naam weg, en onthoudt hij dat het team besloten
+is. De app geeft dan een geheime link: `team.html#<naam>/<linkgeheim>`. Onder de
+hash van het linkgeheim bewaart de server het id en de sleutel, versleuteld met
+dat geheim (`team-link`). Oude lange links blijven werken.
 
 Het paneel en de teampagina staan alleen in Veldrang. Een wereld zonder
 `#az-team` heeft geen teams.

@@ -23,7 +23,8 @@
  * - team-badge: met token, schrijf en data. Bewaart de (versleutelde) badge van het team; alleen voor leden.
  * - team-info: net zo, voor de (versleutelde) gegevens van het team: omschrijving, thuisveld, links.
  * - team-openbaar: met token, schrijf, kijk en slug. Maakt de teampagina openbaar: de server bewaart de
- *   leessleutel van dit team en een naam voor de link. Met kijk null weer besloten. Zie openbaar.php.
+ *   leessleutel van dit team en een naam voor de link. Met kijk null weer besloten; dat onthoudt de
+ *   server (besloten), zodat de app het team niet vanzelf weer openbaar maakt. Zie openbaar.php.
  * - team-link: met token, schrijf, link en data. Zet de korte kijklink: onder link (de hash van het
  *   linkgeheim) het id van het team en data, de leessleutel versleuteld met dat geheim. Alleen voor leden.
  * - team-link-lees: met als id de link. Geeft { id, data }, of 404. Zo kan de server het team niet lezen.
@@ -189,6 +190,7 @@ function azTeam(string $actie, array $verzoek, string $pad, string $map, callabl
     $info = is_array($nu) && is_array($nu['info'] ?? null) ? $nu['info'] : null;
     $openbaar = is_array($nu) && is_array($nu['openbaar'] ?? null) ? $nu['openbaar'] : null;
     $link = is_array($nu) && is_string($nu['link'] ?? null) ? $nu['link'] : null;
+    $besloten = is_array($nu) && ($nu['besloten'] ?? false) === true;
     $id = basename($pad, '.json');
 
     if ($actie === 'team-lees') {
@@ -202,6 +204,7 @@ function azTeam(string $actie, array $verzoek, string $pad, string $map, callabl
             'info' => $leden === [] ? null : ($info['data'] ?? null),
             'openbaar' => $leden === [] ? null : ($openbaar['slug'] ?? null),
             'link' => $leden !== [] && $link !== null,
+            'besloten' => $leden !== [] && $besloten,
         ]);
         return !is_file($pad);
     }
@@ -248,6 +251,7 @@ function azTeam(string $actie, array $verzoek, string $pad, string $map, callabl
             return false;
         }
         $openbaar = $slug === null ? null : ['slug' => $slug, 'kijk' => $kijk, 'bijgewerkt' => gmdate('c')];
+        $besloten = $kijk === null;
     } elseif ($actie === 'team-link') {
         $nieuw = $verzoek['link'] ?? null;
         $data = $verzoek['data'] ?? null;
@@ -324,7 +328,7 @@ function azTeam(string $actie, array $verzoek, string $pad, string $map, callabl
         return true;
     }
     $tijdelijk = $pad . '.nieuw';
-    $inhoud = ['leden' => $leden, 'schrijf' => $schrijfHash, 'badge' => $badge, 'info' => $info, 'openbaar' => $openbaar, 'link' => $link];
+    $inhoud = ['leden' => $leden, 'schrijf' => $schrijfHash, 'badge' => $badge, 'info' => $info, 'openbaar' => $openbaar, 'link' => $link, 'besloten' => $besloten];
     if (file_put_contents($tijdelijk, json_encode($inhoud)) === false || !rename($tijdelijk, $pad)) {
         $antwoord(500, ['fout' => 'Opslaan lukte niet.']);
         return false;

@@ -8,8 +8,9 @@ export const VERSIES = [
     versie: '1.9.2',
     datum: '2026-11-09',
     wijzigingen: [
-      'De link naar je teampagina is veel korter. Hij werkt net zo: wie de link heeft, kan je team zien, maar niet aansluiten.',
-      'De server kan je team nog steeds niet lezen. Oude, lange links blijven werken.',
+      'Je teampagina krijgt nu vanzelf een link met de naam van je team, zoals …/veldrang/team/delta-wolves. Daarvoor kan de server je team lezen.',
+      'Wil je dat niet? Kies Maak besloten op de Erelijst. Dan krijg je een korte geheime link, en kan de server niets lezen. Dat blijft zo.',
+      'Wie de link heeft, kan je team zien, maar niet aansluiten. Oude, lange links blijven werken.',
     ],
   },
   {
