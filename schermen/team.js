@@ -68,7 +68,8 @@ function ranglijst(leden, eigen) {
     maak('td', { tekst: l.stijl?.naam ?? '–' })));
 }
 
-export function skilltabel(leden, eigen) {
+// Met balken: onder elk getal een balkje, voor de teampagina.
+export function skilltabel(leden, eigen, balken = false) {
   const sleutels = Object.keys(EIGENSCHAPPEN);
   const beste = Object.fromEntries(sleutels.map((k) => [k, Math.max(...leden.map((l) => procent(l.skills[k])))]));
   return [
@@ -78,7 +79,9 @@ export function skilltabel(leden, eigen) {
       maak('th', { scope: 'row', tekst: l.callsign }),
       ...sleutels.map((k) => {
         const p = procent(l.skills[k]);
-        return maak('td', {}, p > 0 && p === beste[k] ? maak('strong', { class: 'beste' }, `${p}`, maak('span', { class: 'verborgen', tekst: ' (hoogste)' })) : `${p}`);
+        const balk = balken ? maak('span', { class: 'tp-balk' }, maak('span', {})) : null;
+        balk?.firstChild.style.setProperty('--p', p);
+        return maak('td', { class: balken ? `skill-${k}` : null }, p > 0 && p === beste[k] ? maak('strong', { class: 'beste' }, `${p}`, maak('span', { class: 'verborgen', tekst: ' (hoogste)' })) : `${p}`, balk);
       })))),
   ];
 }
@@ -133,6 +136,10 @@ export function toonTeam(el, staat) {
   el.teamLink.hidden = !staat.link;
   if (staat.link) el.teamLink.href = staat.link;
   el.teamLinkKopieer.hidden = !staat.link;
+  el.teamOpenbaar.querySelector('span').textContent = staat.openbaar ? 'Maak besloten' : 'Maak openbaar';
+  el.teamOpenbaarUitleg.textContent = staat.openbaar
+    ? 'Openbaar: iedereen kan de pagina zien met de korte link, en de server kan je team lezen.'
+    : 'Besloten: alleen wie de lange link heeft, ziet de pagina. De server kan niets lezen.';
   el.teamBadge.hidden = !staat.badge;
   el.teamBadge.replaceChildren(...(staat.badge ? [maak('img', { src: staat.badge, alt: 'Badge van het team', width: 96, height: 96 })] : []));
   const leden = (staat.leden ?? []).map((l) => schoon(l.profiel, l.lid)).sort((a, b) => b.pr - a.pr || a.callsign.localeCompare(b.callsign, 'nl'));

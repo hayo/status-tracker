@@ -18,9 +18,12 @@
  * Schrijven vraagt ook een schrijfbewijs, dat de app uit de teamcode afleidt. De server bewaart alleen
  * de hash ervan. Een kijklink heeft het id en de sleutel om te lezen, maar niet de code: wie alleen de
  * link heeft, kan het team zien maar niet aansluiten.
- * - team-lees: geeft { leden: [{ lid, data, bijgewerkt }], badge }. Zonder team is de lijst leeg.
+ * - team-lees: geeft { leden: [{ lid, data, bijgewerkt }], badge, info }. Zonder team is de lijst leeg.
  * - team-schrijf: met token, schrijf en data. Bewaart het profiel van dit lid; een nieuw team ontstaat zo.
  * - team-badge: met token, schrijf en data. Bewaart de (versleutelde) badge van het team; alleen voor leden.
+ * - team-info: net zo, voor de (versleutelde) gegevens van het team: omschrijving, thuisveld, links.
+ * - team-openbaar: met token, schrijf, kijk en slug. Maakt de teampagina openbaar: de server bewaart de
+ *   leessleutel van dit team en een naam voor de link. Met kijk null weer besloten. Zie openbaar.php.
  * - team-verlaat: met token. Haalt dit lid weg; een leeg team verdwijnt, met zijn badge.
  *
  * Instellingen via de omgeving van de webserver:
@@ -31,11 +34,14 @@
 
 declare(strict_types=1);
 
+require __DIR__ . '/openbaar.php';
+
 const AZ_MAX_DATA = 700_000;      // tekens base64, ruim genoeg voor jaren loggen
 const AZ_MAX_SPELERS = 2_000;     // tegen misbruik als gratis opslag
 const AZ_MAX_PROFIEL = 60_000;   // tekens base64 per lid
 const AZ_MAX_LEDEN = 40;
 const AZ_MAX_BADGE = 200_000;     // tekens base64 voor de badge van een team
+const AZ_MAX_INFO = 8_000;        // tekens base64 voor de gegevens van een team
 const AZ_MAX_TEAMS = 1_000;
 const AZ_LID_VERLOOPT = 365 * 86_400; // een lid dat een jaar niets stuurde, valt weg
 const AZ_HERKOMST = 'https://hayo.github.io,https://hayobethlehem.nl';
@@ -73,7 +79,7 @@ const AZ_HERKOMST = 'https://hayo.github.io,https://hayobethlehem.nl';
     $verzoek = json_decode((string) file_get_contents('php://input', false, null, 0, AZ_MAX_DATA + 1_000), true);
     $actie = $verzoek['actie'] ?? null;
     $id = $verzoek['id'] ?? null;
-    if (!is_array($verzoek) || !in_array($actie, ['lees', 'schrijf', 'wis', 'team-lees', 'team-schrijf', 'team-verlaat', 'team-badge'], true) || !is_string($id) || !preg_match('/^[0-9a-f]{64}$/', $id)) {
+    if (!is_array($verzoek) || !in_array($actie, ['lees', 'schrijf', 'wis', 'team-lees', 'team-schrijf', 'team-verlaat', 'team-badge', 'team-info', 'team-openbaar'], true) || !is_string($id) || !preg_match('/^[0-9a-f]{64}$/', $id)) {
         $antwoord(400, ['fout' => 'Ongeldig verzoek.']);
         return;
     }
@@ -166,13 +172,21 @@ function azTeam(string $actie, array $verzoek, string $pad, string $map, callabl
 
     $schrijfHash = is_array($nu) && is_string($nu['schrijf'] ?? null) ? $nu['schrijf'] : null;
     $badge = is_array($nu) && is_array($nu['badge'] ?? null) ? $nu['badge'] : null;
+    $info = is_array($nu) && is_array($nu['info'] ?? null) ? $nu['info'] : null;
+    $openbaar = is_array($nu) && is_array($nu['openbaar'] ?? null) ? $nu['openbaar'] : null;
+    $id = basename($pad, '.json');
 
     if ($actie === 'team-lees') {
         $lijst = [];
         foreach ($leden as $lid => $l) {
             $lijst[] = ['lid' => (string) $lid, 'data' => $l['data'], 'bijgewerkt' => $l['bijgewerkt']];
         }
-        $antwoord(200, ['leden' => $lijst, 'badge' => $leden === [] ? null : ($badge['data'] ?? null)]);
+        $antwoord(200, [
+            'leden' => $lijst,
+            'badge' => $leden === [] ? null : ($badge['data'] ?? null),
+            'info' => $leden === [] ? null : ($info['data'] ?? null),
+            'openbaar' => $leden === [] ? null : ($openbaar['slug'] ?? null),
+        ]);
         return !is_file($pad);
     }
 
@@ -198,19 +212,42 @@ function azTeam(string $actie, array $verzoek, string $pad, string $map, callabl
 
     if ($actie === 'team-verlaat') {
         unset($leden[$lid]);
-    } elseif ($actie === 'team-badge') {
-        $data = $verzoek['data'] ?? null;
+    } elseif ($actie === 'team-openbaar') {
+        $kijk = $verzoek['kijk'] ?? null;
         if (!isset($leden[$lid])) {
-            $antwoord(403, ['fout' => 'Alleen leden kunnen de badge zetten.']);
+            $antwoord(403, ['fout' => 'Alleen leden kunnen de teampagina openbaar maken.']);
             return false;
         }
-        if ($data === null) {
-            $badge = null;
-        } elseif (!is_string($data) || strlen($data) > AZ_MAX_BADGE || !preg_match('/^[A-Za-z0-9+\/]+=*$/', $data)) {
-            $antwoord(400, ['fout' => 'De badge is te groot of ongeldig.']);
+        // De sleutel moet je eigen profiel openen; zo weten we dat hij bij dit team hoort.
+        if ($kijk !== null && (!is_string($kijk) || !preg_match('/^[A-Za-z0-9_-]{43}$/', $kijk) || azOntsleutel($kijk, $leden[$lid]['data']) === null)) {
+            $antwoord(400, ['fout' => 'Deze sleutel hoort niet bij dit team.']);
             return false;
+        }
+        $oud = $openbaar['slug'] ?? null;
+        $wens = $kijk === null ? null : ($oud ?? (string) ($verzoek['slug'] ?? ''));
+        try {
+            $slug = azZetNaam($id, $oud, $wens);
+        } catch (RuntimeException $fout) {
+            $antwoord(500, ['fout' => $fout->getMessage()]);
+            return false;
+        }
+        $openbaar = $slug === null ? null : ['slug' => $slug, 'kijk' => $kijk, 'bijgewerkt' => gmdate('c')];
+    } elseif ($actie === 'team-badge' || $actie === 'team-info') {
+        $isBadge = $actie === 'team-badge';
+        $data = $verzoek['data'] ?? null;
+        if (!isset($leden[$lid])) {
+            $antwoord(403, ['fout' => $isBadge ? 'Alleen leden kunnen de badge zetten.' : 'Alleen leden kunnen de teamgegevens aanpassen.']);
+            return false;
+        }
+        if ($data !== null && (!is_string($data) || strlen($data) > ($isBadge ? AZ_MAX_BADGE : AZ_MAX_INFO) || !preg_match('/^[A-Za-z0-9+\/]+=*$/', $data))) {
+            $antwoord(400, ['fout' => $isBadge ? 'De badge is te groot of ongeldig.' : 'De teamgegevens zijn te lang of ongeldig.']);
+            return false;
+        }
+        $nieuw = $data === null ? null : ['data' => $data, 'bijgewerkt' => gmdate('c')];
+        if ($isBadge) {
+            $badge = $nieuw;
         } else {
-            $badge = ['data' => $data, 'bijgewerkt' => gmdate('c')];
+            $info = $nieuw;
         }
     } else {
         $data = $verzoek['data'] ?? null;
@@ -230,6 +267,9 @@ function azTeam(string $actie, array $verzoek, string $pad, string $map, callabl
     }
 
     if ($leden === []) {
+        if ($openbaar !== null) {
+            azZetNaam($id, $openbaar['slug'], null);
+        }
         if (is_file($pad)) {
             unlink($pad);
         }
@@ -237,11 +277,11 @@ function azTeam(string $actie, array $verzoek, string $pad, string $map, callabl
         return true;
     }
     $tijdelijk = $pad . '.nieuw';
-    $inhoud = ['leden' => $leden, 'schrijf' => $schrijfHash, 'badge' => $badge];
+    $inhoud = ['leden' => $leden, 'schrijf' => $schrijfHash, 'badge' => $badge, 'info' => $info, 'openbaar' => $openbaar];
     if (file_put_contents($tijdelijk, json_encode($inhoud)) === false || !rename($tijdelijk, $pad)) {
         $antwoord(500, ['fout' => 'Opslaan lukte niet.']);
         return false;
     }
-    $antwoord(200, ['lid' => $lid, 'leden' => count($leden)]);
+    $antwoord(200, ['lid' => $lid, 'leden' => count($leden), 'openbaar' => $openbaar['slug'] ?? null]);
     return false;
 }

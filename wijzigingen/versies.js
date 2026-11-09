@@ -9,6 +9,34 @@
 
 export const VERSIES = [
   {
+    versie: '3.0.17',
+    datum: '2026-11-09',
+    wijzigingen: [
+      'Achter de schermen: de motor kan een teampagina openbaar maken op een korte link. Voor Wassenaar verandert er niets.',
+    ],
+  },
+  {
+    versie: '3.0.16',
+    datum: '2026-11-09',
+    wijzigingen: [
+      'Achter de schermen: de motor kan gegevens van een team bewaren, zoals een omschrijving en links. Voor Wassenaar verandert er niets.',
+    ],
+  },
+  {
+    versie: '3.0.15',
+    datum: '2026-11-09',
+    wijzigingen: [
+      'Achter de schermen: plaatjes op de teampagina van de motor houden hun vorm. Voor Wassenaar verandert er niets.',
+    ],
+  },
+  {
+    versie: '3.0.14',
+    datum: '2026-11-09',
+    wijzigingen: [
+      'Achter de schermen: de motor heeft een nieuwe teampagina en zet de teamnaam in de link. Voor Wassenaar verandert er niets.',
+    ],
+  },
+  {
     versie: '3.0.13',
     datum: '2026-11-08',
     wijzigingen: [
