@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Zet Wassenaar Aanzien in de repo van de site, met git subtree. Deze repo is de
-# bron; de site krijgt de map in PAD. De workflow naar-codeberg.yml draait dit
+# bron; de site krijgt de map in PAD. De workflow naar-site.yml draait dit
 # na elke push naar main, maar het werkt ook lokaal.
 #
 # - SITE_URL: de repo van de site, met een token om te mogen pushen
@@ -24,7 +24,7 @@ werkmap="$(mktemp -d)"
 trap 'rm -rf "$werkmap"' EXIT
 
 if ! git clone -q ${TAK:+--branch "$TAK"} "$SITE_URL" "$werkmap/site"; then
-    echo "De site is niet op te halen. Klopt het token, en mag het lezen en schrijven in repositories?" >&2
+    echo "De site is niet op te halen. Klopt het token, en mag het lezen en schrijven in de repo van de site?" >&2
     exit 1
 fi
 cd "$werkmap/site"

@@ -1,0 +1,47 @@
+name: Naar de site
+
+# Zet Wassenaar Aanzien na elke push naar main ook in de repo van de site, met git
+# subtree. Dat doet naar-site.sh. Nodig: het geheim SITE_TOKEN. Zonder dat
+# geheim slaat de workflow zichzelf over. Zie README.md, onder Binnen een site.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      eerste_keer:
+        description: Vervang de map op de site één keer door een subtree
+        type: boolean
+        default: false
+
+concurrency:
+  group: naar-site
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  bijwerken:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Werk de site bij
+        env:
+          SITE_TOKEN: ${{ secrets.SITE_TOKEN }}
+          SITE_REPO: ${{ vars.SITE_REPO || 'hayo/hayobethlehem.nl' }}
+          GITHUB_TOKEN: ${{ github.token }}
+          PAD: ${{ vars.SITE_PAD || 'hb2025/content/forge/status-tracker' }}
+          TAK: ${{ vars.SITE_TAK }}
+          EERSTE_KEER: ${{ inputs.eerste_keer || false }}
+        run: |
+          if [ -z "$SITE_TOKEN" ]; then
+            echo "::warning::Het geheim SITE_TOKEN ontbreekt, dus de site blijft zoals hij is."
+            exit 0
+          fi
+          # Een geplakt token heeft soms een spatie of regeleinde erbij.
+          token="$(printf '%s' "$SITE_TOKEN" | tr -d '[:space:]')"
+          SITE_URL="https://x-access-token:${token}@github.com/${SITE_REPO}.git" \
+          BRON_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            bash .github/naar-site.sh
