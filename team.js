@@ -56,7 +56,7 @@ export async function lees(team) {
   let badge, info;
   try { badge = a.badge ? await ontsleutel(team.sleutel, a.badge) : null; } catch { badge = null; }
   try { info = a.info ? await ontsleutel(team.sleutel, a.info) : null; } catch { info = null; }
-  return { leden: leden.filter(Boolean), badge, info: schoneInfo(info) };
+  return { leden: leden.filter(Boolean), badge, info: schoneInfo(info), openbaar: typeof a.openbaar === 'string' ? a.openbaar : null };
 }
 
 async function schrijf(actie, code, token, waarde) {
@@ -71,6 +71,15 @@ export const zetBadge = (code, token, badge) => schrijf('team-badge', code, toke
 
 // De gegevens van het team: omschrijving, thuisveld, regio en links. Ieder lid kan ze aanpassen.
 export const zetInfo = (code, token, info) => schrijf('team-info', code, token, schoneInfo(info));
+
+// Maakt de teampagina openbaar onder de naam van het team, of met naam null weer besloten. De server
+// krijgt dan de leessleutel van dit team (zie openbaar.php). Geeft de naam in de link, of null.
+export async function zetOpenbaar(code, token, naam) {
+  const team = await uitCode(code);
+  const a = await vraag({ actie: 'team-openbaar', id: team.id, token, schrijf: team.schrijf, kijk: naam === null ? null : team.kijk, slug: slug(naam) });
+  if (a.status !== 200) throw new Error(a.fout ?? `De server gaf ${a.status}.`);
+  return typeof a.openbaar === 'string' ? a.openbaar : null;
+}
 
 export const INFO_MAX = { omschrijving: 500, thuisveld: 60, regio: 60, links: 5, link: 200 };
 

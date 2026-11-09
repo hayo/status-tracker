@@ -5,6 +5,15 @@
 
 export const VERSIES = [
   {
+    versie: '1.9',
+    datum: '2026-11-09',
+    wijzigingen: [
+      'Nieuw: een openbare teampagina met een korte link, zoals …/veldrang/team/delta-wolves. Zet hem aan op de Erelijst met Maak openbaar.',
+      'Deel je de korte link in WhatsApp of op Instagram, dan zie je meteen de badge, de naam en de omschrijving van je team.',
+      'Openbaar betekent: de server kan je team lezen. Wil je dat niet meer? Met Maak besloten gooit de server de sleutel weg. De lange link blijft gewoon werken.',
+    ],
+  },
+  {
     versie: '1.8.4',
     datum: '2026-11-09',
     wijzigingen: [

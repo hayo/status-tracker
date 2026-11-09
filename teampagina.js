@@ -85,8 +85,13 @@ function specialisten(leden) {
   });
 }
 
+// Op een openbare pagina (veldrang/team.php) zet de server het id en de sleutel in de kop. Leeg als het
+// team niet (meer) openbaar is. Anders staan ze achter het # in de link.
+const vast = document.querySelector('meta[name="az-team"]');
+
 // De slug in de link volgt de naam van het team, ook als die verandert.
 function zetLink(team, naam) {
+  if (vast) return;
   const hash = `#${teams.kijklink(team, naam)}`;
   if (location.hash !== hash) history.replaceState(null, '', hash);
 }
@@ -148,9 +153,11 @@ function toon(team, data) {
   el.tpInhoud.hidden = false;
 }
 async function start() {
-  const team = await teams.uitKijklink(location.hash.slice(1));
+  const team = await teams.uitKijklink(vast ? vast.content : location.hash.slice(1));
   if (!team) {
-    el.tpStatus.textContent = 'Deze link is niet compleet. Vraag een teamlid om de link naar de teampagina.';
+    el.tpStatus.textContent = vast
+      ? 'Deze teampagina is niet openbaar, of de naam klopt niet. Vraag een teamlid om de link.'
+      : 'Deze link is niet compleet. Vraag een teamlid om de link naar de teampagina.';
     el.tpStatus.classList.add('fout');
     return;
   }
@@ -168,5 +175,5 @@ async function start() {
   }
 }
 
-window.addEventListener('hashchange', start);
+if (!vast) window.addEventListener('hashchange', start);
 start();

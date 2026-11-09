@@ -136,6 +136,10 @@ export function toonTeam(el, staat) {
   el.teamLink.hidden = !staat.link;
   if (staat.link) el.teamLink.href = staat.link;
   el.teamLinkKopieer.hidden = !staat.link;
+  el.teamOpenbaar.querySelector('span').textContent = staat.openbaar ? 'Maak besloten' : 'Maak openbaar';
+  el.teamOpenbaarUitleg.textContent = staat.openbaar
+    ? 'Openbaar: iedereen kan de pagina zien met de korte link, en de server kan je team lezen.'
+    : 'Besloten: alleen wie de lange link heeft, ziet de pagina. De server kan niets lezen.';
   el.teamBadge.hidden = !staat.badge;
   el.teamBadge.replaceChildren(...(staat.badge ? [maak('img', { src: staat.badge, alt: 'Badge van het team', width: 96, height: 96 })] : []));
   const leden = (staat.leden ?? []).map((l) => schoon(l.profiel, l.lid)).sort((a, b) => b.pr - a.pr || a.callsign.localeCompare(b.callsign, 'nl'));

@@ -135,7 +135,7 @@ function bewaar() {
 
 /* ---------- Team ---------- */
 
-const teamStaat = { leden: null, badge: null, info: null, link: null, eigen: null, fout: '', bezig: false, gestuurd: '' };
+const teamStaat = { leden: null, badge: null, info: null, openbaar: null, link: null, eigen: null, fout: '', bezig: false, gestuurd: '' };
 let teamKlok;
 
 const toonTeamNu = () => toonTeam(el, { ...teamStaat, team: spel?.team ?? null });
@@ -175,8 +175,9 @@ async function haalTeam() {
   try {
     teamStaat.eigen ??= await teams.lidVan(t.token);
     const sleutels = await teams.uitCode(t.code);
-    teamStaat.link = new URL(`team.html#${teams.kijklink(sleutels, t.naam)}`, location.href).href;
     const r = await teams.lees(sleutels);
+    teamStaat.openbaar = r?.openbaar ?? null;
+    teamStaat.link = teamStaat.openbaar ? openbareLink(teamStaat.openbaar) : new URL(`team.html#${teams.kijklink(sleutels, t.naam)}`, location.href).href;
     teamStaat.leden = r?.leden ?? [];
     if (teamStaat.badge) URL.revokeObjectURL(teamStaat.badge);
     teamStaat.badge = teams.badgeUrl(r?.badge);
@@ -200,7 +201,7 @@ async function maakTeam(callsign, naam) {
     meld('Team maken lukte niet', fout.message, true);
     return;
   }
-  Object.assign(teamStaat, { leden: null, badge: null, info: null, link: null, eigen: null, fout: '', gestuurd: '' });
+  Object.assign(teamStaat, { leden: null, badge: null, info: null, openbaar: null, link: null, eigen: null, fout: '', gestuurd: '' });
   bewaar();
   meld(`Team ${naam} gemaakt`, 'Deel de teamcode in je teamchat. Wie de code heeft, kan aansluiten.');
   await haalTeam();
@@ -222,7 +223,7 @@ async function sluitAan(callsign, invoer) {
     meld('Aansluiten lukte niet', fout.message, true);
     return;
   }
-  Object.assign(teamStaat, { leden: null, badge: null, info: null, link: null, eigen: null, fout: '', gestuurd: '' });
+  Object.assign(teamStaat, { leden: null, badge: null, info: null, openbaar: null, link: null, eigen: null, fout: '', gestuurd: '' });
   bewaar();
   meld(`Welkom bij team ${naam}`, 'Je profiel staat nu op de teampagina.');
   await haalTeam();
@@ -233,11 +234,36 @@ function verlaatTeam() {
   vraag(`Team ${t.naam} verlaten?`, 'Je profiel verdwijnt van de teampagina. Met de teamcode kun je later weer aansluiten.', 'Verlaat het team', async () => {
     try { await teams.verlaat(t.code, t.token); } catch { meld('Geen verbinding', 'De server is niet bereikbaar. Probeer het later opnieuw.', true); return; }
     spel.team = null;
-    Object.assign(teamStaat, { leden: null, badge: null, info: null, link: null, eigen: null, fout: '', gestuurd: '' });
+    Object.assign(teamStaat, { leden: null, badge: null, info: null, openbaar: null, link: null, eigen: null, fout: '', gestuurd: '' });
     bewaar();
     toonTeamNu();
     meld('Team verlaten', `Je staat niet meer op de pagina van team ${t.naam}.`);
   });
+}
+
+// De korte link van een openbare teampagina, op de server waar de opslag staat (zie veldrang/team.php).
+function openbareLink(slug) {
+  const hier = new URL(opslag.url).origin === location.origin ? location.href
+    : new URL(`${location.pathname.split('/').at(-2)}/`, opslag.url).href;
+  return new URL(`team/${slug}`, hier).href;
+}
+
+function zetOpenbaar() {
+  const t = spel.team;
+  const aan = !teamStaat.openbaar;
+  vraag(aan ? 'Teampagina openbaar maken?' : 'Teampagina besloten maken?',
+    aan ? `Je team krijgt een korte link met de naam erin, zoals …/team/${teams.slug(t.naam) || 'jullie-team'}. In WhatsApp zie je dan meteen de badge en de naam. Daarvoor krijgt de server de sleutel van je team, en kan hij je team lezen. Je kunt het altijd weer uitzetten.`
+      : 'De korte link werkt dan niet meer, en de server gooit de sleutel van je team weg. De lange link blijft werken.',
+    aan ? 'Maak openbaar' : 'Maak besloten', async () => {
+      try {
+        teamStaat.openbaar = await teams.zetOpenbaar(t.code, t.token, aan ? t.naam : null);
+      } catch (fout) {
+        meld('Dat lukte niet', fout.message, true);
+        return;
+      }
+      meld(aan ? 'Teampagina is openbaar' : 'Teampagina is besloten', aan ? 'Deel de korte link maar.' : 'Alleen wie de lange link heeft, kan nog kijken.');
+      await haalTeam();
+    });
 }
 
 // Zet de teamgegevens van de server in het formulier.
@@ -277,6 +303,7 @@ function bouwTeam() {
       meld('Kopiëren lukte niet', 'Open de teampagina en kopieer het adres.', true);
     }
   });
+  el.teamOpenbaar.addEventListener('click', zetOpenbaar);
   el.teamInfo.addEventListener('toggle', () => { if (el.teamInfo.open) vulTeamInfo(); });
   el.teamInfoFormulier.addEventListener('submit', async (e) => {
     e.preventDefault();

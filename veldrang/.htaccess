@@ -1,0 +1,6 @@
+# Een openbare teampagina op naam: team/delta-wolves gaat naar team.php?naam=delta-wolves.
+# Zonder mod_rewrite werkt team.php?naam=delta-wolves ook.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^team/([a-z0-9-]+)/?$ team.php?naam=$1 [L,QSA]
+</IfModule>

@@ -17,7 +17,10 @@ export function maak(tag, eigen = {}, ...kinderen) {
   return e;
 }
 
-export const icoon = (naam, klasse = 'icoon') => maak('svg:svg', { class: klasse, 'aria-hidden': 'true', focusable: 'false' }, maak('svg:use', { href: `#az-i-${naam}` }));
+// Met een <base> (de openbare teampagina) wijst #… naar de map in plaats van naar deze pagina. Dan zetten
+// we het adres van de pagina zelf ervoor, zodat elke browser het icoon in deze pagina zoekt.
+const hier = () => (document.querySelector('base') ? location.href.split('#')[0] : '');
+export const icoon = (naam, klasse = 'icoon') => maak('svg:svg', { class: klasse, 'aria-hidden': 'true', focusable: 'false' }, maak('svg:use', { href: `${hier()}#az-i-${naam}` }));
 export const meter = (id, deel) => maak('span', { class: 'spoor' }, maak('meter', { id, min: 0, max: 1, value: Math.min(1, Math.max(0, deel)) }));
 export const getal = (n) => Math.round(n).toLocaleString('nl');
 // Punten met hun teken: +30 of −30.

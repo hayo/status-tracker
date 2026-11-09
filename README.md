@@ -38,7 +38,7 @@ Je voortgang blijft staan: die hoort bij de site, niet bij de map.
 - **Strategie**: het strategieboek, waarom deze activiteiten helpen.
 - **Gegevens**: je savegame bewaren, laden, of een nieuw spel beginnen.
 
-HTML, CSS en JavaScript, en één PHP-bestand voor de opslag op de server. Geen
+HTML, CSS en JavaScript, en wat PHP voor de opslag en de openbare teampagina. Geen
 build, geen afhankelijkheden, niets van buiten: de letters en iconen staan in de
 repo.
 
@@ -63,6 +63,7 @@ schermen/dorp.js          de kaart van het dorp
 spel.js                   de spelregels: rang, bonussen, prestaties, missies, verval, jaaroverzicht, samenvoegen
 opslag.js                 de opslag op de server: synccode, versleutelen, lezen en schrijven
 opslag.php                de server: bewaart versleutelde voortgang per speler
+openbaar.php              openbare teampagina's: de naam in de link en de leessleutel, voor opslag.php en team.php
 bewaard/                  de standaardmap voor opslag.php, buiten git
 team.js, schermen/team.js teams: versleutelde profielen per lid, badge, kijklink en het teampaneel
 teampagina.js             de teampagina om te bekijken, met een link (veldrang/team.html#naam/id.sleutel)
@@ -71,7 +72,8 @@ wassenaar/                Wassenaar Aanzien: gegevens.js (de inhoud), wassenaar.
                           index.php (binnen een site), manifest en iconen
 wijzigingen/versies.js    de versies van Wassenaar, de nieuwste bovenaan; de bovenste is de versie die draait
 veldrang/                 Veldrang: gegevens.js, versies.js, veldrang.js, app.js, app.html, index.html,
-                          index.php, thema.css, pagina.css, manifest, iconen en letters
+                          index.php, thema.css, pagina.css, manifest, iconen en letters;
+                          team.html en team.php (de openbare teampagina), met .htaccess voor team/<naam>
 sw.js                     laat de losse pagina ook zonder internet werken
 .htaccess                 laat de browser bij elk bezoek navragen of een bestand nog klopt (Apache)
 letters/                  Inter en Playfair Display, met hun licentie
@@ -163,6 +165,15 @@ Elk lid kan ook de teamgegevens aanpassen: een omschrijving, het thuisveld, de
 regio en hoogstens vijf links. Ook die zijn versleuteld met de teamcode
 (`team-info` in `opslag.php`). `schoneInfo` in `team.js` controleert ze voor het
 tonen; links mogen alleen http of https zijn.
+
+Een lid kan de teampagina ook openbaar maken. Dan krijgt de server de
+leessleutel van dat ene team, met een naam voor de link (`openbaar.php`). De
+pagina staat dan op `veldrang/team/delta-wolves`: `veldrang/.htaccess` stuurt
+dat naar `team.php`, dat `team.html` geeft met het id en de sleutel in de kop,
+en met een titel, omschrijving en badge voor het voorbeeld in WhatsApp en
+andere apps. Zonder mod_rewrite werkt `team.php?naam=delta-wolves`. Is een naam
+al bezet, dan komt er een cijfer achter. Maakt een lid de pagina weer besloten,
+dan gooit de server de sleutel en de naam weg. Lange links blijven werken.
 
 Het paneel en de teampagina staan alleen in Veldrang. Een wereld zonder
 `#az-team` heeft geen teams.
