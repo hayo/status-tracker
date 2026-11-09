@@ -5,6 +5,14 @@
 
 export const VERSIES = [
   {
+    versie: '1.8.4',
+    datum: '2026-11-09',
+    wijzigingen: [
+      'Nieuw: teamgegevens. Vertel op de teampagina wie jullie zijn, waar jullie thuisveld is, in welke regio jullie spelen, en zet er links bij, zoals Instagram of Discord.',
+      'Je past ze aan op de Erelijst, onder Teamgegevens aanpassen. Ieder lid kan dat. Net als de rest is alles versleuteld.',
+    ],
+  },
+  {
     versie: '1.8.3',
     datum: '2026-11-09',
     wijzigingen: [

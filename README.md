@@ -151,11 +151,18 @@ en alleen als tekst getoond.
 
 Uit de teamcode komen ook een schrijfbewijs en een kijklink. De server bewaart
 alleen de hash van het schrijfbewijs; zonder bewijs kan niemand aansluiten. De
-kijklink (`veldrang/team.html#id.sleutel`) bevat alleen het id en de sleutel om
-te lezen. Wie de link heeft, ziet de teampagina (`teampagina.js`): badge, naam,
-een ranglijst met rang, PR, camo-helm en wapen, de skills en de profielen. Maar
+kijklink (`veldrang/team.html#naam/id.sleutel`) bevat de teamnaam als slug, het
+id en de sleutel om te lezen. Alles staat achter het `#`, dus de server ziet ook
+de naam niet. Links zonder naam werken ook. Wie de link heeft, ziet de
+teampagina (`teampagina.js`): badge, naam, teamgegevens, een podium en
+ranglijst met rang, PR, camo-helm en wapen, de skills en de profielen. Maar
 aansluiten kan alleen met de code. Elk lid kan een badge uploaden; de app
 verkleint die tot 256 beeldpunten en versleutelt hem met de teamcode.
+
+Elk lid kan ook de teamgegevens aanpassen: een omschrijving, het thuisveld, de
+regio en hoogstens vijf links. Ook die zijn versleuteld met de teamcode
+(`team-info` in `opslag.php`). `schoneInfo` in `team.js` controleert ze voor het
+tonen; links mogen alleen http of https zijn.
 
 Het paneel en de teampagina staan alleen in Veldrang. Een wereld zonder
 `#az-team` heeft geen teams.

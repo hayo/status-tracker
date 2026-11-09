@@ -482,6 +482,31 @@
               <p class="zacht">De teampagina kan iedereen met de link zien. Aansluiten kan alleen met de teamcode.</p>
             </div>
           </div>
+          <details class="team-info" id="az-team-info">
+            <summary>Teamgegevens aanpassen</summary>
+            <form class="team-info-formulier" id="az-team-info-formulier" novalidate>
+              <p class="zacht">Dit staat op de teampagina. Ieder lid kan het aanpassen.</p>
+              <p class="veld">
+                <label for="az-team-omschrijving">Over het team</label>
+                <textarea id="az-team-omschrijving" maxlength="500" rows="4"></textarea>
+              </p>
+              <div class="team-info-rij">
+                <p class="veld">
+                  <label for="az-team-thuisveld">Thuisveld</label>
+                  <input type="text" id="az-team-thuisveld" maxlength="60" autocomplete="off">
+                </p>
+                <p class="veld">
+                  <label for="az-team-regio">Regio</label>
+                  <input type="text" id="az-team-regio" maxlength="60" autocomplete="off">
+                </p>
+              </div>
+              <p class="veld">
+                <label for="az-team-links">Links <span class="zacht">(hoogstens vijf, één per regel)</span></label>
+                <textarea id="az-team-links" rows="3" spellcheck="false" autocapitalize="off" placeholder="instagram.com/jullieteam"></textarea>
+              </p>
+              <p><button type="submit" class="knop"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-floppy-disk"/></svg> Bewaar</button></p>
+            </form>
+          </details>
           <p class="synccode"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-key"/></svg> <code id="az-team-code"></code>
             <button type="button" class="knop knop-licht knop-klein" id="az-team-kopieer"><svg class="icoon" aria-hidden="true" focusable="false"><use href="#az-i-copy"/></svg> Kopieer</button></p>
           <p class="zacht">De teamcode. Deel hem alleen met je team: wie de code heeft, ziet de teampagina.</p>

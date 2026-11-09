@@ -44,8 +44,8 @@ export async function uitKijklink(deel) {
   return { id, kijk, sleutel: await aes(uitB64url(kijk)) };
 }
 
-// Het team: { leden: [{ lid, profiel, bijgewerkt }], badge: { type, data } | null }, of null als er geen
-// team is. Een profiel dat niet te ontsleutelen is, slaan we over.
+// Het team: { leden: [{ lid, profiel, bijgewerkt }], badge: { type, data } | null, info }, of null als er
+// geen team is. Een profiel dat niet te ontsleutelen is, slaan we over. info is altijd schoon (zie schoneInfo).
 export async function lees(team) {
   const a = await vraag({ actie: 'team-lees', id: team.id });
   if (a.status !== 200 || !Array.isArray(a.leden)) throw new Error(a.fout ?? `De server gaf ${a.status}.`);
@@ -53,9 +53,10 @@ export async function lees(team) {
   const leden = await Promise.all(a.leden.map(async (l) => {
     try { return { lid: String(l.lid), profiel: await ontsleutel(team.sleutel, l.data), bijgewerkt: String(l.bijgewerkt ?? '') }; } catch { return null; }
   }));
-  let badge;
+  let badge, info;
   try { badge = a.badge ? await ontsleutel(team.sleutel, a.badge) : null; } catch { badge = null; }
-  return { leden: leden.filter(Boolean), badge };
+  try { info = a.info ? await ontsleutel(team.sleutel, a.info) : null; } catch { info = null; }
+  return { leden: leden.filter(Boolean), badge, info: schoneInfo(info) };
 }
 
 async function schrijf(actie, code, token, waarde) {
@@ -67,6 +68,46 @@ async function schrijf(actie, code, token, waarde) {
 export const plaats = (code, token, profiel) => schrijf('team-schrijf', code, token, profiel);
 // badge: { type, data (base64) } of null om hem weg te halen.
 export const zetBadge = (code, token, badge) => schrijf('team-badge', code, token, badge);
+
+// De gegevens van het team: omschrijving, thuisveld, regio en links. Ieder lid kan ze aanpassen.
+export const zetInfo = (code, token, info) => schrijf('team-info', code, token, schoneInfo(info));
+
+export const INFO_MAX = { omschrijving: 500, thuisveld: 60, regio: 60, links: 5, link: 200 };
+
+const regel = (x, max) => String(x ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
+
+// Een link mag alleen http of https zijn. Zonder http ervoor zetten we https:// ervoor.
+export function schoneLink(x) {
+  const tekst = String(x ?? '').trim();
+  if (!tekst || tekst.length > INFO_MAX.link) return null;
+  try {
+    const url = new URL(/^[a-z][a-z0-9+.-]*:/i.test(tekst) ? tekst : `https://${tekst}`);
+    return /^https?:$/.test(url.protocol) && url.hostname.includes('.') ? url.href : null;
+  } catch { return null; }
+}
+
+// Maakt van wat er binnenkomt iets wat we veilig kunnen tonen. Teksten alleen als tekst.
+export function schoneInfo(v) {
+  const i = v && typeof v === 'object' ? v : {};
+  return {
+    omschrijving: String(i.omschrijving ?? '').replace(/\r/g, '').replace(/\n{3,}/g, '\n\n').trim().slice(0, INFO_MAX.omschrijving),
+    thuisveld: regel(i.thuisveld, INFO_MAX.thuisveld),
+    regio: regel(i.regio, INFO_MAX.regio),
+    links: [...new Set((Array.isArray(i.links) ? i.links : []).map(schoneLink).filter(Boolean))].slice(0, INFO_MAX.links),
+  };
+}
+
+const SITES = [
+  [/(^|\.)instagram\.com$/, 'Instagram'], [/(^|\.)facebook\.com$|(^|\.)fb\.com$/, 'Facebook'],
+  [/(^|\.)discord\.(gg|com)$/, 'Discord'], [/(^|\.)youtube\.com$|(^|\.)youtu\.be$/, 'YouTube'],
+  [/(^|\.)tiktok\.com$/, 'TikTok'], [/(^|\.)(x|twitter)\.com$/, 'X'], [/(^|\.)whatsapp\.com$|(^|\.)wa\.me$/, 'WhatsApp'],
+];
+
+// De naam van een link voor op een knop: Instagram, Discord, of anders de site zelf.
+export function linkNaam(href) {
+  const host = new URL(href).hostname.replace(/^www\./, '');
+  return SITES.find(([re]) => re.test(host))?.[1] ?? host;
+}
 
 export async function verlaat(code, token) {
   const { id } = await uitCode(code);

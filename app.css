@@ -1133,7 +1133,7 @@
   font-size: 0.9em;
 }
 
-#aanzien :is(input[type="search"], input[type="text"], input[type="date"]) {
+#aanzien :is(input[type="search"], input[type="text"], input[type="date"], .team-info textarea) {
   box-sizing: border-box;
   width: 100%;
   min-height: 2.75em;
@@ -3198,7 +3198,7 @@
 
 /* ---------- Team ---------- */
 
-#aanzien .team-formulier label {
+#aanzien :is(.team-formulier, .team-info-formulier) label {
   display: block;
   margin-bottom: 0.3em;
   font-size: 0.9em;
@@ -3400,6 +3400,28 @@
   margin-bottom: 1em;
 }
 
+#aanzien .team-info {
+  margin-bottom: 1em;
+  padding: 0 1em;
+  border: 1px solid var(--lijn);
+  border-radius: 0.6em;
+}
+
+#aanzien .team-info[open] {
+  padding-bottom: 0.4em;
+}
+
+#aanzien .team-info textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+#aanzien .team-info-rij {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12em, 1fr));
+  gap: 0 1em;
+}
+
 #aanzien .team-badge img {
   display: block;
   width: 6em;
@@ -3513,6 +3535,52 @@
 
 #aanzien .tp-held .sync-status:empty {
   display: none;
+}
+
+#aanzien .tp-waar {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0.2em 0 0;
+  color: var(--goud, #c9a44c);
+  font-weight: 700;
+}
+
+#aanzien .tp-omschrijving {
+  max-width: 40em;
+  margin: 0.6em 0 0;
+  color: rgb(243 238 220 / 92%);
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+#aanzien .tp-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin: 0.9em 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+#aanzien .tp-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 2.2em;
+  padding: 0.3em 0.9em;
+  border: 1px solid rgb(201 164 76 / 60%);
+  border-radius: 2em;
+  background: rgb(201 164 76 / 15%);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#aanzien .tp-links a:hover,
+#aanzien .tp-links a:focus-visible {
+  border-color: var(--goud, #c9a44c);
+  background: rgb(201 164 76 / 30%);
 }
 
 #aanzien .tp-delen {

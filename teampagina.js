@@ -101,6 +101,18 @@ el.tpKopieer?.addEventListener('click', async () => {
   setTimeout(() => { el.tpKopieer.lastChild.textContent = ' Kopieer de link'; }, 2500);
 });
 
+// Thuisveld en regio, de omschrijving en de links van het team. Alles als tekst; links alleen http(s).
+function toonInfo(info) {
+  const waar = [info.thuisveld, info.regio].filter(Boolean).join(', ');
+  el.tpWaar.hidden = !waar;
+  el.tpWaar.replaceChildren(...(waar ? [icoon('location-dot'), ` ${waar}`] : []));
+  el.tpOmschrijving.hidden = !info.omschrijving;
+  el.tpOmschrijving.textContent = info.omschrijving;
+  el.tpLinks.hidden = !info.links.length;
+  el.tpLinks.replaceChildren(...info.links.map((href) => maak('li', {},
+    maak('a', { href, rel: 'noopener noreferrer nofollow ugc', target: '_blank' }, icoon('link'), ` ${teams.linkNaam(href)}`))));
+}
+
 function toon(team, data) {
   const leden = data.leden.map((l) => schoon(l.profiel, l.lid)).sort((a, b) => b.pr - a.pr || a.callsign.localeCompare(b.callsign, 'nl'));
   if (!leden.length) {
@@ -124,6 +136,7 @@ function toon(team, data) {
     [RANGEN[hoogste].icoon, 'Hoogste rang', RANGEN[hoogste].naam],
     ...(sterk[1] > 0 ? [[W.EIGENSCHAPPEN[sterk[0]].icoon, 'Sterk in', W.EIGENSCHAPPEN[sterk[0]].kort]] : []),
   ].map(([ic, dt, dd]) => maak('div', {}, icoon(ic, 'icoon tp-cijfer-icoon'), maak('dt', { tekst: dt }), maak('dd', { tekst: dd }))));
+  toonInfo(data.info ?? teams.schoneInfo(null));
   el.tpStatus.textContent = '';
   el.tpKopieer.hidden = !navigator.clipboard;
   el.tpPodium.replaceChildren(...leden.slice(0, 3).map(podiumKaart));

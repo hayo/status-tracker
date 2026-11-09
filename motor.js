@@ -135,7 +135,7 @@ function bewaar() {
 
 /* ---------- Team ---------- */
 
-const teamStaat = { leden: null, badge: null, link: null, eigen: null, fout: '', bezig: false, gestuurd: '' };
+const teamStaat = { leden: null, badge: null, info: null, link: null, eigen: null, fout: '', bezig: false, gestuurd: '' };
 let teamKlok;
 
 const toonTeamNu = () => toonTeam(el, { ...teamStaat, team: spel?.team ?? null });
@@ -180,6 +180,8 @@ async function haalTeam() {
     teamStaat.leden = r?.leden ?? [];
     if (teamStaat.badge) URL.revokeObjectURL(teamStaat.badge);
     teamStaat.badge = teams.badgeUrl(r?.badge);
+    teamStaat.info = r?.info ?? null;
+    if (!el.teamInfo.open) vulTeamInfo();
     teamStaat.fout = '';
   } catch {
     teamStaat.fout = 'De server is niet bereikbaar. Probeer het later opnieuw.';
@@ -198,7 +200,7 @@ async function maakTeam(callsign, naam) {
     meld('Team maken lukte niet', fout.message, true);
     return;
   }
-  Object.assign(teamStaat, { leden: null, badge: null, link: null, eigen: null, fout: '', gestuurd: '' });
+  Object.assign(teamStaat, { leden: null, badge: null, info: null, link: null, eigen: null, fout: '', gestuurd: '' });
   bewaar();
   meld(`Team ${naam} gemaakt`, 'Deel de teamcode in je teamchat. Wie de code heeft, kan aansluiten.');
   await haalTeam();
@@ -220,7 +222,7 @@ async function sluitAan(callsign, invoer) {
     meld('Aansluiten lukte niet', fout.message, true);
     return;
   }
-  Object.assign(teamStaat, { leden: null, badge: null, link: null, eigen: null, fout: '', gestuurd: '' });
+  Object.assign(teamStaat, { leden: null, badge: null, info: null, link: null, eigen: null, fout: '', gestuurd: '' });
   bewaar();
   meld(`Welkom bij team ${naam}`, 'Je profiel staat nu op de teampagina.');
   await haalTeam();
@@ -231,11 +233,20 @@ function verlaatTeam() {
   vraag(`Team ${t.naam} verlaten?`, 'Je profiel verdwijnt van de teampagina. Met de teamcode kun je later weer aansluiten.', 'Verlaat het team', async () => {
     try { await teams.verlaat(t.code, t.token); } catch { meld('Geen verbinding', 'De server is niet bereikbaar. Probeer het later opnieuw.', true); return; }
     spel.team = null;
-    Object.assign(teamStaat, { leden: null, badge: null, link: null, eigen: null, fout: '', gestuurd: '' });
+    Object.assign(teamStaat, { leden: null, badge: null, info: null, link: null, eigen: null, fout: '', gestuurd: '' });
     bewaar();
     toonTeamNu();
     meld('Team verlaten', `Je staat niet meer op de pagina van team ${t.naam}.`);
   });
+}
+
+// Zet de teamgegevens van de server in het formulier.
+function vulTeamInfo() {
+  const i = teamStaat.info ?? teams.schoneInfo(null);
+  el.teamOmschrijving.value = i.omschrijving;
+  el.teamThuisveld.value = i.thuisveld;
+  el.teamRegio.value = i.regio;
+  el.teamLinks.value = i.links.join('\n');
 }
 
 function bouwTeam() {
@@ -265,6 +276,26 @@ function bouwTeam() {
     } catch {
       meld('Kopiëren lukte niet', 'Open de teampagina en kopieer het adres.', true);
     }
+  });
+  el.teamInfo.addEventListener('toggle', () => { if (el.teamInfo.open) vulTeamInfo(); });
+  el.teamInfoFormulier.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!spel.team) return;
+    const regels = el.teamLinks.value.split('\n').map((x) => x.trim()).filter(Boolean);
+    const fout = regels.find((x) => !teams.schoneLink(x));
+    if (fout) { meld('Deze link klopt niet', `${fout.slice(0, 60)} is geen webadres.`, true); el.teamLinks.focus(); return; }
+    if (regels.length > teams.INFO_MAX.links) { meld('Te veel links', `Er passen hoogstens ${teams.INFO_MAX.links} links op de teampagina.`, true); el.teamLinks.focus(); return; }
+    try {
+      await teams.zetInfo(spel.team.code, spel.team.token, {
+        omschrijving: el.teamOmschrijving.value, thuisveld: el.teamThuisveld.value, regio: el.teamRegio.value, links: regels,
+      });
+    } catch (fout2) {
+      meld('Bewaren lukte niet', fout2.message, true);
+      return;
+    }
+    el.teamInfo.open = false;
+    meld('Teamgegevens bewaard', 'Je teamleden en de teampagina zien ze nu.');
+    await haalTeam();
   });
   // De badge: een plaatje van je team, verkleind en versleuteld met de teamcode.
   el.teamBadgeBestand.addEventListener('change', async () => {
