@@ -11,6 +11,7 @@ export const VERSIES = [
       'Je teampagina krijgt nu vanzelf een link met de naam van je team, zoals …/veldrang/team/delta-wolves. Daarvoor kan de server je team lezen.',
       'Wil je dat niet? Kies Maak besloten op de Erelijst. Dan krijg je een korte geheime link, en kan de server niets lezen. Dat blijft zo.',
       'Wie de link heeft, kan je team zien, maar niet aansluiten. Oude, lange links blijven werken.',
+      'Opgelost: de link met de naam van je team gaf op hayobethlehem.nl de melding Forbidden.',
     ],
   },
   {
